@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+    <form action="/joinProc" method="post">
+        <p><input type="text" name="nickname" placeholder="닉네임"></p>
+        <p><input type="text" name="userId" placeholder="아이디"></p>
+        <p><input type="password" name="userPw" placeholder="비밀번호"></p>
+        <p><input type="password" name="userPwCheck" placeholder="비밀번호 확인"></p>
+        <p><input type="number" name="age" placeholder="나이"></p>
+        <p>
+            <input type="radio" id="male" name="gender" value="MALE">
+            <label for="male">남자</label>
+            <input type="radio" id="female" name="gender" value="FEMALE">
+            <label for="female">여자</label>
+        </p>
+        <p><input type="text" name="address" placeholder="주소"></p>
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+        <input type="submit" value="회원가입">
+    </form>
+</body>
+</html>
