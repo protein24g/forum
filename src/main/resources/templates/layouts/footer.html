@@ -2,15 +2,11 @@
 
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="footerFragment" class="container">
-    <div sec:authorize="isAuthenticated()">
-        <div class="container">
-        </div>
-
-    </div>
-
-    <div sec:authorize="isAnonymous()">
-        <div class="container">
-        </div>
+    <div class="container fixed-bottom">
+        <footer class="py-3 my-4">
+            <hr>
+            <p class="text-center text-body-secondary">© 2024 Company, Inc</p>
+        </footer>
     </div>
 </div>
 </html>

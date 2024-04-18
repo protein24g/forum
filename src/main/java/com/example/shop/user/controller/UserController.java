@@ -5,10 +5,10 @@ import com.example.shop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,17 +26,18 @@ public class UserController {
     }
 
     @PostMapping("/joinProc")
-    public String joinProc(@Valid JoinDTO joinDTO, BindingResult bindingResult) {
-        //  @Valid를 사용하여 JoinDTO 객체의 검증
-        // bindingResult.hasErrors() 로 오류가 발생했는지 확인 가능
-        // redirectAttributes 로 오류 메시지와 함께 입력했던 데이터를 유지하기 위해 사용
-
+    public String joinProc(@Valid JoinDTO joinDTO, BindingResult bindingResult, Model model) {
+        // 유효성 검사 실패 시
         if (bindingResult.hasErrors()) {
-            return "redirect:/join"; // 회원가입 페이지로 리다이렉트
+            // 에러 메시지를 모델에 추가
+            bindingResult.getFieldErrors()
+                    .forEach(errors -> {
+                        model.addAttribute(errors.getField() + "Error");
+                    });
+            return "user/join";
         }
 
-        // 모든 검증 로직을 통과한 후, 사용자 가입 로직 호출
         userService.join(joinDTO);
-        return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        return "redirect:/login";
     }
 }

@@ -1,25 +1,71 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("joinForm").addEventListener("submit", function(e) {
+                var nickName = document.getElementsByName("nickname")[0].value;
+                var userId = document.getElementsByName("userId")[0].value;
+                var password = document.getElementsByName("userPw")[0].value;
+                var confirmPassword = document.getElementsByName("userPwCheck")[0].value;
+
+                // 비밀번호 길이 및 공백 문자 체크
+                if (nickName.length < 2 || nickName.length > 12 || nickName.includes(' ')) {
+                    alert("닉네임을 2~12자 사이로 입력하세요.");
+                    e.preventDefault();
+                } else if (userId.length < 6 || userId.includes(' ')) {
+                    alert("아이디는 6자 이상, 공백 문자를 포함할 수 없습니다.");
+                    e.preventDefault(); // 폼 제출을 막음
+                } else if (password.length < 6 || password.includes(' ')) {
+                    alert("비밀번호는 6자 이상, 공백 문자를 포함할 수 없습니다.");
+                    e.preventDefault(); // 폼 제출을 막음
+                } else if (password !== confirmPassword) {
+                    alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                    e.preventDefault(); // 폼 제출을 막음
+                } else {
+                    alert("화원가입 성공");
+                }
+            });
+        });
+    </script>
 </head>
 <body>
-    <form action="/joinProc" method="post">
-        <p><input type="text" name="nickname" placeholder="닉네임"></p>
-        <p><input type="text" name="userId" placeholder="아이디"></p>
-        <p><input type="password" name="userPw" placeholder="비밀번호"></p>
-        <p><input type="password" name="userPwCheck" placeholder="비밀번호 확인"></p>
-        <p><input type="number" name="age" placeholder="나이"></p>
-        <p>
-            <input type="radio" id="male" name="gender" value="MALE">
-            <label for="male">남자</label>
-            <input type="radio" id="female" name="gender" value="FEMALE">
-            <label for="female">여자</label>
-        </p>
-        <p><input type="text" name="address" placeholder="주소"></p>
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-        <input type="submit" value="회원가입">
-    </form>
+<form action="/joinProc" method="post" id="joinForm">
+    <p>
+        <input type="text" name="nickname" placeholder="닉네임" th:classappend="${nicknameError} ? 'error' : ''">
+        <span th:if="${nicknameError}" th:text="${nicknameError}"></span>
+    </p>
+    <p>
+        <input type="text" name="userId" placeholder="아이디" th:classappend="${userIdError} ? 'error' : ''">
+        <span th:if="${userIdError}" th:text="${userIdError}"></span>
+    </p>
+    <p>
+        <input type="password" name="userPw" placeholder="비밀번호" th:classappend="${userPwError} ? 'error' : ''">
+        <span th:if="${userPwError}" th:text="${userPwError}"></span>
+    </p>
+    <p>
+        <input type="password" name="userPwCheck" placeholder="비밀번호 확인" th:classappend="${userPwCheckError} ? 'error' : ''">
+        <span th:if="${userPwCheckError}" th:text="${userPwCheckError}"></span>
+    </p>
+    <p>
+        <input type="number" name="age" placeholder="나이" th:classappend="${ageError} ? 'error' : ''">
+        <span th:if="${ageError}" th:text="${ageError}"></span>
+    </p>
+    <p>
+        <input type="radio" id="male" name="gender" value="MALE">
+        <label for="male">남자</label>
+        <input type="radio" id="female" name="gender" value="FEMALE">
+        <label for="female">여자</label>
+        <span th:if="${genderError}" th:text="${genderError}"></span>
+    </p>
+    <p>
+        <input type="text" name="address" placeholder="주소" th:classappend="${addressError} ? 'error' : ''">
+        <span th:if="${addressError}" th:text="${addressError}"></span>
+    </p>
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+    <input type="submit" value="회원가입">
+</form>
 </body>
 </html>

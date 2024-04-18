@@ -8,9 +8,57 @@
 
     </div>
 
-    <div sec:authorize="isAnonymous()">
-        <div class="container">
+    <nav class="py-2 bg-body-tertiary border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+                <li class="nav-item" sec:authorize="isAnonymous()"><a href="/login" class="nav-link link-body-emphasis px-2">로그인</a></li>
+                <li class="nav-item" sec:authorize="isAnonymous()"><a href="/join" class="nav-link link-body-emphasis px-2">회원가입</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form action="/logout" method="post">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                        <button type="submit" class="nav-link link-body-emphasis px-2">로그아웃</button>
+                    </form>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        마이페이지
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">장바구니</a></li>
+                        <li><a class="dropdown-item" href="#">주문내역</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <ul class="nav">
+                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Q&A</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">리뷰</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">MODEL</a></li>
+            </ul>
         </div>
+    </nav>
+
+
+    <div style="text-align: center;">
+        <a href="#" class="btn">
+            <h1 style="text-align: center; margin: 50px;">
+                쇼핑몰
+            </h1>
+        </a>
     </div>
+
+    <div class="nav-scroller py-1 mb-3 border-top border-bottom">
+        <nav class="nav nav-underline justify-content-between">
+            <li></li>
+            <a class="nav-item nav-link link-body-emphasis" href="#">상의</a>
+            <a class="nav-item nav-link link-body-emphasis" href="#">하의</a>
+            <a class="nav-item nav-link link-body-emphasis" href="#">아우터</a>
+            <a class="nav-item nav-link link-body-emphasis" href="#">세일</a>
+            <a class="nav-item nav-link link-body-emphasis" href="#">BEST 50</a>
+            <li></li>
+        </nav>
+    </div>
+
+</div>
 </div>
 </html>
