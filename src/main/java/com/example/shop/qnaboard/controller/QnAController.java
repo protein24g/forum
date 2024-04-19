@@ -22,6 +22,6 @@ public class QnAController {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             model.addAttribute("nickname", customUserDetails.getUsername());
         }
-        return "board/qna";
+        return "qnaboard/qna";
     }
 }

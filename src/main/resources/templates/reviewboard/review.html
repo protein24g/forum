@@ -15,6 +15,33 @@
     <div>
         <span th:text="${nickname} + '님 어서오세요.'"></span>review
     </div>
+
+
+    <div sec:authorize="isAuthenticated()">
+        <a type="btn" href="/review/create">글쓰기</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>닉네임</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>생성 날짜</th>
+            <th>평점</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.nickname}">닉네임</td>
+            <td th:text="${board.title}">제목</td>
+            <td th:text="${board.content}">내용</td>
+            <td th:text="${#dates.format(board.createDate, 'yyyy-MM-dd')}">생성 날짜</td>
+            <td th:text="${board.reviewScore}">평점</td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
 
 
