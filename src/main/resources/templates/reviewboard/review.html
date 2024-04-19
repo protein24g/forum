@@ -33,11 +33,11 @@
         </thead>
         <tbody>
         <tr th:each="board : ${boards}">
-            <td th:text="${board.nickname}">닉네임</td>
-            <td th:text="${board.title}">제목</td>
-            <td th:text="${board.content}">내용</td>
-            <td th:text="${#dates.format(board.createDate, 'yyyy-MM-dd')}">생성 날짜</td>
-            <td th:text="${board.reviewScore}">평점</td>
+            <td th:text="${board.getNickname()}">닉네임</td>
+            <td th:text="${board.getTitle()}">제목</td>
+            <td th:text="${board.getContent()}">내용</td>
+            <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd') : ''}">생성 날짜</td>
+            <td th:text="${board.getReviewScore()}">평점</td>
         </tr>
         </tbody>
     </table>

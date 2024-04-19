@@ -3,10 +3,7 @@ package com.example.shop.user.entity;
 import com.example.shop.qnaboard.entity.QnA;
 import com.example.shop.reviewboard.entity.Review;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

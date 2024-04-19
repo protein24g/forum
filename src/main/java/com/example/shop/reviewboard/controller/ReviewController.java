@@ -40,9 +40,7 @@ public class ReviewController {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             model.addAttribute("nickname", customUserDetails.getUsername());
         }
-        List<ReviewResponse> reviews = reviewService.readAll();
-        System.out.println(reviews);
-        model.addAttribute("boards", reviews);
+        model.addAttribute("boards", reviewService.readAll());
         return "reviewboard/review";
     }
 
