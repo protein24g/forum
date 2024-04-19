@@ -50,7 +50,7 @@ public class ReviewService {
                             .nickname(review.getUser().getNickname())
                             .title(review.getTitle())
                             .content(review.getContent())
-                            .createDate(review.getUser().getCreateDate())
+                            .createDate(review.getCreateDate())
                             .reviewScore(review.getReviewScore())
                             .build())
                 .collect(Collectors.toList());

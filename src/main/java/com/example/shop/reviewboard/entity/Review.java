@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -23,15 +25,19 @@ public class Review {
     @Column(name = "review_score")
     private double reviewScore;
 
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Review(String title, String content, double reviewScore, User user){
+    public Review(String title, String content, double reviewScore, User user, LocalDateTime createDate){
         this.title = title;
         this.content = content;
         this.reviewScore = reviewScore;
         this.user = user;
+        this.createDate = createDate;
     }
 }
