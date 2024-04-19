@@ -7,21 +7,21 @@
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("joinForm").addEventListener("submit", function(e) {
                 var nickName = document.getElementsByName("nickname")[0].value;
-                var userId = document.getElementsByName("userId")[0].value;
-                var password = document.getElementsByName("userPw")[0].value;
-                var confirmPassword = document.getElementsByName("userPwCheck")[0].value;
+                var loginId = document.getElementsByName("loginId")[0].value;
+                var loginPw = document.getElementsByName("loginPw")[0].value;
+                var loginPwCheck = document.getElementsByName("loginPwCheck")[0].value;
 
                 // 비밀번호 길이 및 공백 문자 체크
                 if (nickName.length < 2 || nickName.length > 12 || nickName.includes(' ')) {
                     alert("닉네임을 2~12자 사이로 입력하세요.");
                     e.preventDefault();
-                } else if (userId.length < 6 || userId.includes(' ')) {
+                } else if (loginId.length < 6 || loginId.includes(' ')) {
                     alert("아이디는 6자 이상, 공백 문자를 포함할 수 없습니다.");
                     e.preventDefault(); // 폼 제출을 막음
-                } else if (password.length < 6 || password.includes(' ')) {
+                } else if (loginPw.length < 6 || loginPw.includes(' ')) {
                     alert("비밀번호는 6자 이상, 공백 문자를 포함할 수 없습니다.");
                     e.preventDefault(); // 폼 제출을 막음
-                } else if (password !== confirmPassword) {
+                } else if (loginPw !== loginPwCheck) {
                     alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
                     e.preventDefault(); // 폼 제출을 막음
                 } else {
@@ -38,16 +38,16 @@
         <span th:if="${nicknameError}" th:text="${nicknameError}"></span>
     </p>
     <p>
-        <input type="text" name="userId" placeholder="아이디" th:classappend="${userIdError} ? 'error' : ''">
-        <span th:if="${userIdError}" th:text="${userIdError}"></span>
+        <input type="text" name="loginId" placeholder="아이디" th:classappend="${loginIdError} ? 'error' : ''">
+        <span th:if="${loginIdError}" th:text="${loginIdError}"></span>
     </p>
     <p>
-        <input type="password" name="userPw" placeholder="비밀번호" th:classappend="${userPwError} ? 'error' : ''">
-        <span th:if="${userPwError}" th:text="${userPwError}"></span>
+        <input type="password" name="loginPw" placeholder="비밀번호" th:classappend="${loginPwError} ? 'error' : ''">
+        <span th:if="${loginPwError}" th:text="${loginPwError}"></span>
     </p>
     <p>
-        <input type="password" name="userPwCheck" placeholder="비밀번호 확인" th:classappend="${userPwCheckError} ? 'error' : ''">
-        <span th:if="${userPwCheckError}" th:text="${userPwCheckError}"></span>
+        <input type="password" name="loginPwCheck" placeholder="비밀번호 확인" th:classappend="${loginPwCheckError} ? 'error' : ''">
+        <span th:if="${loginPwCheckError}" th:text="${loginPwCheckError}"></span>
     </p>
     <p>
         <input type="number" name="age" placeholder="나이" th:classappend="${ageError} ? 'error' : ''">

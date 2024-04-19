@@ -18,18 +18,18 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
     }
 
-    public String getNickname() {
-        return user.getNickname();
+    public String getLoginId() {
+        return user.getLoginId();
     }
 
     @Override
     public String getPassword() {
-        return user.getUserPw();
+        return user.getLoginPw();
     }
 
     @Override
     public String getUsername() {
-        return user.getUserId();
+        return user.getNickname();
     }
 
     @Override

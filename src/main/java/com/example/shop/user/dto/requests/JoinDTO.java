@@ -16,15 +16,15 @@ public class JoinDTO {
 
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
     @Size(min = 6, message = "아이디는 최소 6자 이상 입력하세요.")
-    private String userId;
+    private String loginId;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
     @Size(min = 6, message = "비밀번호는 최소 6자 이상 입력하세요.")
-    private String userPw;
+    private String loginPw;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
     @Size(min = 6, message = "비밀번호는 최소 6자 이상 입력하세요.")
-    private String userPwCheck;
+    private String loginPwCheck;
 
     private LocalDateTime createDate;
 

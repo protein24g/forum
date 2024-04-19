@@ -18,7 +18,7 @@ public class UserService {
 
     @Transactional
     public void join(JoinDTO joinDTO) {
-        userRepository.findByUserId(joinDTO.getUserId())
+        userRepository.findByLoginId(joinDTO.getLoginId())
                 .ifPresentOrElse(
                         user -> {
                             throw new IllegalStateException("이미 존재하는 사용자입니다.");
@@ -26,8 +26,8 @@ public class UserService {
                         () -> {
                             userRepository.save(User.builder()
                                     .nickname(joinDTO.getNickname())
-                                    .userId(joinDTO.getUserId())
-                                    .userPw(passwordEncoder.encode(joinDTO.getUserPw()))
+                                    .loginId(joinDTO.getLoginId())
+                                    .loginPw(passwordEncoder.encode(joinDTO.getLoginPw()))
                                     .createDate(LocalDateTime.now())
                                     .age(joinDTO.getAge())
                                     .gender(joinDTO.getGender())
@@ -36,5 +36,7 @@ public class UserService {
                                     .build());
                         }
                 );
+        System.out.println("asdasdasdasdasd");
+        System.out.println(joinDTO.toString());
     }
 }

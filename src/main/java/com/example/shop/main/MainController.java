@@ -17,7 +17,7 @@ public class MainController {
         if (authentication.getPrincipal() instanceof CustomUserDetails) {
             // getPrincipal()이 CustomUserDetails 인스턴스인 경우
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            model.addAttribute("nickname", customUserDetails.getNickname()); // 또는 getNickname()을 사용할 수 있습니다.
+            model.addAttribute("nickname", customUserDetails.getUsername());
         } else {
             // getPrincipal()이 CustomUserDetails 인스턴스가 아닌 경우 (예: "anonymousUser")
             // 여기에 대한 처리 로직

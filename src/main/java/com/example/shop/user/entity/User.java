@@ -1,5 +1,6 @@
 package com.example.shop.user.entity;
 
+import com.example.shop.reviewboard.entity.ReviewBoard;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @RequiredArgsConstructor
-@ToString(exclude = {"", ""}) // 순환 참조를 피하기 위해 ToString에서 제외
+@ToString(exclude = {"reviewBoards"}) // 순환 참조를 피하기 위해 ToString 에서 제외
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +23,11 @@ public class User {
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "user_id", unique = true, nullable = false)
-    private String userId;
+    @Column(name = "login_id", unique = true, nullable = false)
+    private String loginId;
 
-    @Column(name = "user_pw", nullable = false)
-    private String userPw;
+    @Column(name = "login_pw", nullable = false)
+    private String loginPw;
 
     @Column(name = "create_date", updatable = false)
     private LocalDateTime createDate;
@@ -43,16 +46,20 @@ public class User {
     @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ReviewBoard> reviewBoards;
+
     @Builder
-    public User(String nickname, String userId, String userPw, LocalDateTime createDate,
+    public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
                    int age, User.Gender gender, String address, User.Role role){
         this.nickname = nickname;
-        this.userId = userId;
-        this.userPw = userPw;
+        this.loginId = loginId;
+        this.loginPw = loginPw;
         this.createDate = createDate;
         this.age = age;
         this.gender = gender;
         this.address = address;
         this.role = role;
+        this.reviewBoards = new ArrayList<>();
     }
 }
