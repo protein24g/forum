@@ -40,4 +40,8 @@ public class Review {
         this.user = user;
         this.createDate = createDate;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

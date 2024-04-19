@@ -31,15 +31,15 @@ public class ReviewService {
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
 
-            Review review = reviewRepository.save(Review.builder()
+            Review review = Review.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .reviewScore(5.0)
-                    .createDate(LocalDateTime.now())
                     .user(user)
-                    .build());
-
-            user.getReviews().add(review);
+                    .createDate(LocalDateTime.now())
+                    .build();
+            user.addReview(review);
+            reviewRepository.save(review);
             System.out.println("리뷰 작성 완료");
         }else{
             throw new IllegalStateException("로그인 후 이용 가능합니다.");

@@ -64,4 +64,9 @@ public class User {
         this.reviews = new ArrayList<>();
         this.qnAS = new ArrayList<>();
     }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+        review.setUser(this);
+    }
 }
