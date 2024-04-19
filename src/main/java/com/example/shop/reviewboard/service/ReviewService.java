@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class ReviewService {
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .reviewScore(5.0)
+                    .createDate(LocalDateTime.now())
                     .user(user)
                     .build());
 
