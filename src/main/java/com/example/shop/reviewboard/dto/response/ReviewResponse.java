@@ -11,13 +11,15 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class ReviewResponse {
+    private Long id;
     private String nickname;
     private String title;
     private String content;
     private LocalDateTime createDate;
     private Double reviewScore;
 
-    @Builder ReviewResponse(String nickname, String title, String content, LocalDateTime createDate, Double reviewScore){
+    @Builder ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, Double reviewScore){
+        this.id = id;
         this.nickname = nickname;
         this.title = title;
         this.content = content;

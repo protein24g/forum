@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class ReviewController {
     @PostMapping("/review/create")
     public String create(ReviewRequest dto){
         reviewService.create(dto);
-        return "reviewboard/review";
+        return "redirect:" + dto.getReferer();
     }
 
     // R(Read)
@@ -42,6 +43,18 @@ public class ReviewController {
         }
         model.addAttribute("boards", reviewService.readAll());
         return "reviewboard/review";
+    }
+
+    @GetMapping("/review/{id}")
+    public String reviewDetailP(@PathVariable("id") Long id, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("nickname", customUserDetails.getUsername());
+            ReviewResponse reviewResponse = reviewService.readDetail(id);
+            model.addAttribute("review", reviewResponse);
+        }
+        return "reviewboard/detail";
     }
 
 }

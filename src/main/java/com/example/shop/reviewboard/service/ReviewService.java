@@ -46,9 +46,11 @@ public class ReviewService {
         }
     }
 
+    // R(Read)
     public List<ReviewResponse> readAll() {
         return reviewRepository.findAll().stream()
                 .map(review -> ReviewResponse.builder()
+                            .id(review.getId())
                             .nickname(review.getUser().getNickname())
                             .title(review.getTitle())
                             .content(review.getContent())
@@ -56,5 +58,18 @@ public class ReviewService {
                             .reviewScore(review.getReviewScore())
                             .build())
                 .collect(Collectors.toList());
+    }
+
+    public ReviewResponse readDetail(Long id) {
+        return reviewRepository.findById(id)
+                .map(review -> ReviewResponse.builder()
+                        .id(review.getId())
+                        .nickname(review.getUser().getNickname())
+                        .title(review.getTitle())
+                        .content(review.getContent())
+                        .createDate(review.getCreateDate())
+                        .reviewScore(review.getReviewScore())
+                        .build())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
     }
 }
