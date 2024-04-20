@@ -9,6 +9,10 @@ import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import com.sun.nio.sctp.IllegalReceiveException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -56,6 +60,20 @@ public class ReviewService {
     }
 
     // R(Read)
+    public List<ReviewResponse> page(int page){
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("id")));
+        return reviewRepository.findAll(pageable).stream()
+                .map(review -> ReviewResponse.builder()
+                        .id(review.getId())
+                        .nickname(review.getUser().getNickname())
+                        .title(review.getTitle())
+                        .content(review.getContent())
+                        .createDate(review.getCreateDate())
+                        .reviewScore(review.getReviewScore())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     public List<ReviewResponse> readAll() {
         return reviewRepository.findAll().stream()
                 .map(review -> ReviewResponse.builder()

@@ -4,7 +4,9 @@ import com.example.shop.reviewboard.dto.requests.ReviewRequest;
 import com.example.shop.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.reviewboard.service.ReviewService;
 import com.example.shop.user.dto.CustomUserDetails;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.awt.print.Pageable;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,7 +35,7 @@ public class ReviewController {
         try{
             ReviewResponse reviewResponse = reviewService.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/review" + reviewResponse.getId());
+            model.addAttribute("url", "/review/" + reviewResponse.getId());
             return "message/main";
         } catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
@@ -39,15 +45,16 @@ public class ReviewController {
     }
 
     // R(Read)
-    @GetMapping("/review")
-    public String reviewP(Model model){
+    @GetMapping("review")
+    public String review(Model model, @RequestParam(value="page", defaultValue = "0") int page){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             // getPrincipal()이 CustomUserDetails 인스턴스인 경우
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            List<ReviewResponse> reviewResponses = reviewService.page(page);
+            model.addAttribute("boards", reviewResponses);
             model.addAttribute("nickname", customUserDetails.getUsername());
-            model.addAttribute("boards", reviewService.readAll());
-            return "reviewboard/review";
+            return "/reviewboard/list";
         }else{
             model.addAttribute("msg", "로그인 후 이용하세요.");
             model.addAttribute("url", "/login");
