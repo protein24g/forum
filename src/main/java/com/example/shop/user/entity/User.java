@@ -1,6 +1,6 @@
 package com.example.shop.user.entity;
 
-import com.example.shop.reviewboard.entity.Review;
+import com.example.shop.qnaboard.entity.QuestionAndAnswer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@ToString(exclude = {"reviews"}) // 순환 참조를 피하기 위해 ToString 에서 제외
+@ToString(exclude = {"questionAndAnswers"}) // 순환 참조를 피하기 위해 ToString 에서 제외
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Review> reviews;
+    private List<QuestionAndAnswer> questionAndAnswers;
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -57,11 +57,11 @@ public class User {
         this.gender = gender;
         this.address = address;
         this.role = role;
-        this.reviews = new ArrayList<>();
+        this.questionAndAnswers = new ArrayList<>();
     }
 
-    public void addReview(Review review) {
-        this.reviews.add(review);
-        review.setUser(this);
+    public void addQuestionAndAnswer(QuestionAndAnswer questionAndAnswer) {
+        this.questionAndAnswers.add(questionAndAnswer);
+        questionAndAnswer.setUser(this);
     }
 }

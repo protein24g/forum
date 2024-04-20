@@ -10,7 +10,7 @@
         document.addEventListener("DOMContentLoaded", function (){ // 브라우저 내용이 모두 로드될 때 까지 지연
             document.querySelectorAll("tbody tr").forEach(function (tr){ // tbody 내에 모든 tr 태그를 찾아서 for
                 tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                    window.location.href = "/review/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                    window.location.href = "/qna/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
             })
         })
@@ -26,34 +26,44 @@
             <tr>
                 <th>닉네임</th>
                 <th>제목</th>
-                <th>내용</th>
                 <th>날짜</th>
-                <th>평점</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="board : ${boards}" th:id="${board.getId()}">
                 <td th:text="${board.getNickname()}"></td>
                 <td th:text="${board.getTitle()}"></td>
-                <td th:text="${board.getContent()}"></td>
                 <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <td th:text="${board.getReviewScore()}"></td>
             </tr>
         </tbody>
     </table>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li th:classappend="${boards.first} ? disabled : '' " class="page-item">
+                <a class="page-link" th:href="@{/qna(page=${boards.getNumber() - 1})}">Previous</a>
+            </li>
+
+            <li class="page-item">
+                <a class="page-link" href="#">1</a>
+            </li>
+
+            //중간에 이전 이후 5페이지 수정해야함
             <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence()}">
+                <a class="page-link" href="#">3</a>
+            </li>
+
+            <li th:classappend="${boards.last} ? disabled : '' " class="page-item">
+                <a class="page-link" th:href="@{/qna(page=${boards.getNumber() + 1})}">Next</a>
+            </li>
+
+
         </ul>
     </nav>
 
     <div sec:authorize="isAuthenticated()">
-        <a class="btn btn-primary" href="/review/create">글쓰기</a>
+        <a class="btn btn-primary" href="/qna/create">글쓰기</a>
     </div>
 
 </div>

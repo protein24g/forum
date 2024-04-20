@@ -1,4 +1,4 @@
-package com.example.shop.reviewboard.dto.requests;
+package com.example.shop.qnaboard.dto.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReviewRequest {
+public class QnaRequest {
     private Long id;
 
     @NotBlank(message = "제목을 입력하세요.")

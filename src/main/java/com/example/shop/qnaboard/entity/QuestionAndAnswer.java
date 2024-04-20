@@ -1,4 +1,4 @@
-package com.example.shop.reviewboard.entity;
+package com.example.shop.qnaboard.entity;
 
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Review {
+public class QuestionAndAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +22,6 @@ public class Review {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "review_score")
-    private double reviewScore;
-
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
@@ -33,10 +30,9 @@ public class Review {
     private User user;
 
     @Builder
-    public Review(String title, String content, double reviewScore, User user, LocalDateTime createDate){
+    public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate){
         this.title = title;
         this.content = content;
-        this.reviewScore = reviewScore;
         this.user = user;
         this.createDate = createDate;
     }
