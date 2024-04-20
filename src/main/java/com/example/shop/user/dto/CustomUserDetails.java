@@ -18,6 +18,8 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
     }
 
+    public Long getId(){ return user.getId(); }
+
     public String getLoginId() {
         return user.getLoginId();
     }

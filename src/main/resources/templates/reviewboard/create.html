@@ -24,7 +24,6 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="content" placeholder="내용을 입력하세요."></textarea>
         </div>
         <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-        <input type="hidden" name="referer" value="/review">
         <button class="btn btn-primary" type="submit">작성</button>
 
     </form>

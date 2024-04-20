@@ -16,6 +16,4 @@ public class ReviewRequest {
 
     @NotBlank(message = "내용을 입력하세요.")
     private String content;
-
-    private String referer;
 }

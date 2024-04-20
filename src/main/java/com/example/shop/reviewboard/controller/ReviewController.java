@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 public class ReviewController {
@@ -27,9 +25,17 @@ public class ReviewController {
     }
 
     @PostMapping("/review/create")
-    public String create(ReviewRequest dto){
-        reviewService.create(dto);
-        return "redirect:" + dto.getReferer();
+    public String create(ReviewRequest dto, Model model){
+        try{
+            ReviewResponse reviewResponse = reviewService.create(dto);
+            model.addAttribute("msg", "글 작성이 완료되었습니다.");
+            model.addAttribute("url", "/review" + reviewResponse.getId());
+            return "message/main";
+        } catch (IllegalArgumentException e){
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/login");
+            return "message/main";
+        }
     }
 
     // R(Read)
@@ -40,21 +46,34 @@ public class ReviewController {
             // getPrincipal()이 CustomUserDetails 인스턴스인 경우
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             model.addAttribute("nickname", customUserDetails.getUsername());
+            model.addAttribute("boards", reviewService.readAll());
+            return "reviewboard/review";
+        }else{
+            model.addAttribute("msg", "로그인 후 이용하세요.");
+            model.addAttribute("url", "/login");
+            return "message/main";
         }
-        model.addAttribute("boards", reviewService.readAll());
-        return "reviewboard/review";
     }
 
-    @GetMapping("/review/{id}")
-    public String reviewDetailP(@PathVariable("id") Long id, Model model){
+    @GetMapping("/review/{boardNum}")
+    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            model.addAttribute("nickname", customUserDetails.getUsername());
-            ReviewResponse reviewResponse = reviewService.readDetail(id);
-            model.addAttribute("review", reviewResponse);
+            try{
+                ReviewResponse reviewResponse = reviewService.readDetail(boardNum, customUserDetails.getId());
+                model.addAttribute("nickname", customUserDetails.getUsername());
+                model.addAttribute("review", reviewResponse);
+                return "reviewboard/detail";
+            } catch (IllegalArgumentException e){
+                model.addAttribute("msg", e.getMessage());
+                model.addAttribute("url", "/review");
+                return "message/main";
+            }
+        }else{
+            model.addAttribute("msg", "로그인 후 이용하세요.");
+            model.addAttribute("url", "/login");
+            return "message/main";
         }
-        return "reviewboard/detail";
     }
-
 }

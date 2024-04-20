@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        var msg = [[${msg}]];
+        var url = [[${url}]];
+
+        document.addEventListener("DOMContentLoaded", function (){
+            if(msg) alert(msg);
+            if(url) window.location.href = url;
+        });
+    </script>
+</head>
+</html>

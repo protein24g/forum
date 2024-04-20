@@ -7,6 +7,7 @@ import com.example.shop.reviewboard.repository.ReviewRepository;
 import com.example.shop.user.dto.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
+import com.sun.nio.sctp.IllegalReceiveException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +25,7 @@ public class ReviewService {
     private final UserRepository userRepository;
 
     // C(Create)
-    public void create(ReviewRequest dto) {
+    public ReviewResponse create(ReviewRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -40,9 +41,17 @@ public class ReviewService {
                     .build();
             user.addReview(review);
             reviewRepository.save(review);
-            System.out.println("리뷰 작성 완료");
+
+            return ReviewResponse.builder()
+                    .id(review.getId())
+                    .nickname(review.getUser().getNickname())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .createDate(review.getCreateDate())
+                    .reviewScore(review.getReviewScore())
+                    .build();
         }else{
-            throw new IllegalStateException("로그인 후 이용 가능합니다.");
+            throw new IllegalArgumentException("로그인 후 이용 가능합니다.");
         }
     }
 
@@ -60,16 +69,20 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public ReviewResponse readDetail(Long id) {
-        return reviewRepository.findById(id)
-                .map(review -> ReviewResponse.builder()
-                        .id(review.getId())
-                        .nickname(review.getUser().getNickname())
-                        .title(review.getTitle())
-                        .content(review.getContent())
-                        .createDate(review.getCreateDate())
-                        .reviewScore(review.getReviewScore())
-                        .build())
+    public ReviewResponse readDetail(Long boardNum, Long userId) {
+        Review review = reviewRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        if(review.getUser().getId().equals(userId)){
+            return ReviewResponse.builder()
+                    .id(review.getId())
+                    .nickname(review.getUser().getNickname())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .createDate(review.getCreateDate())
+                    .reviewScore(review.getReviewScore())
+                    .build();
+        }else {
+            throw new IllegalArgumentException("본인이 작성한 글만 읽기 가능합니다.");
+        }
     }
 }

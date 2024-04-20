@@ -21,7 +21,7 @@ public class UserService {
         userRepository.findByLoginId(joinDTO.getLoginId())
                 .ifPresentOrElse(
                         user -> {
-                            throw new IllegalStateException("이미 존재하는 사용자입니다.");
+                            throw new IllegalArgumentException("이미 존재하는 사용자입니다.");
                         },
                         () -> {
                             userRepository.save(User.builder()
@@ -36,7 +36,5 @@ public class UserService {
                                     .build());
                         }
                 );
-        System.out.println("asdasdasdasdasd");
-        System.out.println(joinDTO.toString());
     }
 }
