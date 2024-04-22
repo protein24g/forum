@@ -44,7 +44,10 @@ public class QnaController {
     @GetMapping("/qna")
     public String qna(Model model, @RequestParam(value="page", defaultValue = "0") int page){
         Page<QnaResponse> qnaRespons = qnaService.page(page);
-        model.addAttribute("currentPage", "board");
+        int currentPage = qnaRespons.getNumber(); // 현재 페이지 번호
+        int totalPages = qnaRespons.getTotalPages();
+        model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
+        model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
         model.addAttribute("boards", qnaRespons);
         return "/qnaboard/list";
     }
@@ -58,6 +61,8 @@ public class QnaController {
                 QnaResponse qnaResponse = qnaService.readDetail(boardNum, customUserDetails.getId());
                 model.addAttribute("nickname", customUserDetails.getUsername());
                 model.addAttribute("qna", qnaResponse);
+
+
                 return "qnaboard/detail";
             } catch (IllegalArgumentException e){
                 model.addAttribute("msg", e.getMessage()); // 게시글이 없거나, 다른 사람이 작성한 글

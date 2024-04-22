@@ -76,6 +76,9 @@ public class QnaService {
                     .title(questionAndAnswer.getTitle())
                     .content(questionAndAnswer.getContent())
                     .createDate(questionAndAnswer.getCreateDate())
+                    .commentResponses(
+
+                    )
                     .build();
         }else {
             throw new IllegalArgumentException("본인이 작성한 글만 읽기 가능합니다.");

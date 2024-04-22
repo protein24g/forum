@@ -1,6 +1,6 @@
 package com.example.shop.user.controller;
 
-import com.example.shop.user.dto.requests.JoinDTO;
+import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/joinProc")
-    public String joinProc(@Valid JoinDTO joinDTO, BindingResult bindingResult, Model model) {
+    public String joinProc(@Valid JoinRequest joinRequest, BindingResult bindingResult, Model model) {
         // 유효성 검사 실패 시
         if (bindingResult.hasErrors()) {
             // 에러 메시지를 모델에 추가
@@ -37,7 +37,7 @@ public class UserController {
             return "user/join";
         }
 
-        userService.join(joinDTO);
+        userService.join(joinRequest);
         return "redirect:/login";
     }
 }

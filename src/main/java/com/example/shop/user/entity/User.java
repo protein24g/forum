@@ -1,5 +1,6 @@
 package com.example.shop.user.entity;
 
+import com.example.shop.comment.entity.Comment;
 import com.example.shop.qnaboard.entity.QuestionAndAnswer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,6 +47,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<QuestionAndAnswer> questionAndAnswers;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
                    int age, User.Gender gender, String address, User.Role role){
@@ -58,6 +62,7 @@ public class User {
         this.address = address;
         this.role = role;
         this.questionAndAnswers = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public void addQuestionAndAnswer(QuestionAndAnswer questionAndAnswer) {

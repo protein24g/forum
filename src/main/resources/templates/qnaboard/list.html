@@ -39,22 +39,17 @@
     </table>
 
     <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li th:classappend="${boards.first} ? disabled : '' " class="page-item">
+        <ul class="pagination justify-content-center">
+            <li th:classappend="${!boards.hasPrevious()} ? disabled : '' " class="page-item">
                 <a class="page-link" th:href="@{/qna(page=${boards.getNumber() - 1})}">Previous</a>
             </li>
 
-            <li class="page-item">
-                <a class="page-link" href="#">1</a>
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
+                th:classappend="${page == boards.number} ? 'active' : ''">
+                <a class="page-link" th:text="${page}" th:href="@{|?page=${page}|}"></a>
             </li>
 
-            //중간에 이전 이후 5페이지 수정해야함
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item" th:each="pageNum : ${#numbers.sequence()}">
-                <a class="page-link" href="#">3</a>
-            </li>
-
-            <li th:classappend="${boards.last} ? disabled : '' " class="page-item">
+            <li th:classappend="${!boards.hasNext()} ? disabled : '' " class="page-item">
                 <a class="page-link" th:href="@{/qna(page=${boards.getNumber() + 1})}">Next</a>
             </li>
 

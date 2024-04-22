@@ -17,14 +17,24 @@
         <form>
             <div class="mb-3 mt-3">
                 <label class="form-label">제목</label>
-                <input type="text" class="form-control" th:value="${qna.getTitle()}" value="${board.bno}" disabled>
+                <input type="text" class="form-control" th:value="${qna.getTitle()}" disabled>
             </div>
             <div class="mb-3 mt-3">
                 <label class="form-label">내용</label>
-                <input type="text" class="form-control" th:value="${qna.getContent()}" value="${board.bno}" disabled>
+                <input type="text" class="form-control" th:value="${qna.getContent()}" disabled>
             </div>
         </form>
     </div>
+
+    <br>
+    <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
+        <div class="mb-3 mt-3">
+            <label class="form-label">댓글</label>
+            <input type="text" name="content" class="form-control">
+        </div>
+        <button type="submit">작성</button>
+    </form>
+
     <a class="btn btn-primary" href="/qna">목록</a>
 
 </div>

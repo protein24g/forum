@@ -1,6 +1,6 @@
 package com.example.shop.user.service;
 
-import com.example.shop.user.dto.requests.JoinDTO;
+import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -17,21 +17,21 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public void join(JoinDTO joinDTO) {
-        userRepository.findByLoginId(joinDTO.getLoginId())
+    public void join(JoinRequest joinRequest) {
+        userRepository.findByLoginId(joinRequest.getLoginId())
                 .ifPresentOrElse(
                         user -> {
                             throw new IllegalArgumentException("이미 존재하는 사용자입니다.");
                         },
                         () -> {
                             userRepository.save(User.builder()
-                                    .nickname(joinDTO.getNickname())
-                                    .loginId(joinDTO.getLoginId())
-                                    .loginPw(passwordEncoder.encode(joinDTO.getLoginPw()))
+                                    .nickname(joinRequest.getNickname())
+                                    .loginId(joinRequest.getLoginId())
+                                    .loginPw(passwordEncoder.encode(joinRequest.getLoginPw()))
                                     .createDate(LocalDateTime.now())
-                                    .age(joinDTO.getAge())
-                                    .gender(joinDTO.getGender())
-                                    .address(joinDTO.getAddress())
+                                    .age(joinRequest.getAge())
+                                    .gender(joinRequest.getGender())
+                                    .address(joinRequest.getAddress())
                                     .role(User.Role.USER)
                                     .build());
                         }

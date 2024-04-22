@@ -1,5 +1,6 @@
 package com.example.shop.qnaboard.entity;
 
+import com.example.shop.comment.entity.Comment;
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +30,9 @@ public class QuestionAndAnswer {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     @Builder
     public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate){
