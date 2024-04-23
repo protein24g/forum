@@ -27,13 +27,16 @@
     </div>
 
     <br>
-    <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
-        <div class="mb-3 mt-3">
-            <label class="form-label">댓글</label>
-            <input type="text" name="content" class="form-control">
-        </div>
-        <button type="submit">작성</button>
-    </form>
+    <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <div sec:authorize="isAuthenticated() and hasRole('ADMIN')">
+        <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
+            <div class="mb-3 mt-3">
+                <label class="form-label">댓글</label>
+                <input type="text" name="content" class="form-control">
+            </div>
+            <button type="submit">작성</button>
+        </form>
+    </div>
 
     <br>
     <hr>

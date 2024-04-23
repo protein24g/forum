@@ -19,6 +19,7 @@ public class CommentController {
             commentService.create(boardNum, commentRequest);
             model.addAttribute("msg", "댓글 작성완료.");
             model.addAttribute("url", "/qna/" + boardNum);
+
         } catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna/" + boardNum);

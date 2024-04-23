@@ -34,12 +34,12 @@ public class QuestionAndAnswer {
     @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    public enum Visibility{PRIVATE, PUBLIC}
-    @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
-    private Visibility visibility = Visibility.PRIVATE; // 공개 여부
+    private boolean visibility = true;
+
+    private boolean completed = false;
 
     @Builder
-    public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate, Visibility visibility){
+    public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate, boolean visibility){
         this.title = title;
         this.content = content;
         this.user = user;
@@ -54,5 +54,9 @@ public class QuestionAndAnswer {
     public void addComment(Comment comment){
         this.comments.add(comment);
         comment.setQuestionAndAnswer(this);
+    }
+
+    public void setCompleted(boolean check){
+        this.completed = check;
     }
 }

@@ -28,7 +28,8 @@
                 <th>닉네임</th>
                 <th>제목</th>
                 <th>날짜</th>
-                <th>공개여부</th>
+                <th>처리상태</th>
+                <th>비공개</th>
             </tr>
         </thead>
         <tbody>
@@ -37,7 +38,8 @@
                 <td th:text="${board.getNickname()}"></td>
                 <td th:text="${board.getTitle()}"></td>
                 <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <td th:text="${board.getVisibility()}"></td>
+                <th th:text="${board.isCompleted()}"></th>
+                <td th:text="${board.isVisibility()}"></td>
             </tr>
         </tbody>
     </table>

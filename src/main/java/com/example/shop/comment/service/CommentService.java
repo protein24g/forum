@@ -34,8 +34,13 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
+
             QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
+
+            if(user.getRole().equals(User.Role.ADMIN)){ // 관리자가 댓글을 달면 답변완료 처리
+                questionAndAnswer.setCompleted(true);
+            }
 
             Comment comment = Comment.builder()
                     .user(user)

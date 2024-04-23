@@ -20,10 +20,11 @@ public class QnaResponse {
     private String content;
     private LocalDateTime createDate;
     private List<CommentResponse> commentResponses;
-    private QuestionAndAnswer.Visibility visibility;
+    private boolean visibility;
+    private boolean completed;
 
     @Builder
-    QnaResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, QuestionAndAnswer.Visibility visibility){
+    QnaResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, boolean visibility, boolean completed){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
@@ -31,5 +32,6 @@ public class QnaResponse {
         this.createDate = createDate;
         this.commentResponses = commentResponses;
         this.visibility = visibility;
+        this.completed = completed;
     }
 }

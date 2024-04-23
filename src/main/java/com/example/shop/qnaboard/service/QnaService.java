@@ -2,7 +2,6 @@ package com.example.shop.qnaboard.service;
 
 import com.example.shop.comment.dto.response.CommentResponse;
 import com.example.shop.comment.entity.Comment;
-import com.example.shop.comment.repository.CommentRepository;
 import com.example.shop.qnaboard.dto.requests.QnaRequest;
 import com.example.shop.qnaboard.dto.response.QnaResponse;
 import com.example.shop.qnaboard.entity.QuestionAndAnswer;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
 public class QnaService {
     private final QnaRepository qnaRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
     // C(Create)
     public QnaResponse create(QnaRequest dto) {
@@ -45,7 +43,7 @@ public class QnaService {
                     .content(dto.getContent())
                     .user(user)
                     .createDate(LocalDateTime.now())
-                    .visibility(dto.getVisibility())
+                    .visibility(dto.isVisibility())
                     .build();
             user.addQuestionAndAnswer(questionAndAnswer);
             qnaRepository.save(questionAndAnswer);
@@ -72,7 +70,8 @@ public class QnaService {
                         .title(questionAndAnswer.getTitle())
                         .content(questionAndAnswer.getContent())
                         .createDate(questionAndAnswer.getCreateDate())
-                        .visibility(questionAndAnswer.getVisibility())
+                        .visibility(questionAndAnswer.isVisibility())
+                        .completed(questionAndAnswer.isCompleted())
                         .build());
     }
 
@@ -80,12 +79,19 @@ public class QnaService {
         QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        if(questionAndAnswer.getVisibility().equals(QuestionAndAnswer.Visibility.PRIVATE)){
+        if(questionAndAnswer.isVisibility()){ // 비공개 true, 공개 false
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication.getPrincipal() instanceof CustomUserDetails){
+            if(authentication.getPrincipal() instanceof CustomUserDetails){ // 로그인 확인
                 CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-                if(!customUserDetails.getLoginId().equals(questionAndAnswer.getUser().getLoginId())){
-                    throw new IllegalArgumentException("본인 게시글만 읽기 가능합니다.");
+
+                // 유저
+                User user = userRepository.findById(customUserDetails.getId()) // 로그인 된 유저 객체
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+                if(user.getRole().equals(User.Role.USER)){ // 로그인 된 유저 권한이 USER 라면
+                    if(!customUserDetails.getLoginId().equals(questionAndAnswer.getUser().getLoginId())){ // 작성자 id와 로그인 된 유저 id 비교
+                        throw new IllegalArgumentException("본인 게시글만 읽기 가능합니다.");
+                    }
                 }
             }else{
                 throw new IllegalArgumentException("로그인 후 이용하세요.");
@@ -109,31 +115,7 @@ public class QnaService {
                 .content(questionAndAnswer.getContent())
                 .createDate(questionAndAnswer.getCreateDate())
                 .commentResponses(commentResponses)
-                .build();
-    }
-
-    public QnaResponse readDetail2(Long boardNum, Long userId) {
-        QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
-
-        // 댓글 목록 가져오기
-        List<Comment> comments = questionAndAnswer.getComments();
-        // Comment 객체를 CommentResponse 로 변환
-        List<CommentResponse> commentResponses = comments.stream()
-                .map(comment -> CommentResponse.builder()
-                        .nickname(comment.getUser().getNickname())
-                        .content(comment.getContent())
-                        .createDate(comment.getCreateDate())
-                        .build())
-                .collect(Collectors.toList());
-
-        return QnaResponse.builder()
-                .id(questionAndAnswer.getId())
-                .nickname(questionAndAnswer.getUser().getNickname())
-                .title(questionAndAnswer.getTitle())
-                .content(questionAndAnswer.getContent())
-                .createDate(questionAndAnswer.getCreateDate())
-                .commentResponses(commentResponses)
+                .completed(questionAndAnswer.isCompleted())
                 .build();
     }
 }

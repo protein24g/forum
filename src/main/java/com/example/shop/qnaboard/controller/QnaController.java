@@ -3,11 +3,8 @@ package com.example.shop.qnaboard.controller;
 import com.example.shop.qnaboard.dto.requests.QnaRequest;
 import com.example.shop.qnaboard.dto.response.QnaResponse;
 import com.example.shop.qnaboard.service.QnaService;
-import com.example.shop.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,19 +61,5 @@ public class QnaController {
             return "message/main";
         }
         return "qnaboard/detail";
-
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-//        try{
-//            QnaResponse qnaResponse = qnaService.readDetail(boardNum, customUserDetails.getId());
-//            model.addAttribute("nickname", customUserDetails.getUsername());
-//            model.addAttribute("qna", qnaResponse);
-//            model.addAttribute("comments", qnaResponse.getCommentResponses());
-//            return "qnaboard/detail";
-//        } catch (IllegalArgumentException e){
-//            model.addAttribute("msg", e.getMessage()); // 게시글이 없거나, 다른 사람이 작성한 글
-//            model.addAttribute("url", "/qna");
-//            return "message/main";
-//        }
     }
 }
