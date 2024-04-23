@@ -3,6 +3,7 @@ package com.example.shop.user.entity;
 import com.example.shop.comment.entity.Comment;
 import com.example.shop.qnaboard.entity.QuestionAndAnswer;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @RequiredArgsConstructor
+@Transactional
 @ToString(exclude = {"questionAndAnswers"}) // 순환 참조를 피하기 위해 ToString 에서 제외
 public class User {
     @Id
@@ -45,10 +47,10 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<QuestionAndAnswer> questionAndAnswers;
+    private List<QuestionAndAnswer> questionAndAnswers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -61,12 +63,15 @@ public class User {
         this.gender = gender;
         this.address = address;
         this.role = role;
-        this.questionAndAnswers = new ArrayList<>();
-        this.comments = new ArrayList<>();
     }
 
     public void addQuestionAndAnswer(QuestionAndAnswer questionAndAnswer) {
         this.questionAndAnswers.add(questionAndAnswer);
         questionAndAnswer.setUser(this);
+    }
+
+    public void addComments(Comment comment){
+        this.comments.add(comment);
+        comment.setUser(this);
     }
 }

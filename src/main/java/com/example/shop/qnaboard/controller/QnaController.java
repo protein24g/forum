@@ -43,36 +43,40 @@ public class QnaController {
     // R(Read)
     @GetMapping("/qna")
     public String qna(Model model, @RequestParam(value="page", defaultValue = "0") int page){
-        Page<QnaResponse> qnaRespons = qnaService.page(page);
-        int currentPage = qnaRespons.getNumber(); // 현재 페이지 번호
-        int totalPages = qnaRespons.getTotalPages();
+        Page<QnaResponse> qnaResponse = qnaService.page(page);
+        int currentPage = qnaResponse.getNumber(); // 현재 페이지 번호
+        int totalPages = qnaResponse.getTotalPages();
         model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
         model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-        model.addAttribute("boards", qnaRespons);
+        model.addAttribute("boards", qnaResponse);
         return "/qnaboard/list";
     }
 
     @GetMapping("/qna/{boardNum}")
     public String qnaDetailP(@PathVariable("boardNum") Long boardNum, Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            try{
-                QnaResponse qnaResponse = qnaService.readDetail(boardNum, customUserDetails.getId());
-                model.addAttribute("nickname", customUserDetails.getUsername());
-                model.addAttribute("qna", qnaResponse);
-
-
-                return "qnaboard/detail";
-            } catch (IllegalArgumentException e){
-                model.addAttribute("msg", e.getMessage()); // 게시글이 없거나, 다른 사람이 작성한 글
-                model.addAttribute("url", "/qna");
-                return "message/main";
-            }
-        }else{
-            model.addAttribute("msg", "로그인 후 이용하세요.");
-            model.addAttribute("url", "/login");
+        try {
+            QnaResponse qnaResponse = qnaService.readDetail(boardNum);
+            model.addAttribute("qna", qnaResponse);
+            model.addAttribute("comments", qnaResponse.getCommentResponses());
+        }catch (IllegalArgumentException e){
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/qna");
             return "message/main";
         }
+        return "qnaboard/detail";
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+//        try{
+//            QnaResponse qnaResponse = qnaService.readDetail(boardNum, customUserDetails.getId());
+//            model.addAttribute("nickname", customUserDetails.getUsername());
+//            model.addAttribute("qna", qnaResponse);
+//            model.addAttribute("comments", qnaResponse.getCommentResponses());
+//            return "qnaboard/detail";
+//        } catch (IllegalArgumentException e){
+//            model.addAttribute("msg", e.getMessage()); // 게시글이 없거나, 다른 사람이 작성한 글
+//            model.addAttribute("url", "/qna");
+//            return "message/main";
+//        }
     }
 }

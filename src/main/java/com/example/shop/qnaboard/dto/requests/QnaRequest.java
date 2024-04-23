@@ -1,5 +1,8 @@
 package com.example.shop.qnaboard.dto.requests;
 
+import com.example.shop.qnaboard.entity.QuestionAndAnswer;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +19,6 @@ public class QnaRequest {
 
     @NotBlank(message = "내용을 입력하세요.")
     private String content;
+
+    private QuestionAndAnswer.Visibility visibility;
 }

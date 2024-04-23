@@ -24,16 +24,20 @@
     <table class="table table-hover">
         <thead class="table-light">
             <tr>
+                <th>#</th>
                 <th>닉네임</th>
                 <th>제목</th>
                 <th>날짜</th>
+                <th>공개여부</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="board : ${boards}" th:id="${board.getId()}">
+                <td th:text="${board.getId()}"></td>
                 <td th:text="${board.getNickname()}"></td>
                 <td th:text="${board.getTitle()}"></td>
                 <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
+                <td th:text="${board.getVisibility()}"></td>
             </tr>
         </tbody>
     </table>

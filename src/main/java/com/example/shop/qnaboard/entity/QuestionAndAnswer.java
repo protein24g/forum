@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,21 +29,30 @@ public class QuestionAndAnswer {
     private LocalDateTime createDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+
+    public enum Visibility{PRIVATE, PUBLIC}
+    @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
+    private Visibility visibility = Visibility.PRIVATE; // 공개 여부
 
     @Builder
-    public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate){
+    public QuestionAndAnswer(String title, String content, User user, LocalDateTime createDate, Visibility visibility){
         this.title = title;
         this.content = content;
         this.user = user;
         this.createDate = createDate;
+        this.visibility = visibility;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void addComment(Comment comment){
+        this.comments.add(comment);
+        comment.setQuestionAndAnswer(this);
     }
 }

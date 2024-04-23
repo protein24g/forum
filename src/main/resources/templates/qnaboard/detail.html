@@ -35,6 +35,17 @@
         <button type="submit">작성</button>
     </form>
 
+    <br>
+    <hr>
+    <table>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.getNickname()}"></td>
+            <td th:text="${comment.getContent()}"></td>
+            <td th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
+        </tr>
+    </table>
+
+
     <a class="btn btn-primary" href="/qna">목록</a>
 
 </div>
