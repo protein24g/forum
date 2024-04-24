@@ -4,14 +4,16 @@ import com.example.shop.comment.entity.Comment;
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
+@Getter
+@NoArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Review {
     private User user;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Review(String title, String content, LocalDateTime createDate, User user){
@@ -45,7 +47,7 @@ public class Review {
     }
 
     public void addComment(Comment comment){
-        this.comment.add(comment);
+        this.comments.add(comment);
         comment.setReview(this);
     }
 }

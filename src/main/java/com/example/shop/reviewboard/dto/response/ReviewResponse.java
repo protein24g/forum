@@ -1,4 +1,4 @@
-package com.example.shop.qnaboard.dto.response;
+package com.example.shop.reviewboard.dto.response;
 
 import com.example.shop.comment.dto.response.CommentResponse;
 import lombok.Builder;
@@ -12,25 +12,21 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class QnaResponse {
+public class ReviewResponse {
     private Long id;
     private String nickname;
     private String title;
     private String content;
     private LocalDateTime createDate;
     private List<CommentResponse> commentResponses;
-    private boolean visibility;
-    private boolean completed;
 
     @Builder
-    public QnaResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, boolean visibility, boolean completed){
+    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.commentResponses = commentResponses;
-        this.visibility = visibility;
-        this.completed = completed;
     }
 }

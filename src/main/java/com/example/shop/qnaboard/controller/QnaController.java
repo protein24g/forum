@@ -39,7 +39,7 @@ public class QnaController {
 
     // R(Read)
     @GetMapping("/qna")
-    public String qna(Model model,
+    public String qnaP(Model model,
                       @RequestParam(value = "keyword", required = false) String keyword,
                       @RequestParam(value = "page", defaultValue = "0") int page,
                       @RequestParam(value = "option", required = false) String option) {

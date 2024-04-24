@@ -10,7 +10,7 @@
         document.addEventListener("DOMContentLoaded", function (){ // 브라우저 내용이 모두 로드될 때 까지 지연
             document.querySelectorAll("tbody tr").forEach(function (tr){ // tbody 내에 모든 tr 태그를 찾아서 for
                 tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                    window.location.href = "/qna/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                    window.location.href = "/review/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
             })
         })
@@ -22,12 +22,12 @@
 
 <div class="container">
     <br><br>
-    <h2>Q & A</h2>
+    <h2>리뷰</h2>
     <div class="row">
         <div class="col-8"></div>
         <div class="col-4">
             <div class="row">
-                <form action="/qna" class="d-flex" role="search">
+                <form action="/review" class="d-flex" role="search">
                     <div class="col-3">
                         <select class="form-select" name="option">
                             <option value="1">제목</option>
@@ -48,39 +48,27 @@
 
     <table class="table table-hover text-center">
         <thead class="table-light">
-            <tr>
-                <th>#</th>
-                <th class="col-2">닉네임</th>
-                <th class="col-2">날짜</th>
-                <th>제목</th>
-                <th class="col-1">처리상태</th>
-                <th class="col-1">비공개</th>
-            </tr>
+        <tr>
+            <th>#</th>
+            <th class="col-2">닉네임</th>
+            <th class="col-2">날짜</th>
+            <th class="col-8">제목</th>
+        </tr>
         </thead>
         <tbody>
-            <tr th:each="board : ${boards}" th:id="${board.getId()}">
-                <td th:text="${board.getId()}"></td>
-                <td th:text="${board.getNickname()}"></td>
-                <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <td th:text="${board.getTitle()}"></td>
-                <td>
-                    <img th:attr="src=${board.isCompleted()} ?
-                    'https://cdn-icons-png.flaticon.com/128/11450/11450152.png' :
-                    ''" width="20px;">
-                </td>
-                <td>
-                    <img th:attr="src=${board.isVisibility()} ?
-                    'https://cdn-icons-png.flaticon.com/128/7794/7794294.png' :
-                    ''" width="20px;">
-                </td>
-            </tr>
+        <tr th:each="board : ${boards}" th:id="${board.getId()}">
+            <td th:text="${board.getId()}"></td>
+            <td th:text="${board.getNickname()}"></td>
+            <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
+            <td th:text="${board.getTitle()}"></td>
+        </tr>
         </tbody>
     </table>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li th:classappend="${!boards.hasPrevious()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:href="@{/qna(page=${boards.getNumber() - 1})}">Previous</a>
+                <a class="page-link" th:href="@{/review(page=${boards.getNumber() - 1})}">Previous</a>
             </li>
 
             <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
@@ -89,14 +77,14 @@
             </li>
 
             <li th:classappend="${!boards.hasNext()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:href="@{/qna(page=${boards.getNumber() + 1})}">Next</a>
+                <a class="page-link" th:href="@{/review(page=${boards.getNumber() + 1})}">Next</a>
             </li>
 
         </ul>
     </nav>
 
     <div sec:authorize="isAuthenticated()">
-        <a class="btn btn-primary" href="/qna/create">글쓰기</a>
+        <a class="btn btn-primary" href="/review/create">글쓰기</a>
     </div>
 
 </div>

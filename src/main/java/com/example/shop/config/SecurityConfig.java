@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/main", "/login", "/loginProc",
-                                "/join", "/joinProc", "/qna", "/qna/**", "/review").permitAll()
+                                "/join", "/joinProc", "/qna", "/qna/**", "/review", "/review/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
