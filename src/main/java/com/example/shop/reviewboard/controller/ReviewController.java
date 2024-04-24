@@ -4,8 +4,10 @@ import com.example.shop.qnaboard.dto.response.QnaResponse;
 import com.example.shop.reviewboard.dto.requests.ReviewRequest;
 import com.example.shop.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.reviewboard.service.ReviewService;
+import com.example.shop.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,11 +65,18 @@ public class ReviewController {
     }
 
     @GetMapping("/review/{boardNum}")
-    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model){
+    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model, Authentication authentication){
         try {
             ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
             model.addAttribute("review", reviewResponse);
             model.addAttribute("comments", reviewResponse.getCommentResponses());
+
+            if(authentication != null){
+                CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+                if(customUserDetails.getUsername().equals(reviewResponse.getNickname())){
+                    model.addAttribute("isUser", "edit");
+                }
+            }
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna");
@@ -75,4 +84,19 @@ public class ReviewController {
         }
         return "reviewboard/detail";
     }
+
+    // U(Update)
+    @GetMapping("/review/edit/{boardNum}")
+    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
+        try{
+            ReviewResponse reviewResponse = reviewService.editP(boardNum);
+            model.addAttribute("review", reviewResponse);
+        } catch (IllegalArgumentException e){
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/review/" + boardNum);
+        }
+        return "reviewboard/edit";
+    }
+
+    // D(Delete)
 }

@@ -44,24 +44,22 @@
     <br>
     <hr>
 
-    <div class="container"> <!-- 컨테이너로 시작 -->
-        <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
-            <div class="col"> <!-- col로 전체 너비를 차지하도록 설정 -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="40">
-                            </div>
-                            <div class="col">
-                                <div class="row justify-content-start">
-                                    <p th:text="${comment.getNickname()}"></p>
-                                </div>
+    <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
+        <div class="col"> <!-- col로 전체 너비를 차지하도록 설정 -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="40">
+                        </div>
+                        <div class="col">
+                            <div class="row justify-content-start">
+                                <p th:text="${comment.getNickname()}"></p>
                             </div>
                         </div>
-                        <div th:text="${comment.getContent()}"></div>
-                        <div th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
                     </div>
+                    <div th:text="${comment.getContent()}"></div>
+                    <div th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
                 </div>
             </div>
         </div>
