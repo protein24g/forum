@@ -2,6 +2,7 @@ package com.example.shop.user.entity;
 
 import com.example.shop.comment.entity.Comment;
 import com.example.shop.qnaboard.entity.QuestionAndAnswer;
+import com.example.shop.reviewboard.entity.Review;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -52,6 +53,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
+
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
                    int age, User.Gender gender, String address, User.Role role){
@@ -73,5 +77,10 @@ public class User {
     public void addComments(Comment comment){
         this.comments.add(comment);
         comment.setUser(this);
+    }
+
+    public void addReview(Review review){
+        this.reviews.add(review);
+        review.setUser(this);
     }
 }

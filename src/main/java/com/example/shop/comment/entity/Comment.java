@@ -1,6 +1,7 @@
 package com.example.shop.comment.entity;
 
 import com.example.shop.qnaboard.entity.QuestionAndAnswer;
+import com.example.shop.reviewboard.entity.Review;
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,6 +24,9 @@ public class Comment {
     @ManyToOne
     private QuestionAndAnswer questionAndAnswer = null;
 
+    @ManyToOne
+    private Review review = null;
+
     private String content;
 
     private LocalDateTime createDate;
@@ -42,4 +46,6 @@ public class Comment {
     public void setUser(User user){
         this.user = user;
     }
+
+    public void setReview(Review review) { this.review = review; }
 }
