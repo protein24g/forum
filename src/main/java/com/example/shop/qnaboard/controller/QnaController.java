@@ -26,7 +26,7 @@ public class QnaController {
     @PostMapping("/qna/create")
     public String create(QnaRequest dto, Model model){
         try{
-            QnaResponse qnaResponse = qnaService.Create(dto);
+            QnaResponse qnaResponse = qnaService.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/qna/" + qnaResponse.getId());
             return "message/main";
@@ -46,9 +46,9 @@ public class QnaController {
         Page<QnaResponse> qnaResponse;
 
         if (keyword != null && !keyword.isEmpty()) { // 키워드가 있으면
-            qnaResponse = qnaService.Page(keyword, page, option); // 검색 페이징
+            qnaResponse = qnaService.page(keyword, page, option); // 검색 페이징
         } else {
-            qnaResponse = qnaService.Page("", page, ""); // 기본 리스트 페이징
+            qnaResponse = qnaService.page("", page, ""); // 기본 리스트 페이징
         }
 
         int currentPage = qnaResponse.getNumber(); // 현재 페이지 번호
@@ -63,7 +63,7 @@ public class QnaController {
     @GetMapping("/qna/{boardNum}")
     public String qnaDetailP(@PathVariable("boardNum") Long boardNum, Model model){
         try {
-            QnaResponse qnaResponse = qnaService.ReadDetail(boardNum);
+            QnaResponse qnaResponse = qnaService.readDetail(boardNum);
             model.addAttribute("qna", qnaResponse);
             model.addAttribute("comments", qnaResponse.getCommentResponses());
         }catch (IllegalArgumentException e){

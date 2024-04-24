@@ -31,7 +31,7 @@ public class QnaService {
     private final UserRepository userRepository;
 
     // C(Create)
-    public QnaResponse Create(QnaRequest dto) {
+    public QnaResponse create(QnaRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -61,7 +61,7 @@ public class QnaService {
     }
 
     // R(Read)
-    public Page<QnaResponse> Page(String keyword, int page, String option) {
+    public Page<QnaResponse> page(String keyword, int page, String option) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<QuestionAndAnswer> questionAndAnswers = null;
 
@@ -93,7 +93,7 @@ public class QnaService {
                     .build());
     }
 
-    public QnaResponse ReadDetail(Long boardNum) {
+    public QnaResponse readDetail(Long boardNum) {
         QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
