@@ -31,7 +31,7 @@ public class QnaService {
     private final UserRepository userRepository;
 
     // C(Create)
-    public QnaResponse create(QnaRequest dto) {
+    public QnaResponse Create(QnaRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -61,21 +61,39 @@ public class QnaService {
     }
 
     // R(Read)
-    public Page<QnaResponse> page(int page) {
+    public Page<QnaResponse> Page(String keyword, int page, String option) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        return qnaRepository.findAll(pageable)
+        Page<QuestionAndAnswer> questionAndAnswers = null;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // 검색어가 있는 경우
+            switch (option){
+                case "1":
+                    questionAndAnswers = qnaRepository.findByTitleContaining(keyword, pageable);
+                    break;
+                case "2":
+                    questionAndAnswers = qnaRepository.findByContentContaining(keyword, pageable);
+                    break;
+            }
+
+        } else {
+            // 검색어가 없는 경우
+            questionAndAnswers = qnaRepository.findAll(pageable);
+        }
+
+        return questionAndAnswers
                 .map(questionAndAnswer -> QnaResponse.builder()
-                        .id(questionAndAnswer.getId())
-                        .nickname(questionAndAnswer.getUser().getNickname())
-                        .title(questionAndAnswer.getTitle())
-                        .content(questionAndAnswer.getContent())
-                        .createDate(questionAndAnswer.getCreateDate())
-                        .visibility(questionAndAnswer.isVisibility())
-                        .completed(questionAndAnswer.isCompleted())
-                        .build());
+                    .id(questionAndAnswer.getId())
+                    .nickname(questionAndAnswer.getUser().getNickname())
+                    .title(questionAndAnswer.getTitle())
+                    .content(questionAndAnswer.getContent())
+                    .createDate(questionAndAnswer.getCreateDate())
+                    .visibility(questionAndAnswer.isVisibility())
+                    .completed(questionAndAnswer.isCompleted())
+                    .build());
     }
 
-    public QnaResponse readDetail(Long boardNum) {
+    public QnaResponse ReadDetail(Long boardNum) {
         QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 

@@ -21,25 +21,59 @@
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 
 <div class="container">
-    <table class="table table-hover">
+    <br><br>
+    <h2>Q & A</h2>
+    <div class="row">
+        <div class="col-8"></div>
+        <div class="col-4">
+            <div class="row">
+                <form action="/qna" class="d-flex" role="search">
+                    <div class="col-3">
+                        <select class="form-select" name="option">
+                            <option value="1">제목</option>
+                            <option value="2">내용</option>
+                        </select>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control me-2" type="search" name="keyword" aria-label="Search">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-success" type="submit">검색</button>
+                    </div>
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                </form>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <table class="table table-hover text-center">
         <thead class="table-light">
             <tr>
                 <th>#</th>
-                <th>닉네임</th>
+                <th class="col-2">닉네임</th>
+                <th class="col-2">날짜</th>
                 <th>제목</th>
-                <th>날짜</th>
-                <th>처리상태</th>
-                <th>비공개</th>
+                <th class="col-1">처리상태</th>
+                <th class="col-1">비공개</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="board : ${boards}" th:id="${board.getId()}">
                 <td th:text="${board.getId()}"></td>
                 <td th:text="${board.getNickname()}"></td>
-                <td th:text="${board.getTitle()}"></td>
                 <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <th th:text="${board.isCompleted()}"></th>
-                <td th:text="${board.isVisibility()}"></td>
+                <td th:text="${board.getTitle()}"></td>
+                <th>
+                    <img th:attr="src=${board.isCompleted()} ?
+                    'https://cdn-icons-png.flaticon.com/128/11450/11450152.png' :
+                    ''" width="20px;">
+                </th>
+                <th>
+                    <img th:attr="src=${board.isVisibility()} ?
+                    'https://cdn-icons-png.flaticon.com/128/7794/7794294.png' :
+                    ''" width="20px;">
+                </th>
             </tr>
         </tbody>
     </table>
@@ -52,13 +86,12 @@
 
             <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
                 th:classappend="${page == boards.number} ? 'active' : ''">
-                <a class="page-link" th:text="${page}" th:href="@{|?page=${page}|}"></a>
+                <a class="page-link" th:text="${page} + 1" th:href="@{|?page=${page}|}"></a>
             </li>
 
             <li th:classappend="${!boards.hasNext()} ? disabled : '' " class="page-item">
                 <a class="page-link" th:href="@{/qna(page=${boards.getNumber() + 1})}">Next</a>
             </li>
-
 
         </ul>
     </nav>

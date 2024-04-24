@@ -26,7 +26,7 @@ public class QnaController {
     @PostMapping("/qna/create")
     public String create(QnaRequest dto, Model model){
         try{
-            QnaResponse qnaResponse = qnaService.create(dto);
+            QnaResponse qnaResponse = qnaService.Create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/qna/" + qnaResponse.getId());
             return "message/main";
@@ -39,20 +39,31 @@ public class QnaController {
 
     // R(Read)
     @GetMapping("/qna")
-    public String qna(Model model, @RequestParam(value="page", defaultValue = "0") int page){
-        Page<QnaResponse> qnaResponse = qnaService.page(page);
+    public String qna(Model model,
+                      @RequestParam(value = "keyword", required = false) String keyword,
+                      @RequestParam(value = "page", defaultValue = "0") int page,
+                      @RequestParam(value = "option", required = false) String option) {
+        Page<QnaResponse> qnaResponse;
+
+        if (keyword != null && !keyword.isEmpty()) { // 키워드가 있으면
+            qnaResponse = qnaService.Page(keyword, page, option); // 검색 페이징
+        } else {
+            qnaResponse = qnaService.Page("", page, ""); // 기본 리스트 페이징
+        }
+
         int currentPage = qnaResponse.getNumber(); // 현재 페이지 번호
         int totalPages = qnaResponse.getTotalPages();
         model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
         model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
         model.addAttribute("boards", qnaResponse);
+        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 뷰에서 사용할 수 있도록 함
         return "/qnaboard/list";
     }
 
     @GetMapping("/qna/{boardNum}")
     public String qnaDetailP(@PathVariable("boardNum") Long boardNum, Model model){
         try {
-            QnaResponse qnaResponse = qnaService.readDetail(boardNum);
+            QnaResponse qnaResponse = qnaService.ReadDetail(boardNum);
             model.addAttribute("qna", qnaResponse);
             model.addAttribute("comments", qnaResponse.getCommentResponses());
         }catch (IllegalArgumentException e){

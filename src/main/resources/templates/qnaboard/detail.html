@@ -13,42 +13,61 @@
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 
 <div class="container">
-    <div class="card-body">
-        <form>
-            <div class="mb-3 mt-3">
-                <label class="form-label">제목</label>
-                <input type="text" class="form-control" th:value="${qna.getTitle()}" disabled>
-            </div>
-            <div class="mb-3 mt-3">
-                <label class="form-label">내용</label>
-                <input type="text" class="form-control" th:value="${qna.getContent()}" disabled>
-            </div>
-        </form>
-    </div>
+
+    <form>
+        <div class="mb-3 mt-3">
+            <label class="form-label">제목</label>
+            <input type="text" class="form-control" th:value="${qna.getTitle()}" disabled>
+        </div>
+        <div class="mb-3 mt-3">
+            <label class="form-label">내용</label>
+            <input type="text" class="form-control" th:value="${qna.getContent()}" disabled>
+        </div>
+    </form>
 
     <br>
     <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
     <div sec:authorize="isAuthenticated() and hasRole('ADMIN')">
-        <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
-            <div class="mb-3 mt-3">
-                <label class="form-label">댓글</label>
-                <input type="text" name="content" class="form-control">
+        <div class="card">
+            <div class="card-body">
+                댓글
+                <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
+                    <div class="mb-3 mt-3">
+                        <input type="text" name="content" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">작성</button>
+                </form>
             </div>
-            <button type="submit">작성</button>
-        </form>
+        </div>
     </div>
 
     <br>
     <hr>
-    <table>
-        <tr th:each="comment : ${comments}">
-            <td th:text="${comment.getNickname()}"></td>
-            <td th:text="${comment.getContent()}"></td>
-            <td th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-        </tr>
-    </table>
 
+    <div class="container"> <!-- 컨테이너로 시작 -->
+        <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
+            <div class="col"> <!-- col로 전체 너비를 차지하도록 설정 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="40">
+                            </div>
+                            <div class="col">
+                                <div class="row justify-content-start">
+                                    <p th:text="${comment.getNickname()}"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:text="${comment.getContent()}"></div>
+                        <div th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <br>
     <a class="btn btn-primary" href="/qna">목록</a>
 
 </div>

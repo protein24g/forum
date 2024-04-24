@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface QnaRepository extends JpaRepository<QuestionAndAnswer, Long> {
     Page<QuestionAndAnswer> findAll(Pageable pageable);
 
+    Page<QuestionAndAnswer> findByTitleContaining(String keyword, Pageable pageable);
+    Page<QuestionAndAnswer> findByContentContaining(String keyword, Pageable pageable);
+
     @Override
     Optional<QuestionAndAnswer> findById(Long aLong);
 }
