@@ -56,8 +56,7 @@ public class QnaController {
         model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
         model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
         model.addAttribute("boards", qnaResponse);
-        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 뷰에서 사용할 수 있도록 함
-        return "/qnaboard/list";
+        return "qnaboard/list";
     }
 
     @GetMapping("/qna/{boardNum}")
