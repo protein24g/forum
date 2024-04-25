@@ -14,29 +14,15 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/qna/{boardNum}/comments")
-    public String createQna(@PathVariable("boardNum") Long boardNum, Model model, CommentRequest commentRequest){
+    public String createQna(@PathVariable("boardNum") Long boardNum, Model model, CommentRequest commentRequest) {
         try {
-            commentService.create(boardNum, commentRequest);
+            commentService.createQna(boardNum, commentRequest);
             model.addAttribute("msg", "댓글 작성완료.");
             model.addAttribute("url", "/qna/" + boardNum);
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna/" + boardNum);
-        }
-        return "redirect:/qna/" + boardNum;
-    }
-
-    @PostMapping("/review/{boardNum}/comments")
-    public String createRivew(@PathVariable("boardNum") Long boardNum, Model model, CommentRequest commentRequest){
-        try {
-            commentService.create(boardNum, commentRequest);
-            model.addAttribute("msg", "댓글 작성완료.");
-            model.addAttribute("url", "/review/" + boardNum);
-
-        } catch (IllegalArgumentException e){
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/review/" + boardNum);
         }
         return "redirect:/qna/" + boardNum;
     }

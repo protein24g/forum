@@ -24,7 +24,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final QnaRepository qnaRepository;
 
-    public void create(Long boardNum, CommentRequest commentRequest) {
+    public void createQna(Long boardNum, CommentRequest commentRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
