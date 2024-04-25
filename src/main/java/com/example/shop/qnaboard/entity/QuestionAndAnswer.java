@@ -31,7 +31,9 @@ public class QuestionAndAnswer {
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY)
+    // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
+    // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
+    @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     private boolean visibility = true;
