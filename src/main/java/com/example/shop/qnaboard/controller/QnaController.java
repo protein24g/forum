@@ -2,6 +2,7 @@ package com.example.shop.qnaboard.controller;
 
 import com.example.shop.qnaboard.dto.requests.QnaRequest;
 import com.example.shop.qnaboard.dto.response.QnaResponse;
+import com.example.shop.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.qnaboard.service.QnaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

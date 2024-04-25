@@ -34,7 +34,6 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-
             QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
