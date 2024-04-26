@@ -83,10 +83,12 @@ public class ReviewService {
         return reviews
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .nickname(review.getUser().getNickname())
+                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                        .nickname(review.getUser().getActive() ? review.getUser().getNickname() : "탈퇴한 사용자")
                         .title(review.getTitle())
                         .content(review.getContent())
                         .createDate(review.getCreateDate())
+                        .commentCount(review.getComments().size())
                         .build());
     }
 
@@ -99,7 +101,8 @@ public class ReviewService {
         // Comment 객체를 CommentResponse 로 변환
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> CommentResponse.builder()
-                        .nickname(comment.getUser().getNickname())
+                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                        .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                         .content(comment.getContent())
                         .createDate(comment.getCreateDate())
                         .build())
@@ -107,7 +110,8 @@ public class ReviewService {
 
         return ReviewResponse.builder()
                 .id(review.getId())
-                .nickname(review.getUser().getNickname())
+                // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                .nickname(review.getUser().getActive() ? review.getUser().getNickname() : "탈퇴한 사용자")
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())

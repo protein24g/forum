@@ -32,9 +32,10 @@ public class Comment {
     private LocalDateTime createDate;
 
     @Builder
-    public Comment(User user, QuestionAndAnswer questionAndAnswer, String content, LocalDateTime createDate){
+    public Comment(User user, QuestionAndAnswer questionAndAnswer, Review review, String content, LocalDateTime createDate){
         this.user = user;
         this.questionAndAnswer = questionAndAnswer;
+        this.review = review;
         this.content = content;
         this.createDate = createDate;
     }

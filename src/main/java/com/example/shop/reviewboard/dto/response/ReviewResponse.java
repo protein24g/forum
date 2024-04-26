@@ -19,14 +19,16 @@ public class ReviewResponse {
     private String content;
     private LocalDateTime createDate;
     private List<CommentResponse> commentResponses;
+    private int commentCount;
 
     @Builder
-    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses){
+    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, int commentCount){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.commentResponses = commentResponses;
+        this.commentCount = commentCount;
     }
 }

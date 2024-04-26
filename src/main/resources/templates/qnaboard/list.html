@@ -62,7 +62,7 @@
                 <td th:text="${board.getId()}"></td>
                 <td th:text="${board.getNickname()}"></td>
                 <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <td th:text="${board.getTitle()}"></td>
+                <td th:text="${board.getTitle()} + ' [' + ${board.getCommentCount()} + ']'"></td>
                 <td>
                     <img th:attr="src=${board.isCompleted()} ?
                     'https://cdn-icons-png.flaticon.com/128/11450/11450152.png' :

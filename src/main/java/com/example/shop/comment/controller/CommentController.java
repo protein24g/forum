@@ -26,4 +26,18 @@ public class CommentController {
         }
         return "redirect:/qna/" + boardNum;
     }
+
+    @PostMapping("/review/{boardNum}/comments")
+    public String createReview(@PathVariable("boardNum") Long boardNum, Model model, CommentRequest commentRequest) {
+        try {
+            commentService.createReview(boardNum, commentRequest);
+            model.addAttribute("msg", "댓글 작성완료.");
+            model.addAttribute("url", "/review/" + boardNum);
+
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/review/" + boardNum);
+        }
+        return "redirect:/review/" + boardNum;
+    }
 }

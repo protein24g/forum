@@ -22,10 +22,8 @@ public class QuestionAndAnswer {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
     private String content;
 
-    @Column(name = "create_date")
     private LocalDateTime createDate;
 
     @ManyToOne
@@ -35,6 +33,8 @@ public class QuestionAndAnswer {
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "questionAndAnswer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    private int commentCount = 0;
 
     private boolean visibility = true;
 

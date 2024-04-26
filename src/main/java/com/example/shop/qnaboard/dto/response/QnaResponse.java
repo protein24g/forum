@@ -21,9 +21,10 @@ public class QnaResponse {
     private List<CommentResponse> commentResponses;
     private boolean visibility;
     private boolean completed;
+    private int commentCount;
 
     @Builder
-    public QnaResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, boolean visibility, boolean completed){
+    public QnaResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, boolean visibility, boolean completed, int commentCount){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
@@ -32,5 +33,6 @@ public class QnaResponse {
         this.commentResponses = commentResponses;
         this.visibility = visibility;
         this.completed = completed;
+        this.commentCount = commentCount;
     }
 }

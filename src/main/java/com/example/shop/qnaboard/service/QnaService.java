@@ -84,12 +84,14 @@ public class QnaService {
         return questionAndAnswers
                 .map(questionAndAnswer -> QnaResponse.builder()
                     .id(questionAndAnswer.getId())
-                    .nickname(questionAndAnswer.getUser().getNickname())
+                    // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                    .nickname(questionAndAnswer.getUser().getActive() ? questionAndAnswer.getUser().getNickname() : "탈퇴한 사용자")
                     .title(questionAndAnswer.getTitle())
                     .content(questionAndAnswer.getContent())
                     .createDate(questionAndAnswer.getCreateDate())
                     .visibility(questionAndAnswer.isVisibility())
                     .completed(questionAndAnswer.isCompleted())
+                    .commentCount(questionAndAnswer.getComments().size())
                     .build());
     }
 
@@ -120,7 +122,8 @@ public class QnaService {
         // Comment 객체를 CommentResponse 로 변환
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> CommentResponse.builder()
-                        .nickname(comment.getUser().getNickname())
+                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                        .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                         .content(comment.getContent())
                         .createDate(comment.getCreateDate())
                         .build())
@@ -128,7 +131,8 @@ public class QnaService {
 
         return QnaResponse.builder()
                 .id(questionAndAnswer.getId())
-                .nickname(questionAndAnswer.getUser().getNickname())
+                // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                .nickname(questionAndAnswer.getUser().getActive() ? questionAndAnswer.getUser().getNickname() : "탈퇴한 사용자")
                 .title(questionAndAnswer.getTitle())
                 .content(questionAndAnswer.getContent())
                 .createDate(questionAndAnswer.getCreateDate())

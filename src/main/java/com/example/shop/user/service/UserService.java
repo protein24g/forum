@@ -21,19 +21,28 @@ public class UserService {
         userRepository.findByLoginId(joinRequest.getLoginId())
                 .ifPresentOrElse(
                         user -> {
-                            throw new IllegalArgumentException("이미 존재하는 사용자입니다.");
+                            throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
                         },
                         () -> {
-                            userRepository.save(User.builder()
-                                    .nickname(joinRequest.getNickname())
-                                    .loginId(joinRequest.getLoginId())
-                                    .loginPw(passwordEncoder.encode(joinRequest.getLoginPw()))
-                                    .createDate(LocalDateTime.now())
-                                    .age(joinRequest.getAge())
-                                    .gender(joinRequest.getGender())
-                                    .address(joinRequest.getAddress())
-                                    .role(User.Role.USER)
-                                    .build());
+                            userRepository.findByNickname(joinRequest.getNickname())
+                                .ifPresentOrElse(
+                                    user -> {
+                                        throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
+                                    },
+                                    () -> {
+                                        userRepository.save(User.builder()
+                                            .nickname(joinRequest.getNickname())
+                                            .loginId(joinRequest.getLoginId())
+                                            .loginPw(passwordEncoder.encode(joinRequest.getLoginPw()))
+                                            .createDate(LocalDateTime.now())
+                                            .age(joinRequest.getAge())
+                                            .gender(joinRequest.getGender())
+                                            .address(joinRequest.getAddress())
+                                            .role(User.Role.USER)
+                                            .isActive(true)
+                                            .build());
+                                    }
+                                );
                         }
                 );
     }

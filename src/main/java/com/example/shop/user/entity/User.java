@@ -14,7 +14,6 @@ import java.util.List;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@Transactional
 @ToString(exclude = {"questionAndAnswers"}) // 순환 참조를 피하기 위해 ToString 에서 제외
 public class User {
     @Id
@@ -47,6 +46,8 @@ public class User {
     @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
     private Role role;
 
+    private boolean isActive; // 사용자의 활성화 상태를 나타냅니다.
+
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -60,7 +61,7 @@ public class User {
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
-                   int age, User.Gender gender, String address, User.Role role){
+                   int age, User.Gender gender, String address, User.Role role, boolean isActive){
         this.nickname = nickname;
         this.loginId = loginId;
         this.loginPw = loginPw;
@@ -69,6 +70,7 @@ public class User {
         this.gender = gender;
         this.address = address;
         this.role = role;
+        this.isActive = isActive;
     }
 
     public void addQuestionAndAnswer(QuestionAndAnswer questionAndAnswer) {
@@ -84,5 +86,13 @@ public class User {
     public void addReview(Review review){
         this.reviews.add(review);
         review.setUser(this);
+    }
+
+    public boolean getActive() {
+        return this.isActive;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }

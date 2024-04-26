@@ -37,7 +37,15 @@ public class UserController {
             return "user/join";
         }
 
-        userService.join(joinRequest);
-        return "redirect:/login";
+        try{
+            userService.join(joinRequest);
+            model.addAttribute("msg", "회원가입 성공");
+            model.addAttribute("url", "/");
+        } catch (IllegalArgumentException e){
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/join");
+        }
+
+        return "message/main";
     }
 }
