@@ -1,10 +1,9 @@
 package com.example.shop;
 
-import com.example.shop.comment.entity.Comment;
-import com.example.shop.comment.repository.CommentRepository;
-import com.example.shop.qnaboard.dto.requests.QnaRequest;
-import com.example.shop.qnaboard.entity.QuestionAndAnswer;
-import com.example.shop.qnaboard.repository.QnaRepository;
+import com.example.shop.board.comment.entity.Comment;
+import com.example.shop.board.comment.repository.CommentRepository;
+import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
+import com.example.shop.board.qnaboard.repository.QnaRepository;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;

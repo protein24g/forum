@@ -60,8 +60,8 @@
     </table>
 
     <br>
-    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
-    <div sec:authorize="isAuthenticated()">
+    <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <div sec:authorize="isAuthenticated() and hasRole('ADMIN')">
         <br>
         <hr>
         <form th:action="'/review/' + ${qna.getId()} + '/comments'" method="post">
@@ -94,6 +94,30 @@
                     </div>
                     <div class="col-auto" sec:authorize="isAuthenticated() and hasRole('ADMIN')">
                         <button type="submit" class="btn btn-sm btn-outline-secondary">수정</button> <!-- btn-sm로 버튼 크기를 줄임-->
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Launch demo modal
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ...
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
                     </div>
                 </div>

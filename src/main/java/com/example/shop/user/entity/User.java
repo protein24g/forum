@@ -1,10 +1,9 @@
 package com.example.shop.user.entity;
 
-import com.example.shop.comment.entity.Comment;
-import com.example.shop.qnaboard.entity.QuestionAndAnswer;
-import com.example.shop.reviewboard.entity.Review;
+import com.example.shop.board.comment.entity.Comment;
+import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
+import com.example.shop.board.reviewboard.entity.Review;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.time.LocalDateTime;
