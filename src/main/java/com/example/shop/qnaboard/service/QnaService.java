@@ -138,6 +138,7 @@ public class QnaService {
                 .createDate(questionAndAnswer.getCreateDate())
                 .commentResponses(commentResponses)
                 .completed(questionAndAnswer.isCompleted())
+                .visibility(questionAndAnswer.isVisibility())
                 .build();
     }
 }

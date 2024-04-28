@@ -14,16 +14,48 @@
 
 <div class="container">
 
-    <form>
-        <div class="mb-3 mt-3">
-            <label class="form-label">제목</label>
-            <input type="text" class="form-control" th:value="${qna.getTitle()}" disabled>
-        </div>
-        <div class="mb-3 mt-3">
-            <label class="form-label">내용</label>
-            <input type="text" class="form-control" th:value="${qna.getContent()}" disabled>
-        </div>
-    </form>
+    <table class="table table-bordered text-center">
+        <tr>
+            <td class="table-active col-2">
+                <span>글 유형</span>
+            </td>
+            <td class="col-4">
+                <span th:text="${qna.isVisibility() ? '비공개' : '공개'}"></span>
+            </td>
+            <td class="table-active col-2">
+                <span>등록일</span>
+            </td>
+            <td class="col-4">2024-01-03 00:23:10</td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>작성자</span>
+            </td>
+            <td class="col-4">
+                <span th:text="${qna.getNickname()}"></span>
+            </td>
+            <td class="table-active col-2">
+                <span>조회</span>
+            </td>
+            <td class="col-4">0</td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>제목</span>
+            </td>
+            <td colspan="3">
+                <span class="form-control-plaintext" th:text="${qna.getTitle()}" style="text-align: left;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>내용</span>
+            </td>
+            <td colspan="3">
+                <span class="form-control-plaintext" th:text="${qna.getContent()}" style="text-align: left;"></span>
+            </td>
+        </tr>
+    </table>
 
     <br>
     <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
