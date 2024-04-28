@@ -108,32 +108,36 @@
                         <span th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
                     </div>
 
-                    <div class="col-auto" sec:authorize="isAuthenticated()" th:if="${isUser}">
+                    <div class="col-auto d-flex" sec:authorize="isAuthenticated()" th:if="${isUser}">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <span>수정</span>
-                        </button>
+                        <div class="pe-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <span>수정</span>
+                            </button>
+                        </div>
 
                         <!-- Modal -->
-                        <form th:action="'/comment/edit/' + ${comment.getId()}" method="post">
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h2 class="modal-title fs-5" id="exampleModalLabel">수정</h2>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea class="form-control" name="content" th:text="${comment.getContent()}"></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                            <button type="submit" class="btn btn-primary">작성</button>
+                        <div>
+                            <form th:action="'/comment/edit/' + ${comment.getId()}" method="post">
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title fs-5" id="exampleModalLabel">수정</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <textarea class="form-control" name="content" th:text="${comment.getContent()}"></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                                <button type="submit" class="btn btn-primary">작성</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
 
                         <form th:action="'/comment/delete/' + ${comment.getId()}" method="post" id="deleteForm">
                             <button type="submit" id="deleteBtn" class="btn btn-sm btn-outline-danger">삭제</button>
