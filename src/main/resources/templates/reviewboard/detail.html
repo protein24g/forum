@@ -14,60 +14,96 @@
 
 <div class="container">
 
-    <form>
-        <div class="mb-3 mt-3">
-            <label class="form-label">제목</label>
-            <input type="text" class="form-control" th:value="${review.getTitle()}" disabled>
-        </div>
-        <div class="mb-3 mt-3">
-            <label class="form-label">내용</label>
-            <input type="text" class="form-control" th:value="${review.getContent()}" disabled>
-        </div>
-    </form>
-
-    <br>
-    <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <table class="table table-bordered text-center">
+        <tr>
+            <td class="table-active col-2">
+                <span>상품</span>
+            </td>
+            <td class="col-4">
+                <span>반팔티</span>
+            </td>
+            <td class="table-active col-2">
+                <span>등록일</span>
+            </td>
+            <td class="col-4">
+                <div th:text="${review.getCreateDate() != null ? #temporals.format(review.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>작성자</span>
+            </td>
+            <td class="col-4">
+                <span th:text="${review.getNickname()}"></span>
+            </td>
+            <td class="table-active col-2">
+                <span>조회</span>
+            </td>
+            <td class="col-4">0</td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>제목</span>
+            </td>
+            <td colspan="3">
+                <span class="form-control-plaintext" th:text="${review.getTitle()}" style="text-align: left;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="table-active col-2">
+                <span>내용</span>
+            </td>
+            <td colspan="3">
+                <span class="form-control-plaintext" th:text="${review.getContent()}" style="text-align: left;"></span>
+            </td>
+        </tr>
+    </table>
     <div sec:authorize="isAuthenticated()">
-        <div class="card">
-            <div class="card-body">
-                댓글
-                <form th:action="'/review/' + ${review.getId()} + '/comments'" method="post">
-                    <div class="mb-3 mt-3">
-                        <input type="text" name="content" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-primary">작성</button>
-                </form>
-            </div>
+        <div class="d-flex justify-content-end" th:if="${isUser}">
+            <a class="btn btn-primary" th:href="@{'/review/edit/' + ${review.getId()}}">수정</a>
         </div>
     </div>
 
-    <br>
-    <hr>
+    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <div sec:authorize="isAuthenticated()">
+        <br>
+        <hr>
+        <form th:action="'/review/' + ${review.getId()} + '/comments'" method="post">
+            <div class="d-flex">
+                <textarea class="col-11" name="content"></textarea>
+                <input class="col-1 btn btn-primary" type="submit" value="작성">
+            </div>
+        </form>
+        <br>
+    </div>
+
+    <!-- 댓글 리스트 -->
 
     <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
-        <div class="col"> <!-- col로 전체 너비를 차지하도록 설정 -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="40">
-                        </div>
-                        <div class="col">
-                            <div class="row justify-content-start">
-                                <p th:text="${comment.getNickname()}"></p>
-                            </div>
-                        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-auto p-0">
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="35">
                     </div>
-                    <div th:text="${comment.getContent()}"></div>
-                    <div th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                    <div class="col-auto p-0 me-3">
+                        <span th:text="${comment.getNickname()}"></span>
+                    </div>
+                    <div class="col-auto p-0 pe-1">
+                        <span>|</span>
+                    </div>
+                    <div class="col"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                        <span th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">수정</button> <!-- btn-sm로 버튼 크기를 줄임-->
+                        <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="p-0" th:text="${comment.getContent()}"></span>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div sec:authorize="isAuthenticated()">
-        <div th:if="${isUser}">
-            <a class="btn btn-primary" th:href="@{'/review/edit/' + ${review.getId()}}">수정</a>
         </div>
     </div>
 

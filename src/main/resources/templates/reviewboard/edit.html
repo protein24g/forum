@@ -6,7 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+            document.getElementById("write").addEventListener("click", function (){
+                // confirm 함수를 사용해 확인 창 띄우기
+                var isConfirmed = confirm("저장하시겠습니까?");
 
+                // 사용자가 '확인'을 눌렀을 경우
+                if (isConfirmed) {
+                    // 폼 제출
+                    document.getElementById("createForm").submit();
+                }
+            })
+        })
+    </script>
 </head>
 
 <body>
@@ -14,14 +27,54 @@
 
 <div class="container">
 
-    <form>
-        <div class="mb-3 mt-3">
-            <label class="form-label">제목</label>
-            <input type="text" class="form-control" th:value="${review.getTitle()}" disabled>
-        </div>
-        <div class="mb-3 mt-3">
-            <label class="form-label">내용</label>
-            <input type="text" class="form-control" th:value="${review.getContent()}" disabled>
+    <form th:action="'/review/edit/' + ${review.getId()}"  method="post" id="createForm">
+        <table class="table table-bordered text-center">
+            <tr>
+                <td class="table-active col-2">
+                    <span>상품</span>
+                </td>
+                <td class="col-4">
+                    <span>반팔티</span>
+                </td>
+                <td class="table-active col-2">
+                    <span>등록일</span>
+                </td>
+                <td class="col-4">
+                    <div th:text="${review.getCreateDate() != null ? #temporals.format(review.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="table-active col-2">
+                    <span>작성자</span>
+                </td>
+                <td class="col-4">
+                    <span th:text="${review.getNickname()}"></span>
+                </td>
+                <td class="table-active col-2">
+                    <span>조회</span>
+                </td>
+                <td class="col-4">0</td>
+            </tr>
+            <tr>
+                <td class="table-active col-2">
+                    <span>제목</span>
+                </td>
+                <td colspan="3">
+                    <input class="form-control" name="title" th:value="${review.getTitle()}">
+                </td>
+            </tr>
+            <tr>
+                <td class="table-active col-2">
+                    <span>내용</span>
+                </td>
+                <td colspan="3">
+                    <input class="form-control" name="content" th:value="${review.getContent()}">
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary" type="button" id="write">수정</button>
         </div>
     </form>
 

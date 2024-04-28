@@ -17,7 +17,7 @@
     <table class="table table-bordered text-center">
         <tr>
             <td class="table-active col-2">
-                <span>글 유형</span>
+                <span>공개여부</span>
             </td>
             <td class="col-4">
                 <span th:text="${qna.isVisibility() ? '비공개' : '공개'}"></span>
@@ -25,7 +25,9 @@
             <td class="table-active col-2">
                 <span>등록일</span>
             </td>
-            <td class="col-4">2024-01-03 00:23:10</td>
+            <td class="col-4">
+                <div th:text="${qna.getCreateDate() != null ? #temporals.format(qna.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+            </td>
         </tr>
         <tr>
             <td class="table-active col-2">
@@ -58,40 +60,45 @@
     </table>
 
     <br>
-    <!-- 관리자 권한을 가진 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
-    <div sec:authorize="isAuthenticated() and hasRole('ADMIN')">
-        <div class="card">
-            <div class="card-body">
-                댓글
-                <form th:action="'/qna/' + ${qna.getId()} + '/comments'" method="post">
-                    <div class="mb-3 mt-3">
-                        <input type="text" name="content" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-primary">작성</button>
-                </form>
+    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <div sec:authorize="isAuthenticated()">
+        <br>
+        <hr>
+        <form th:action="'/review/' + ${qna.getId()} + '/comments'" method="post">
+            <div class="d-flex">
+                <textarea class="col-11" name="content"></textarea>
+                <input class="col-1 btn btn-primary" type="submit" value="작성">
             </div>
-        </div>
+        </form>
+        <br>
     </div>
 
     <br>
     <hr>
 
     <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
-        <div class="col"> <!-- col로 전체 너비를 차지하도록 설정 -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="40">
-                        </div>
-                        <div class="col">
-                            <div class="row justify-content-start">
-                                <p th:text="${comment.getNickname()}"></p>
-                            </div>
-                        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-auto p-0">
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="35">
                     </div>
-                    <div th:text="${comment.getContent()}"></div>
-                    <div th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                    <div class="col-auto p-0 me-3">
+                        <span th:text="${comment.getNickname()}"></span>
+                    </div>
+                    <div class="col-auto p-0 pe-1">
+                        <span>|</span>
+                    </div>
+                    <div class="col p-0"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                        <span th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
+                    </div>
+                    <div class="col-auto" sec:authorize="isAuthenticated() and hasRole('ADMIN')">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">수정</button> <!-- btn-sm로 버튼 크기를 줄임-->
+                        <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <span th:text="${comment.getContent()}"></span>
                 </div>
             </div>
         </div>

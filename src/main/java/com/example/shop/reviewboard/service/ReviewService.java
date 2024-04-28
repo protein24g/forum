@@ -142,7 +142,32 @@ public class ReviewService {
         }else {
             throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
+    }
 
+    public ReviewResponse edit(Long boardNum, ReviewRequest dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
+            Review review = reviewRepository.findById(boardNum)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+            if(review.getUser().getId().equals(customUserDetails.getId())){
+                review.setTitle(dto.getTitle());
+                review.setContent(dto.getContent());
+                reviewRepository.save(review);
+                return ReviewResponse.builder()
+                        .id(review.getId())
+                        .nickname(review.getUser().getNickname())
+                        .title(review.getTitle())
+                        .content(review.getContent())
+                        .createDate(review.getCreateDate())
+                        .build();
+            }else{
+                throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다.");
+            }
+        }else {
+            throw new IllegalArgumentException("로그인 후 이용하세요.");
+        }
     }
 }

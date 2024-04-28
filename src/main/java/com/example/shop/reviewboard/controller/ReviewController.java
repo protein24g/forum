@@ -5,9 +5,12 @@ import com.example.shop.reviewboard.dto.requests.ReviewRequest;
 import com.example.shop.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.reviewboard.service.ReviewService;
 import com.example.shop.user.dto.CustomUserDetails;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
+@Transactional
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -71,7 +75,7 @@ public class ReviewController {
             model.addAttribute("review", reviewResponse);
             model.addAttribute("comments", reviewResponse.getCommentResponses());
 
-            if(authentication != null){
+            if(authentication != null && authentication.isAuthenticated()){
                 CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
                 if(customUserDetails.getUsername().equals(reviewResponse.getNickname())){
                     model.addAttribute("isUser", "edit");
@@ -94,8 +98,22 @@ public class ReviewController {
         } catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/review/" + boardNum);
+            return "message/main";
         }
         return "reviewboard/edit";
+    }
+
+    @PostMapping("/review/edit/{boardNum}")
+    public String edit(@PathVariable("boardNum") Long boardNum, Model model, ReviewRequest dto){
+        try{
+            ReviewResponse reviewResponse = reviewService.edit(boardNum, dto);
+            model.addAttribute("msg", "게시글 수정 완료.");
+            model.addAttribute("url", "/review/" + boardNum);
+        } catch (IllegalArgumentException e){
+            model.addAttribute("msg", e.getMessage());
+            model.addAttribute("url", "/review/" + boardNum);
+        }
+        return "message/main";
     }
 
     // D(Delete)

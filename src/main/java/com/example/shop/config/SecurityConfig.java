@@ -19,9 +19,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/main", "/login", "/loginProc",
-                                "/join", "/joinProc", "/qna", "/qna/**", "/review", "/review/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/review/create", "/review/edit/*", "/qna/create", "/qna/edit/*").authenticated()
+                        .requestMatchers("/", "/main", "/login", "/loginProc",
+                                "/join", "/joinProc", "/qna", "/qna/*", "/review", "/review/*").permitAll()
+
                         .anyRequest().authenticated());
 
         http
