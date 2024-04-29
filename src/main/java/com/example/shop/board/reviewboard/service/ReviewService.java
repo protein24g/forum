@@ -46,6 +46,7 @@ public class ReviewService {
                     .content(dto.getContent())
                     .user(user)
                     .createDate(LocalDateTime.now())
+                    .view(0)
                     .build();
             user.addReview(review);
             reviewRepository.save(review);
@@ -92,6 +93,7 @@ public class ReviewService {
                         .content(review.getContent())
                         .createDate(review.getCreateDate())
                         .commentCount(review.getComments().size())
+                        .view(review.getView())
                         .build());
     }
 
@@ -119,8 +121,8 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                //.commentResponses(commentResponses)
                 .commentResponses(commentService.PageReview(review.getId(), commentP))
+                .view(review.incView())
                 .build();
     }
 

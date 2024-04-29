@@ -39,6 +39,7 @@ class ShopApplicationTests {
 					.content("bbbbbbbbdbbb")
 					.createDate(LocalDateTime.now())
 					.user(user)
+					.view(0)
 					.build());
 		}
 	}

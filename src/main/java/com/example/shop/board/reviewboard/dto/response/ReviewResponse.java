@@ -19,12 +19,13 @@ public class ReviewResponse {
     private String title;
     private String content;
     private LocalDateTime createDate;
-    //private List<CommentResponse> commentResponses;
     private Page<CommentResponse> commentResponses;
     private int commentCount;
+    private int view;
 
     @Builder
-    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, Page<CommentResponse> commentResponses, int commentCount){
+    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
+                          Page<CommentResponse> commentResponses, int commentCount, int view){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
@@ -32,5 +33,6 @@ public class ReviewResponse {
         this.createDate = createDate;
         this.commentResponses = commentResponses;
         this.commentCount = commentCount;
+        this.view = view;
     }
 }

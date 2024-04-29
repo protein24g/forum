@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +24,17 @@ public class MainController {
             // 여기에 대한 처리 로직
             model.addAttribute("nickname", "Guest");
         }
-        return "main";
+        return "main/index";
+    }
+
+    @GetMapping("/mypage")
+    public String myPage(){
+        return "main/mypage";
+    }
+
+    @GetMapping("/user/info/{userId}")
+    public String userInfo(Model model, @PathVariable("userId") Long userId){
+        model.addAttribute("userId", userId);
+        return "user/info";
     }
 }

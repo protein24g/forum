@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" data-bs-theme="dark" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,15 +49,17 @@
     <table class="table table-hover text-center">
         <thead class="table-light">
         <tr>
-            <th>#</th>
+            <th class="col-1">#</th>
+            <th class="col-1">조회수</th>
             <th class="col-2">닉네임</th>
             <th class="col-2">날짜</th>
-            <th class="col-8">제목</th>
+            <th class="col-6">제목</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="board : ${boards}" th:id="${board.getId()}">
             <td th:text="${board.getId()}"></td>
+            <td th:text="${board.getView()}"></td>
             <td th:text="${board.getNickname()}"></td>
             <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
             <td th:text="${board.getTitle()} + ' [' + ${board.getCommentCount()} + ']'"></td>
