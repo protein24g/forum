@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
+
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Transactional
     public void join(JoinRequest joinRequest) {
         userRepository.findByLoginId(joinRequest.getLoginId())
                 .ifPresentOrElse(

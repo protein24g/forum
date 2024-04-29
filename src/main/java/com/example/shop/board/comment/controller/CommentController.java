@@ -51,6 +51,7 @@ public class CommentController {
     @PostMapping("/comment/edit/{commentNum}")
     public String updateComment(@PathVariable("commentNum") Long commentNum, Model model, CommentRequest dto){
         try{
+            System.out.println("asdasd" + commentNum + dto.toString());
             String url = commentService.updateComment(commentNum, dto);
             model.addAttribute("msg", "댓글 수정완료");
             model.addAttribute("url", url);

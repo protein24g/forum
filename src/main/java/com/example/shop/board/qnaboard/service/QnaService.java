@@ -122,6 +122,7 @@ public class QnaService {
         // Comment 객체를 CommentResponse 로 변환
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> CommentResponse.builder()
+                        .id(comment.getId())
                         // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                         .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                         .content(comment.getContent())

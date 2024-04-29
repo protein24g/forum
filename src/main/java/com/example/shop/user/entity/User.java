@@ -4,6 +4,7 @@ import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.board.reviewboard.entity.Review;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -45,7 +46,8 @@ public class User {
     @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
     private Role role;
 
-    private boolean isActive; // 사용자의 활성화 상태를 나타냅니다.
+    @Column(name = "is_active")
+    private boolean isActive = true; // 사용자의 활성화 상태를 나타냅니다.
 
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제

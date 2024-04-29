@@ -75,16 +75,18 @@ public class CommentService {
 
             if(user.getRole().equals(User.Role.ADMIN)){ // 관리자가 댓글을 달면 답변완료 처리
                 questionAndAnswer.setCompleted(true);
+                Comment comment = Comment.builder()
+                        .user(user)
+                        .questionAndAnswer(questionAndAnswer)
+                        .content(commentRequest.getContent())
+                        .createDate(LocalDateTime.now())
+                        .build();
+                commentRepository.save(comment);
+                questionAndAnswer.addComment(comment);
+            }else{
+                throw new IllegalArgumentException("관리자만 답변 작성 가능합니다.");
             }
 
-            Comment comment = Comment.builder()
-                    .user(user)
-                    .questionAndAnswer(questionAndAnswer)
-                    .content(commentRequest.getContent())
-                    .createDate(LocalDateTime.now())
-                    .build();
-            commentRepository.save(comment);
-            questionAndAnswer.addComment(comment);
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요.");
         }

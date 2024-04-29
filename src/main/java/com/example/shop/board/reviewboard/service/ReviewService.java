@@ -11,6 +11,7 @@ import com.example.shop.board.reviewboard.repository.ReviewRepository;
 import com.example.shop.user.dto.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
