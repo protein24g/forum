@@ -2,7 +2,6 @@ package com.example.shop.board.reviewboard.service;
 
 import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.entity.Comment;
-import com.example.shop.board.comment.repository.CommentRepository;
 import com.example.shop.board.comment.service.CommentService;
 import com.example.shop.board.reviewboard.dto.requests.ReviewRequest;
 import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
