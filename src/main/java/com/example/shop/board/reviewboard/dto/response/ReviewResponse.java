@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,11 +19,12 @@ public class ReviewResponse {
     private String title;
     private String content;
     private LocalDateTime createDate;
-    private List<CommentResponse> commentResponses;
+    //private List<CommentResponse> commentResponses;
+    private Page<CommentResponse> commentResponses;
     private int commentCount;
 
     @Builder
-    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, List<CommentResponse> commentResponses, int commentCount){
+    public ReviewResponse(Long id, String nickname, String title, String content, LocalDateTime createDate, Page<CommentResponse> commentResponses, int commentCount){
         this.id = id;
         this.nickname = nickname;
         this.title = title;

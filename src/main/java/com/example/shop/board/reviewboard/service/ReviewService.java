@@ -2,6 +2,8 @@ package com.example.shop.board.reviewboard.service;
 
 import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.entity.Comment;
+import com.example.shop.board.comment.repository.CommentRepository;
+import com.example.shop.board.comment.service.CommentService;
 import com.example.shop.board.reviewboard.dto.requests.ReviewRequest;
 import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.board.reviewboard.entity.Review;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final CommentService commentService;
 
     // C(Create)
     public ReviewResponse create(ReviewRequest dto) {
@@ -90,7 +93,7 @@ public class ReviewService {
                         .build());
     }
 
-    public ReviewResponse readDetail(Long boardNum) {
+    public ReviewResponse readDetail(Long boardNum, int commentP) {
         Review review = reviewRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -114,7 +117,8 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                .commentResponses(commentResponses)
+                //.commentResponses(commentResponses)
+                .commentResponses(commentService.PageReview(review.getId(), commentP))
                 .build();
     }
 

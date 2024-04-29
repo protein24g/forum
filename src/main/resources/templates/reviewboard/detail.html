@@ -71,7 +71,7 @@
         </tr>
     </table>
     <div sec:authorize="isAuthenticated()">
-        <div class="d-flex justify-content-end" th:if="${isUser}">
+        <div class="d-flex justify-content-end" th:if="${review.getNickname() == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
             <a class="btn btn-primary" th:href="@{'/review/edit/' + ${review.getId()}}">수정</a>
         </div>
     </div>
@@ -90,7 +90,6 @@
     </div>
 
     <!-- 댓글 리스트 -->
-
     <div th:each="comment : ${comments}" class="row"> <!-- 각 댓글마다 row로 시작 -->
         <div class="card">
             <div class="card-body">
@@ -108,7 +107,7 @@
                         <span th:text="${comment.getCreateDate() != null ? #temporals.format(comment.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
                     </div>
 
-                    <div class="col-auto d-flex" sec:authorize="isAuthenticated()" th:if="${isUser}">
+                    <div class="col-auto d-flex" sec:authorize="isAuthenticated()" th:if="${comment.getNickname() == #authentication.principal.username}">
                         <!-- Button trigger modal -->
                         <div class="pe-1">
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -140,7 +139,7 @@
                         </div>
 
                         <form th:action="'/comment/delete/' + ${comment.getId()}" method="post" id="deleteForm">
-                            <button type="submit" id="deleteBtn" class="btn btn-sm btn-outline-danger">삭제</button>
+                            <button type="button" id="deleteBtn" class="btn btn-sm btn-outline-danger">삭제</button>
                         </form>
                     </div>
                 </div>
@@ -150,6 +149,24 @@
             </div>
         </div>
     </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li th:classappend="${!comments.hasPrevious()} ? disabled : '' " class="page-item">
+                <a class="page-link" th:href="@{/review/${review.getId()}(commentP=${comments.getNumber() - 1})}">Previous</a>
+            </li>
+
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
+                th:classappend="${page == comments.number} ? 'active' : ''">
+                <a class="page-link" th:text="${page} + 1" th:href="@{|?commentP=${page}|}"></a>
+            </li>
+
+            <li th:classappend="${!comments.hasNext()} ? disabled : '' " class="page-item">
+                <a class="page-link" th:href="@{/review/${review.getId()}(commentP=${comments.getNumber() + 1})}">Next</a>
+            </li>
+
+        </ul>
+    </nav>
 
     <br>
     <a class="btn btn-primary" href="/review">목록</a>

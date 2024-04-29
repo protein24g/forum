@@ -5,6 +5,7 @@ import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.board.reviewboard.service.ReviewService;
 import com.example.shop.user.dto.CustomUserDetails;
 import jakarta.transaction.Transactional;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -66,18 +67,18 @@ public class ReviewController {
     }
 
     @GetMapping("/review/{boardNum}")
-    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model, Authentication authentication){
+    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model, Authentication authentication,
+                                @RequestParam(value = "commentP", defaultValue = "0") int commentP){
         try {
-            ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
+            ReviewResponse reviewResponse = reviewService.readDetail(boardNum, commentP);
             model.addAttribute("review", reviewResponse);
-            model.addAttribute("comments", reviewResponse.getCommentResponses());
 
-            if(authentication != null && authentication.isAuthenticated()){
-                CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-                if(customUserDetails.getUsername().equals(reviewResponse.getNickname())){
-                    model.addAttribute("isUser", "edit");
-                }
-            }
+            int currentPage = reviewResponse.getCommentResponses().getNumber(); // 현재 페이지 번호
+            int totalPages = reviewResponse.getCommentResponses().getTotalPages();
+
+            model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
+            model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
+            model.addAttribute("comments", reviewResponse.getCommentResponses());
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna");

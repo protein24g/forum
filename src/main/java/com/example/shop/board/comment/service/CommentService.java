@@ -1,6 +1,7 @@
 package com.example.shop.board.comment.service;
 
 import com.example.shop.board.comment.dto.requests.CommentRequest;
+import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.repository.CommentRepository;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
@@ -12,6 +13,10 @@ import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -85,6 +90,18 @@ public class CommentService {
         }
     }
 
+    // R(Read)
+    public Page<CommentResponse> PageReview(Long reviewId, int commentP) {
+        Pageable pageable = PageRequest.of(commentP, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Comment> comments = commentRepository.findByReviewId(reviewId, pageable);
+        return comments.map(comment -> CommentResponse.builder()
+                .id(comment.getId())
+                .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
+                .content(comment.getContent())
+                .createDate(comment.getCreateDate())
+                .build());
+    }
+
     // U(Update)
     public String updateComment(Long commentNum, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -100,20 +117,20 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
             if(comment.getReview() != null){ // 리뷰의 댓글이면
-                if(comment.getReview().getUser().getId().equals(user.getId())){
+                if(comment.getUser().getId().equals(user.getId())){
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
                     return "/review/" + comment.getReview().getId();
                 }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
+                    throw new IllegalArgumentException("댓글 작성자만 수정 d가능합니다.");
                 }
             }else{ // QnA의 댓글이면
-                if(comment.getQuestionAndAnswer().getUser().getId().equals(user.getId())){
+                if(comment.getUser().getId().equals(user.getId())){
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
                     return "/qna/" + comment.getQuestionAndAnswer().getId();
                 }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
+                    throw new IllegalArgumentException("댓글 작성자만 수정 s    가능합니다.");
                 }
             }
         }else{
@@ -136,14 +153,14 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
             if (comment.getReview() != null) { // 리뷰의 댓글이면
-                if (comment.getReview().getUser().getId().equals(user.getId())) {
+                if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
                     return "/review/" + comment.getReview().getId();
                 } else {
                     throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
                 }
             } else { // QnA의 댓글이면
-                if (comment.getQuestionAndAnswer().getUser().getId().equals(user.getId())) {
+                if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
                     return "/qna/" + comment.getQuestionAndAnswer().getId();
                 } else {
