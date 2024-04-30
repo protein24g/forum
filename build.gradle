@@ -43,7 +43,6 @@ dependencies {
 
 	// 테스팅 (테스트 코드 작성을 위한 의존성)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot + 테스트(모킹, 단위 테스트 등) 지원
-
 }
 
 tasks.named('test') {

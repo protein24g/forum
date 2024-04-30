@@ -6,64 +6,144 @@
         <title>Bootstrap demo</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("joinForm").addEventListener("submit", function(e) {
-                var nickName = document.getElementsByName("nickname")[0].value;
-                var loginId = document.getElementsByName("loginId")[0].value;
-                var loginPw = document.getElementsByName("loginPw")[0].value;
-                var loginPwCheck = document.getElementsByName("loginPwCheck")[0].value;
 
-                // 비밀번호 길이 및 공백 문자 체크
-                if (nickName.length < 2 || nickName.length > 12 || nickName.includes(' ')) {
-                    alert("닉네임을 2~12자 사이로 입력하세요.");
-                    e.preventDefault();
-                } else if (loginId.length < 6 || loginId.includes(' ')) {
-                    alert("아이디는 6자 이상, 공백 문자를 포함할 수 없습니다.");
-                    e.preventDefault(); // 폼 제출을 막음
-                } else if (loginPw.length < 6 || loginPw.includes(' ')) {
-                    alert("비밀번호는 6자 이상, 공백 문자를 포함할 수 없습니다.");
-                    e.preventDefault(); // 폼 제출을 막음
-                } else if (loginPw !== loginPwCheck) {
-                    alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                    e.preventDefault(); // 폼 제출을 막음
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        $(document).ready(function (){
+            $a = false;
+            $b = false;
+            $c = false;
+            $d = false;
+
+            nickname = $("#nickname");
+            nickname.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
+                var regExp = /^[가-힣a-z0-9]{2,12}$/;
+                if (!regExp.test(nickname.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#nickname-error").text("닉네임은 2자 이상 12자 이하, 한글, 소문자, 숫자만 사용 가능합니다."); // 텍스트 메시지 표시
+                }else{
+                    $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
+                        type : "GET", // 요청 방식
+                        url : "/checkNickname", // 요청을 보낼 서버의 URL
+                        data : {nickname : nickname.val()}, // 서버로 보낼 데이터
+                        success : function (data){ // 요청이 성공하면 실행될 함수
+                            if(data == true){ // 서버에서 true를 반환한 경우
+                                $("#nickname-error").text("이미 사용중인 닉네임입니다.");
+                                $a = false;
+                            }else{ // 서버에서 false를 반환한 경우
+                                $("#nickname-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                                $a = true;
+                            }
+                        },
+                        error: function(request, status, error) { // 요청이 실패하면 실행될 함수
+                            alert("오류 발생: " + request.responseText); // 오류 메시지 출력
+                        }
+                    })
+                }
+            })
+
+            $loginId = $("#loginId");
+            $loginId.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
+                var regExp = /^[a-z]+[a-z0-9]{5,15}$/;
+                if (!regExp.test($loginId.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#loginId-error").text("아이디는 소문자로 시작해서 소문자 숫자만 사용(6자 이상 15자 이하)");
+                }else{
+                    $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
+                        type : "GET", // 요청 방식
+                        url : "/checkLoginId", // 요청을 보낼 서버의 URL
+                        data : {loginId : $loginId.val()}, // 서버로 보낼 데이터
+                        success : function (data){ // 요청이 성공하면 실행될 함수
+                            if(data == true){ // 서버에서 true를 반환한 경우
+                                $("#loginId-error").text("이미 존재하는 아이디입니다.");
+                                $b = false;
+                            }else{ // 서버에서 false를 반환한 경우
+                                $("#loginId-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                                $b = true;
+                            }
+                        },
+                        error: function(request, status, error) { // 요청이 실패하면 실행될 함수
+                            alert("오류 발생: " + request.responseText); // 오류 메시지 출력
+                        }
+                    })
+                }
+            })
+
+            $loginPw = $("#loginPw");
+            $loginPwCheck = $("#loginPwCheck");
+            $loginPw.on("focusout", function (){
+                var regExp = /^(?=.*[!@#$%^&*]).{8,}$/; // 최소 8자 이상
+                if(!regExp.test($loginPw.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#loginPw-error").text("비밀번호는 특수문자 포함 8자 이상이어야 합니다.");
+                    $c = false;
+                }else{
+                    $("#loginPw-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                    $c = true;
+                }
+                if($loginPw.val() !== $loginPwCheck.val()){
+                    $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
+                    $d = false;
+                }else{
+                    $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
+                    $d = true;
+                }
+            })
+
+            $loginPwCheck.on("focusout", function (){
+                if($loginPw.val() !== $loginPwCheck.val()){
+                    $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
+                    $d = false;
+                }else{
+                    $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
+                    $d = true;
                 }
             });
-        });
-    </script>
 
+            $("#joinForm").on("submit", function(event) {
+                if(!($a && $b && $c && $d)){
+                    // 하나라도 거짓인 경우, 폼 제출을 막습니다.
+                    event.preventDefault();
+                    alert("모든 조건을 만족해야 합니다."); // 사용자에게 모든 조건을 만족해야 한다는 것을 알립니다.
+                }
+            });
+        })
+    </script>
     <body>
+        <!-- 에러 메시지가 존재하는 경우에만 아래 div가 표시됩니다. -->
+        <div th:if="${errors} and ${errors.size() > 0}" class="alert alert-danger">
+            <ul>
+                <!-- 모델에 추가된 에러 메시지를 순회하며 각각을 li 요소로 표시합니다. -->
+                <li th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</li>
+            </ul>
+        </div>
+
         <form action="/joinProc" method="post" id="joinForm">
             <p>
-                <input type="text" name="nickname" placeholder="닉네임" th:classappend="${nicknameError} ? 'error' : ''">
-                <span th:if="${nicknameError}" th:text="${nicknameError}"></span>
+                <input type="text" name="nickname" id="nickname" placeholder="닉네임">
+                <span id="nickname-error"></span>
             </p>
             <p>
-                <input type="text" name="loginId" placeholder="아이디" th:classappend="${loginIdError} ? 'error' : ''">
-                <span th:if="${loginIdError}" th:text="${loginIdError}"></span>
+                <input type="text" name="loginId" id="loginId" placeholder="아이디">
+                <span id="loginId-error"></span>
             </p>
             <p>
-                <input type="password" name="loginPw" placeholder="비밀번호" th:classappend="${loginPwError} ? 'error' : ''">
-                <span th:if="${loginPwError}" th:text="${loginPwError}"></span>
+                <input type="password" name="loginPw" id="loginPw" placeholder="비밀번호">
+                <span id="loginPw-error"></span>
             </p>
             <p>
-                <input type="password" name="loginPwCheck" placeholder="비밀번호 확인" th:classappend="${loginPwCheckError} ? 'error' : ''">
-                <span th:if="${loginPwCheckError}" th:text="${loginPwCheckError}"></span>
+                <input type="password" name="loginPwCheck" id="loginPwCheck" placeholder="비밀번호 확인">
+                <span id="loginPwCheck-error"></span>
             </p>
             <p>
-                <input type="number" name="age" placeholder="나이" th:classappend="${ageError} ? 'error' : ''">
-                <span th:if="${ageError}" th:text="${ageError}"></span>
+                <input type="number" name="age" id="age" placeholder="나이">
             </p>
             <p>
-                <input type="radio" id="male" name="gender" value="MALE">
+                <input type="radio" id="male" name="gender" value="MALE" checked>
                 <label for="male">남자</label>
                 <input type="radio" id="female" name="gender" value="FEMALE">
                 <label for="female">여자</label>
-                <span th:if="${genderError}" th:text="${genderError}"></span>
             </p>
             <p>
-                <input type="text" name="address" placeholder="주소" th:classappend="${addressError} ? 'error' : ''">
-                <span th:if="${addressError}" th:text="${addressError}"></span>
+                <input type="text" name="address" placeholder="주소">
             </p>
             <input type="hidden" name="_csrf" th:value="${_csrf.token}">
             <input type="submit" value="회원가입">

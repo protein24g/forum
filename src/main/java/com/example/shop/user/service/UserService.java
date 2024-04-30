@@ -47,4 +47,12 @@ public class UserService {
                         }
                 );
     }
+
+    public boolean isLoginIdAvailable(String loginId) {
+        return userRepository.findByLoginId(loginId).isPresent();
+    }
+
+    public boolean isNicknameAvailable(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
+    }
 }
