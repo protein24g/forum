@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/review/create", "/review/edit/*", "/qna/create", "/qna/edit/*").authenticated()
                         .requestMatchers("/", "/main", "/login", "/loginProc",
                                 "/join", "/joinProc", "/qna", "/qna/*", "/review", "/review/*",
-                                "/checkLoginId", "/checkNickname").permitAll()
+                                "/checkLoginId", "/checkNickname", "/create/*/comments").permitAll()
 
                         .anyRequest().authenticated());
 
@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID", "remember-me")
                 );
+
         return http.build();
     }
 }

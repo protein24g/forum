@@ -33,7 +33,7 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
 
     // C(Create)
-    public void createReview(Long boardNum, CommentRequest commentRequest) {
+    public CommentResponse createReview(Long boardNum, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -46,21 +46,26 @@ public class CommentService {
             Review review = reviewRepository.findById(boardNum)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
-
             Comment comment = Comment.builder()
                     .user(user)
                     .review(review)
-                    .content(commentRequest.getContent())
+                    .content(dto.getContent())
                     .createDate(LocalDateTime.now())
                     .build();
             commentRepository.save(comment);
             review.addComment(comment);
+            return CommentResponse.builder()
+                    .id(comment.getId())
+                    .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
+                    .content(comment.getContent())
+                    .createDate(comment.getCreateDate())
+                    .build();
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
     }
 
-    public void createQna(Long boardNum, CommentRequest commentRequest) {
+    public void createQna(Long boardNum, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -78,7 +83,7 @@ public class CommentService {
                 Comment comment = Comment.builder()
                         .user(user)
                         .questionAndAnswer(questionAndAnswer)
-                        .content(commentRequest.getContent())
+                        .content(dto.getContent())
                         .createDate(LocalDateTime.now())
                         .build();
                 commentRepository.save(comment);

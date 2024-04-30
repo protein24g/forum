@@ -6,13 +6,14 @@ import com.example.shop.board.reviewboard.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -87,17 +88,30 @@ public class ReviewController {
 
     // U(Update)
     @GetMapping("/review/edit/{boardNum}")
-    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
+    @ResponseBody
+    public ResponseEntity<?> editP(@PathVariable("boardNum") Long boardNum, Model model){
         try{
             ReviewResponse reviewResponse = reviewService.editP(boardNum);
-            model.addAttribute("review", reviewResponse);
+            return ResponseEntity.ok(reviewResponse);
         } catch (IllegalArgumentException e){
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/review/" + boardNum);
-            return "message/main";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage(), "url", "/reviews/" + boardNum));
         }
-        return "reviewboard/edit";
     }
+
+//    @GetMapping("/review/edit/{boardNum}")
+//    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
+//        try{
+//            ReviewResponse reviewResponse = reviewService.editP(boardNum);
+//            model.addAttribute("review", reviewResponse);
+//        } catch (IllegalArgumentException e){
+//            model.addAttribute("msg", e.getMessage());
+//            model.addAttribute("url", "/review/" + boardNum);
+//            return "message/main";
+//        }
+//        return "reviewboard/edit";
+//    }
 
     @PostMapping("/review/edit/{boardNum}")
     public String edit(@PathVariable("boardNum") Long boardNum, Model model, ReviewRequest dto){

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,6 +18,35 @@
                 }
             })
         })
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function submitComment(e){
+            e.preventDefault();
+            var reviewId = $("#reviewId").val();
+            var content = $("#content").val();
+            var _csrf = $("#_csrf").val();
+            $.ajax({
+                url : `/review/${reviewId}/comments`,
+                type : "POST",
+                contentType : "application/json",
+                headers : {
+                    "X-CSRF-TOKEN" : _csrf
+                },
+                data : JSON.stringify({ content : content }),
+                success : function (res){
+                    // 가정: 성공 응답(response)가 JSON 객체일 때, 댓글 내용 출력
+                    // 실제로 서버에서 JSON 응답을 보내는 경우, 아래와 같이 응답을 JSON으로 간주하고 처리
+                    alert("댓글 작성완료");
+                    window.location.href = `/review/${reviewId}`;
+                },
+                error : function(xhr){
+                    // 오류 발생 시 서버에서 보낸 에러 메시지 출력
+                    alert(xhr.responseText);
+                }
+            })
+        }
     </script>
 </head>
 
@@ -82,11 +111,13 @@
     <div sec:authorize="isAuthenticated()">
         <br>
         <hr>
-        <form th:action="'/review/' + ${review.getId()} + '/comments'" method="post">
+        <form onsubmit="submitComment(event);">
             <div class="d-flex">
-                <textarea class="col-11" name="content"></textarea>
+                <textarea class="col-11" name="content" id="content"></textarea>
                 <input class="col-1 btn btn-primary" type="submit" value="작성">
             </div>
+            <input type="hidden" id="reviewId" th:value="${review.getId()}">
+            <input type="hidden" id="_csrf" th:value="${_csrf.token}">
         </form>
         <br>
     </div>
