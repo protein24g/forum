@@ -92,26 +92,13 @@ public class ReviewController {
     public ResponseEntity<?> editP(@PathVariable("boardNum") Long boardNum, Model model){
         try{
             ReviewResponse reviewResponse = reviewService.editP(boardNum);
-            return ResponseEntity.ok(reviewResponse);
+            return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
         } catch (IllegalArgumentException e){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", e.getMessage(), "url", "/reviews/" + boardNum));
         }
     }
-
-//    @GetMapping("/review/edit/{boardNum}")
-//    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
-//        try{
-//            ReviewResponse reviewResponse = reviewService.editP(boardNum);
-//            model.addAttribute("review", reviewResponse);
-//        } catch (IllegalArgumentException e){
-//            model.addAttribute("msg", e.getMessage());
-//            model.addAttribute("url", "/review/" + boardNum);
-//            return "message/main";
-//        }
-//        return "reviewboard/edit";
-//    }
 
     @PostMapping("/review/edit/{boardNum}")
     public String edit(@PathVariable("boardNum") Long boardNum, Model model, ReviewRequest dto){

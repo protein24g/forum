@@ -59,6 +59,7 @@ public class CommentService {
                     .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                     .content(comment.getContent())
                     .createDate(comment.getCreateDate())
+                    .isAuthor(false)
                     .build();
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요.");
@@ -98,7 +99,13 @@ public class CommentService {
     }
 
     // R(Read)
-    public Page<CommentResponse> PageReview(Long reviewId, int commentP) {
+    public Page<CommentResponse> findAllComment(Long reviewId, int commentP) {
+        String username;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            username = customUserDetails.getUsername();
+        } else { username = ""; }
         Pageable pageable = PageRequest.of(commentP, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<Comment> comments = commentRepository.findByReviewId(reviewId, pageable);
         return comments.map(comment -> CommentResponse.builder()
@@ -106,6 +113,7 @@ public class CommentService {
                 .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                 .content(comment.getContent())
                 .createDate(comment.getCreateDate())
+                .isAuthor(comment.getUser().getNickname().equals(username) ? true : false)
                 .build());
     }
 

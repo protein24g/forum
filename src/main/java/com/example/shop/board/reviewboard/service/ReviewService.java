@@ -120,7 +120,7 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                .commentResponses(commentService.PageReview(review.getId(), commentP))
+                .commentResponses(commentService.findAllComment(review.getId(), commentP))
                 .view(review.incView())
                 .build();
     }

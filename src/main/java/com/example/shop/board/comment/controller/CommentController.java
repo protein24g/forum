@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class CommentController {
@@ -43,11 +45,18 @@ public class CommentController {
         return "redirect:/qna/" + boardNum;
     }
 
+    // R(Read)
+    @GetMapping("/review/{reviewId}/comments")
+    @ResponseBody
+    public Page<CommentResponse> findAllComment(@PathVariable("reviewId") Long reviewId){
+        Page<CommentResponse> commentResponses = commentService.findAllComment(reviewId, 0);
+        return commentResponses;
+    }
+
     // U(Update)
     @PostMapping("/comment/edit/{commentNum}")
     public String updateComment(@PathVariable("commentNum") Long commentNum, Model model, CommentRequest dto){
         try{
-            System.out.println("asdasd" + commentNum + dto.toString());
             String url = commentService.updateComment(commentNum, dto);
             model.addAttribute("msg", "댓글 수정완료");
             model.addAttribute("url", url);

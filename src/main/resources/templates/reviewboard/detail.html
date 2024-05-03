@@ -22,6 +22,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        // 댓글 C(Create) 작성
         function submitComment(e){
             e.preventDefault();
             var reviewId = $("#reviewId").val();
@@ -47,11 +48,112 @@
                 }
             })
         }
+
+        // 댓글 R(Read) 리스트
+        window.onload = () => {
+            findAllComment();
+        }
+
+        function findAllComment(){
+            var reviewId = $("#reviewId").val();
+            var _csrf = $("#_csrf").val();
+
+            $.ajax({
+                url : `/review/${reviewId}/comments`,
+                type : "GET",
+                dataType : "json",
+                success : function (res){
+                    if(!res.content.length){
+                        document.querySelector('.cm_list').innerHTML = '<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>';
+                        return false;
+                    }else {
+                        // 렌더링 할 HTML을 저장할 변수
+
+
+                        res.content.forEach(row => {
+                            let commentHtml = ``;
+                            commentHtml += `
+                                <div class="row">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-auto p-0">
+                                                    <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="35">
+                                                </div>
+                                                <div class="col-auto p-0 me-3">
+                                                    <span>${row.nickname}</span>
+                                                </div>
+                                                <div class="col-auto p-0 pe-1">
+                                                    <span>|</span>
+                                                </div>
+                                                <div class="col"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                                                </div>
+                                `;
+                            if(row.author) {
+                                commentHtml += `
+                                                <div class="col-auto d-flex">
+                                                    <!-- Button trigger modal -->
+                                                    <div class="pe-1">
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            <span>수정</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Modal -->
+                                                    <div>
+                                                        <form action="/comment/edit/${row.id}" method="post">
+                                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h2 class="modal-title fs-5" id="exampleModalLabel">수정</h2>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <textarea class="form-control" name="content">${row.content}</textarea>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                                                            <button type="submit" class="btn btn-primary">작성</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" name="_csrf" value="${_csrf}">
+                                                        </form>
+                                                    </div>
+
+                                                    <form action="/comment/delete/${row.id}" method="post" id="deleteForm">
+                                                        <button type="button" id="deleteBtn" class="btn btn-sm btn-outline-danger">삭제</button>
+                                                    </form>
+                                                </div>
+                                `;
+                            }
+                                commentHtml += `
+                                            </div>
+                                            <div class="row">
+                                                <span class="p-0">${row.content}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                            document.querySelector('.cm_list').innerHTML = commentHtml;
+                        });
+                    }
+                },
+                error : function (request, status, error){
+                    alert(error);
+                }
+            })
+        }
     </script>
 </head>
 
 <body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+<input type="hidden" id="reviewId" th:value="${review.getId()}">
+<input type="hidden" name="_csrf" th:value="${_csrf.token}">
 
 <div class="container">
 
@@ -101,25 +203,30 @@
             </td>
         </tr>
     </table>
+    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
     <div sec:authorize="isAuthenticated()">
         <div class="d-flex justify-content-end" th:if="${review.getNickname() == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
             <a class="btn btn-primary" th:href="@{'/review/edit/' + ${review.getId()}}">수정</a>
         </div>
-    </div>
-
-    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
-    <div sec:authorize="isAuthenticated()">
         <br>
         <hr>
         <form onsubmit="submitComment(event);">
             <div class="d-flex">
                 <textarea class="col-11" name="content" id="content"></textarea>
                 <input class="col-1 btn btn-primary" type="submit" value="작성">
+                <input type="hidden" id="_csrf" th:value="${_csrf.token}">
             </div>
-            <input type="hidden" id="reviewId" th:value="${review.getId()}">
-            <input type="hidden" id="_csrf" th:value="${_csrf.token}">
         </form>
         <br>
+    </div>
+
+    <div class="cm_list">
+
+    </div>
+
+    <!--/* 댓글 렌더링 영역 */-->
+    <div class="cm_list">
+
     </div>
 
     <!-- 댓글 리스트 -->
