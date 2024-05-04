@@ -22,6 +22,7 @@ public class CommentController {
 
     // C(Create)
     @PostMapping("/review/{reviewId}/comments")
+    @ResponseBody
     public ResponseEntity<?> createReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
         try{
             CommentResponse commentResponse = commentService.createReview(reviewId, dto);
@@ -55,29 +56,25 @@ public class CommentController {
 
     // U(Update)
     @PostMapping("/comment/edit/{commentNum}")
-    public String updateComment(@PathVariable("commentNum") Long commentNum, Model model, CommentRequest dto){
+    @ResponseBody
+    public ResponseEntity<?> updateComment(@PathVariable("commentNum") Long commentNum, @RequestBody CommentRequest dto){
         try{
-            String url = commentService.updateComment(commentNum, dto);
-            model.addAttribute("msg", "댓글 수정완료");
-            model.addAttribute("url", url);
+            commentService.updateComment(commentNum, dto);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e){
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return "message/main";
     }
 
     // D(Delete)
     @PostMapping("/comment/delete/{commentNum}")
-    public String deleteComment(@PathVariable("commentNum") Long commentNum, Model model){
+    @ResponseBody
+    public ResponseEntity<?> deleteComment(@PathVariable("commentNum") Long commentNum){
         try{
             String url = commentService.deleteComment(commentNum);
-            model.addAttribute("msg", "댓글 삭제완료");
-            model.addAttribute("url", url);
+            return ResponseEntity.status(HttpStatus.OK).body(url);
         } catch (IllegalArgumentException e){
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return "message/main";
     }
 }

@@ -118,7 +118,7 @@ public class CommentService {
     }
 
     // U(Update)
-    public String updateComment(Long commentNum, CommentRequest dto) {
+    public void updateComment(Long commentNum, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -135,7 +135,6 @@ public class CommentService {
                 if(comment.getUser().getId().equals(user.getId())){
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
-                    return "/review/" + comment.getReview().getId();
                 }else{
                     throw new IllegalArgumentException("댓글 작성자만 수정 d가능합니다.");
                 }
@@ -143,9 +142,8 @@ public class CommentService {
                 if(comment.getUser().getId().equals(user.getId())){
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
-                    return "/qna/" + comment.getQuestionAndAnswer().getId();
                 }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 s    가능합니다.");
+                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
                 }
             }
         }else{
