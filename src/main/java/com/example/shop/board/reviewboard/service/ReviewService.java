@@ -96,7 +96,7 @@ public class ReviewService {
                         .build());
     }
 
-    public ReviewResponse readDetail(Long boardNum, int commentP) {
+    public ReviewResponse readDetail(Long boardNum) {
         Review review = reviewRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -120,7 +120,7 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                .commentResponses(commentService.findAllComment(review.getId(), commentP))
+                .commentResponses(commentService.findAllComment(review.getId(), 0))
                 .view(review.incView())
                 .build();
     }

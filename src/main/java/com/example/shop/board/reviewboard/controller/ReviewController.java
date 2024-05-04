@@ -66,10 +66,9 @@ public class ReviewController {
     }
 
     @GetMapping("/review/{boardNum}")
-    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model, Authentication authentication,
-                                @RequestParam(value = "commentP", defaultValue = "0") int commentP){
+    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model){
         try {
-            ReviewResponse reviewResponse = reviewService.readDetail(boardNum, commentP);
+            ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
             model.addAttribute("review", reviewResponse);
 
             int currentPage = reviewResponse.getCommentResponses().getNumber(); // 현재 페이지 번호
