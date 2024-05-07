@@ -35,7 +35,7 @@
         }
 
 
-        // 댓글 C(Create) 작성
+        // C(Create)
         function submitComment(e){
             e.preventDefault();
             let reviewId = $("#reviewId").val();
@@ -63,7 +63,7 @@
             })
         }
 
-        // 댓글 R(Read) 리스트
+        // R(Read)
         function openModal(commentNum, content) {
             // 모달 내의 textarea에 댓글의 내용을 설정
             $("#edit-content").val(content);
@@ -75,8 +75,7 @@
             };
         }
 
-        function findAllComment(commentP){
-            console.log(commentP + "asdasdasd");
+        function findAllComment(page){
             let reviewId = $("#reviewId").val();
 
             $.ajax({
@@ -84,9 +83,10 @@
                 type : "GET",
                 dataType : "json",
                 data : {
-                    commentP : commentP,
+                    page : page,
                 },
                 success : function (res){
+                    console.log(res);
                     if(!res.content.length){
                         document.querySelector('.cm_list').innerHTML = '<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>';
                         return false;
@@ -142,6 +142,31 @@
                             document.querySelector(".cm_list").innerHTML = commentHtml;
                         });
                     }
+
+                    let pageHtml = "";
+                    pageHtml += `
+                        <li class="page-item ${(res.first) ? "disabled" : ""}">
+                            <a class="page-link" onclick="findAllComment(${res.number - 1})"">Previous</a>
+                        </li>
+                        `;
+
+                    let startPage = Math.max(0, res.number - 5);
+                    let endPage = Math.min(res.totalPages, res.number + 5);
+                    for(let page = startPage; page < endPage ; page++){
+                        pageHtml += `
+                            <li class="page-item ${(page == res.number) ? 'active' : ''}">
+                                <a class="page-link" onclick="findAllComment(${page})">${page + 1}</a>
+                            </li>
+                        `;
+                    }
+
+                    pageHtml += `
+                        <li class="page-item ${(res.last) ? "disabled" : ""}">
+                            <a class="page-link" onclick="findAllComment(${res.number + 1})">Previous</a>
+                        </li>
+                    `;
+
+                    document.querySelector(".page_list").innerHTML = pageHtml;
                 },
                 error : function (request, status, error){
                     console.log("R " + error);
@@ -149,7 +174,7 @@
             })
         }
 
-        // 댓글 U(Update) 수정
+        // U(Update)
         function editComment(id){
             event.preventDefault(); // 폼 기본 동작 방지
             let commentNum = id;
@@ -183,7 +208,7 @@
             })
         }
 
-        // 댓글 D(Delete) 삭제
+        // D(Delete)
         function deleteComment(id){
             let isChk = false;
             if (!confirm("삭제하시겠습니까?")){ return; }
@@ -307,22 +332,9 @@
         </form>
     </div>
 
-
+    <!--페이징-->
     <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li th:classappend="${!comments.hasPrevious()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:attr="onclick=|findAllComment(${comments.getNumber() - 1})|">Previous</a>
-            </li>
-
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
-                th:classappend="${page == comments.number} ? 'active' : ''">
-                <a class="page-link" th:text="${page} + 1" th:href="@{|?commentP=${page}|}"></a>
-            </li>
-
-            <li th:classappend="${!comments.hasNext()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:attr="onclick=|findAllComment(${comments.getNumber() + 1})|">Next</a>
-            </li>
-
+        <ul class="pagination justify-content-center page_list">
         </ul>
     </nav>
 

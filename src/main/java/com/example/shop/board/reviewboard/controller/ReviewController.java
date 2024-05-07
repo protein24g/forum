@@ -71,12 +71,6 @@ public class ReviewController {
             ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
             model.addAttribute("review", reviewResponse);
 
-            int currentPage = reviewResponse.getCommentResponses().getNumber(); // 현재 페이지 번호
-            int totalPages = reviewResponse.getCommentResponses().getTotalPages();
-
-            model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
-            model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-            model.addAttribute("comments", reviewResponse.getCommentResponses());
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna");

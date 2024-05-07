@@ -12,6 +12,16 @@
             findAllReview();
         })
 
+        // R(Read)
+        function search(){
+            // 옵션 선택 요소의 value 값을 가져옵니다.
+            var optionValue = document.querySelector("select[name='option']").value;
+            // 검색어 입력란의 value 값을 가져옵니다.
+            var keyword = document.querySelector("input[name='keyword']").value;
+
+            findAllReview(keyword, 0, optionValue);
+        }
+
         function findAllReview(keyword, page, option){
             $.ajax({
                 url : `/api/review`,
@@ -22,12 +32,10 @@
                     page : page,
                     option : option
                 },
-                success : function (res){
-                    console.log(res);
+                success : function (res) {
                     let reviewHtml = "";
 
                     res.content.forEach(row => {
-                        console.log(row.title);
                         reviewHtml += `
                             <tr id=${row.id}>
                                 <td>${row.id}</td>
@@ -38,18 +46,42 @@
                             </tr>
                         `;
                     });
+
+                    let pageHtml = "";
+                    pageHtml += `
+                        <li class="page-item ${(res.first) ? "disabled" : ""}">
+                            <a class="page-link" onclick="findAllReview(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                        </li>
+                        `;
+
+                    let startPage = Math.max(0, res.number - 5);
+                    let endPage = Math.min(res.totalPages, res.number + 5);
+                    for(let page = startPage; page < endPage ; page++){
+                        pageHtml += `
+                            <li class="page-item ${(page == res.number) ? 'active' : ''}">
+                                <a class="page-link" onclick="findAllReview(${keyword}, ${page}, ${option})">${page + 1}</a>
+                            </li>
+                        `;
+                    }
+
+                    pageHtml += `
+                        <li class="page-item ${(res.last) ? "disabled" : ""}">
+                            <a class="page-link" onclick="findAllReview(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                        </li>
+                    `;
+
                     document.querySelector(".review_list").innerHTML = reviewHtml;
+                    document.querySelector(".page_list").innerHTML = pageHtml;
                     addClickEventToRows();
                 },
-                error : function (xhr, status, error){
+                error: function (xhr, status, error) {
                     alert(xhr, status, error);
                 }
             })
         }
 
-        function addClickEventToRows(){
-            document.querySelectorAll("tbody tr").forEach(function (tr){ // tbody 내에 모든 tr 태그를 찾아서 for
-                console.log(tr);
+        function addClickEventToRows() {
+            document.querySelectorAll("tbody tr").forEach(function (tr) { // tbody 내에 모든 tr 태그를 찾아서 for
                 tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
                     window.location.href = "/review/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
@@ -64,6 +96,7 @@
 <div class="container">
     <br><br>
     <h2>리뷰</h2>
+    <!--검색-->
     <div class="row">
         <div class="col-8"></div>
         <div class="col-4">
@@ -79,7 +112,7 @@
                         <input class="form-control me-2" type="search" name="keyword" aria-label="Search">
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-success" type="submit">검색</button>
+                        <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
                     </div>
                 </form>
             </div>
@@ -87,42 +120,24 @@
     </div>
     <br>
 
+    <!--게시글 상세정보-->
     <table class="table table-hover text-center">
         <thead class="table-light">
-        <tr>
-            <th class="col-1">#</th>
-            <th class="col-1">조회수</th>
-            <th class="col-2">닉네임</th>
-            <th class="col-2">날짜</th>
-            <th class="col-6">제목</th>
-        </tr>
+            <tr>
+                <th class="col-1">#</th>
+                <th class="col-1">조회수</th>
+                <th class="col-2">닉네임</th>
+                <th class="col-2">날짜</th>
+                <th class="col-6">제목</th>
+            </tr>
         </thead>
         <tbody class="review_list">
-            <tr th:each="board : ${boards}" th:id="${board.getId()}">
-                <td th:text="${board.getId()}"></td>
-                <td th:text="${board.getView()}"></td>
-                <td th:text="${board.getNickname()}"></td>
-                <td th:text="${board.getCreateDate() != null ? #temporals.format(board.getCreateDate(), 'yyyy-MM-dd HH:mm:ss') : ''}"></td>
-                <td th:text="${board.getTitle()} + ' [' + ${board.getCommentCount()} + ']'"></td>
-            </tr>
         </tbody>
     </table>
 
+    <!--페이징-->
     <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li th:classappend="${!boards.hasPrevious()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:href="@{/review(page=${boards.getNumber() - 1})}">Previous</a>
-            </li>
-
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage, endPage)}"
-                th:classappend="${page == boards.number} ? 'active' : ''">
-                <a class="page-link" th:text="${page} + 1" th:href="@{|?page=${page}|}"></a>
-            </li>
-
-            <li th:classappend="${!boards.hasNext()} ? disabled : '' " class="page-item">
-                <a class="page-link" th:href="@{/review(page=${boards.getNumber() + 1})}">Next</a>
-            </li>
-
+        <ul class="pagination justify-content-center page_list">
         </ul>
     </nav>
 

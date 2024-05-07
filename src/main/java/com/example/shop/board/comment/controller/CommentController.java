@@ -50,8 +50,8 @@ public class CommentController {
     @GetMapping("/review/{reviewId}/comments")
     @ResponseBody
     public Page<CommentResponse> findAllComment(@PathVariable("reviewId") Long reviewId,
-                                                @RequestParam(name = "commentP", defaultValue = "0") int commentP){
-        Page<CommentResponse> commentResponses = commentService.findAllComment(reviewId, commentP);
+                                                @RequestParam(name = "page", defaultValue = "0") int page){
+        Page<CommentResponse> commentResponses = commentService.findAllComment(reviewId, page);
         return commentResponses;
     }
 

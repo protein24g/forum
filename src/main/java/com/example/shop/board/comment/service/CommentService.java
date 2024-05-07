@@ -99,14 +99,14 @@ public class CommentService {
     }
 
     // R(Read)
-    public Page<CommentResponse> findAllComment(Long reviewId, int commentP) {
+    public Page<CommentResponse> findAllComment(Long reviewId, int page) {
         String username;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             username = customUserDetails.getUsername();
         } else { username = ""; }
-        Pageable pageable = PageRequest.of(commentP, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<Comment> comments = commentRepository.findByReviewId(reviewId, pageable);
         return comments.map(comment -> CommentResponse.builder()
                 .id(comment.getId())

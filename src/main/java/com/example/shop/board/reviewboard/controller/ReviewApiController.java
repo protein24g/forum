@@ -19,24 +19,17 @@ public class ReviewApiController {
 
     // R(Read)
     @GetMapping("/api/review")
-    public ResponseEntity<?> reviewP(Model model,
+    public ResponseEntity<?> reviewP(
                           @RequestParam(value = "keyword", required = false) String keyword,
                           @RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "option", required = false) String option) {
         Page<ReviewResponse> reviewResponses;
-        System.out.println(keyword + Integer.toString(page) + option);
-        if (keyword != null && option != null) { // 키워드가 있으면
+        System.out.println("페이지 " + page + " 요청됨");
+        if (keyword != null) { // 키워드가 있으면
             reviewResponses = reviewService.page(keyword, page, option); // 검색 페이징
         } else {
             reviewResponses = reviewService.page("", page, ""); // 기본 리스트 페이징
         }
-//
-//        int currentPage = reviewResponses.getNumber(); // 현재 페이지 번호
-//        int totalPages = reviewResponses.getTotalPages();
-//        model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
-//        model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-//        model.addAttribute("boards", reviewResponses);
-//        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 뷰에서 사용할 수 있도록 함
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponses);
     }
 
@@ -45,13 +38,6 @@ public class ReviewApiController {
         try {
             ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
             return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
-
-//            int currentPage = reviewResponse.getCommentResponses().getNumber(); // 현재 페이지 번호
-//            int totalPages = reviewResponse.getCommentResponses().getTotalPages();
-//
-//            model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
-//            model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-//            model.addAttribute("comments", reviewResponse.getCommentResponses());
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
