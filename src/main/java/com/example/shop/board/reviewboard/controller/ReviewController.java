@@ -68,9 +68,9 @@ public class ReviewController {
     @GetMapping("/review/{boardNum}")
     public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model){
         try {
-            ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
-            model.addAttribute("review", reviewResponse);
-
+            String writer = reviewService.getWriter(boardNum);
+            model.addAttribute("writer", writer);
+            model.addAttribute("reviewId", boardNum);
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna");

@@ -139,8 +139,8 @@
                                     </div>
                                 </div>
                                 `;
-                            document.querySelector(".cm_list").innerHTML = commentHtml;
                         });
+                        document.querySelector(".cm_list").innerHTML = commentHtml;
                     }
 
                     let pageHtml = "";
@@ -237,7 +237,7 @@
 
 <body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
-<input type="hidden" id="reviewId" th:value="${review.getId()}">
+<input type="hidden" id="reviewId" th:value="${reviewId}">
 <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
 
 <div class="container">
@@ -288,10 +288,11 @@
             </td>
         </tr>
     </table>
+
     <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
     <div sec:authorize="isAuthenticated()">
-        <div class="d-flex justify-content-end" th:if="${review.getNickname() == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
-            <a class="btn btn-primary" th:href="@{'/review/edit/' + ${review.getId()}}">수정</a>
+        <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
+            <a class="btn btn-primary" th:href="@{'/review/edit/' + ${reviewId}}">수정</a>
         </div>
         <br>
         <hr>

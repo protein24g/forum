@@ -125,6 +125,13 @@ public class ReviewService {
                 .build();
     }
 
+    public String getWriter(Long boardNum) {
+        Review review = reviewRepository.findById(boardNum)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        return review.getUser().getNickname();
+    }
+
     // U(Update)
     public ReviewResponse editP(Long boardNum) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
