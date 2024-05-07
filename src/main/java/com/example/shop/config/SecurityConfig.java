@@ -23,7 +23,8 @@ public class SecurityConfig {
                         .requestMatchers("/review/create", "/review/edit/*", "/qna/create", "/qna/edit/*").authenticated()
                         .requestMatchers("/", "/main", "/login", "/loginProc",
                                 "/join", "/joinProc", "/qna", "/qna/*", "/review", "/review/*",
-                                "/checkLoginId", "/checkNickname", "/review/*/comments", "/create/*/comments").permitAll()
+                                "/checkLoginId", "/checkNickname", "/review/*/comments", "/create/*/comments",
+                                "/api/review", "/api/review/*").permitAll()
 
                         .anyRequest().authenticated());
 
