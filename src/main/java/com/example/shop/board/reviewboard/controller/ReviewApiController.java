@@ -24,7 +24,6 @@ public class ReviewApiController {
                           @RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "option", required = false) String option) {
         Page<ReviewResponse> reviewResponses;
-        System.out.println("페이지 " + page + " 요청됨");
         if (keyword != null) { // 키워드가 있으면
             reviewResponses = reviewService.page(keyword, page, option); // 검색 페이징
         } else {
