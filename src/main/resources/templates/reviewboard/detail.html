@@ -22,13 +22,13 @@
                 dataType : "json",
                 success : function (res){
                     console.log(res.content);
-                    document.getElementById("createDate").innerText = res.createDate;
+                    document.getElementById("createDate").innerText = res.createDate.replace('T', ' ').slice(0, 19);
                     document.getElementById("nickname").innerText = res.nickname;
                     document.getElementById("view").innerText = res.view;
                     document.getElementById("title").innerText = res.title;
                     document.getElementById("riview_content").innerText = res.content;
                 },
-                error : function (error){
+                error : function (xhr, status, error){
                     console.log("detail " + error);
                 }
             })
@@ -56,9 +56,9 @@
                     $("#content").val('');
                     findAllComment();
                 },
-                error : function(xhr){
+                error : function(xhr, status, error){
                     // 오류 발생 시 서버에서 보낸 에러 메시지 출력
-                    console.log("C " + xhr.responseText);
+                    console.log("C " + error);
                 }
             })
         }
@@ -111,6 +111,7 @@
                                                     <span>|</span>
                                                 </div>
                                                 <div class="col"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                                                    <span>${row.createDate.replace('T', ' ').slice(0, 19)}</span>
                                                 </div>
                                 `;
                             if(row.author) {
@@ -201,8 +202,8 @@
                     //댓글 리스트 함수 호출
                     findAllComment();
                 },
-                error : function (msg){
-                    console.log("U " + msg);
+                error : function (xhr, status, error){
+                    console.log("U " + error);
                     window.location.href = "/";
                 }
             })
@@ -226,8 +227,8 @@
                     console.log("댓글 삭제 성공");
                     window.location.href = url;
                 },
-                error : function (msg){
-                    console.log("D " + msg);
+                error : function (xhr, status, error){
+                    console.log("D " + error);
                     window.location.href = "/";
                 }
             })

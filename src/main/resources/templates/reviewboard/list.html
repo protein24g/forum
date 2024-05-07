@@ -41,7 +41,7 @@
                                 <td>${row.id}</td>
                                 <td>${row.view}</td>
                                 <td>${row.nickname}</td>
-                                <td>${row.createDate}</td>
+                                <td>${row.createDate.replace('T', ' ').slice(0, 19)}</td>
                                 <td>${row.title} [${row.commentCount}]</td>
                             </tr>
                         `;
@@ -75,7 +75,7 @@
                     addClickEventToRows();
                 },
                 error: function (xhr, status, error) {
-                    alert(xhr, status, error);
+                    console("error")
                 }
             })
         }
@@ -96,6 +96,7 @@
 <div class="container">
     <br><br>
     <h2>리뷰</h2>
+
     <!--검색-->
     <div class="row">
         <div class="col-8"></div>
