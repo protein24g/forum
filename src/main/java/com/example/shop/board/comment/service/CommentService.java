@@ -33,7 +33,7 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
 
     // C(Create)
-    public CommentResponse createReview(Long boardNum, CommentRequest dto) {
+    public CommentResponse createCommentForReview(Long reviewId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -43,7 +43,7 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            Review review = reviewRepository.findById(boardNum)
+            Review review = reviewRepository.findById(reviewId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
             Comment comment = Comment.builder()
@@ -54,6 +54,7 @@ public class CommentService {
                     .build();
             commentRepository.save(comment);
             review.addComment(comment);
+
             return CommentResponse.builder()
                     .id(comment.getId())
                     .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
@@ -66,7 +67,7 @@ public class CommentService {
         }
     }
 
-    public void createQna(Long boardNum, CommentRequest dto) {
+    public void createCommentForQna(Long qnaId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -76,7 +77,7 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
+            QuestionAndAnswer questionAndAnswer = qnaRepository.findById(qnaId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
             if(user.getRole().equals(User.Role.ADMIN)){ // 관리자가 댓글을 달면 답변완료 처리
@@ -99,7 +100,7 @@ public class CommentService {
     }
 
     // R(Read)
-    public Page<CommentResponse> findAllComment(Long reviewId, int page) {
+    public Page<CommentResponse> getAllCommentsForReview(Long reviewId, int page) {
         String username;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
@@ -118,7 +119,7 @@ public class CommentService {
     }
 
     // U(Update)
-    public void updateComment(Long commentNum, CommentRequest dto) {
+    public void updateComment(Long commentId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -128,7 +129,7 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글
-            Comment comment = commentRepository.findById(commentNum)
+            Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
             if(comment.getReview() != null){ // 리뷰의 댓글이면
@@ -152,7 +153,7 @@ public class CommentService {
     }
 
     // D(Delete)
-    public String deleteComment(Long commentNum){
+    public String deleteComment(Long commentId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -162,7 +163,7 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글
-            Comment comment = commentRepository.findById(commentNum)
+            Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
             if (comment.getReview() != null) { // 리뷰의 댓글이면

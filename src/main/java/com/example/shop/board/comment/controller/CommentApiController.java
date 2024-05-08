@@ -15,11 +15,10 @@ public class CommentApiController {
     private final CommentService commentService;
 
     // C(Create)
-    @PostMapping("/review/{reviewId}/comments")
-    @ResponseBody
-    public ResponseEntity<?> createReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
+    @PostMapping("/api/reviews/{reviewId}/comments")
+    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
         try{
-            CommentResponse commentResponse = commentService.createReview(reviewId, dto);
+            CommentResponse commentResponse = commentService.createCommentForReview(reviewId, dto);
             return ResponseEntity.status(HttpStatus.OK).body(commentResponse);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -27,19 +26,18 @@ public class CommentApiController {
     }
 
     // R(Read)
-    @GetMapping("/review/{reviewId}/comments")
-    @ResponseBody
-    public Page<CommentResponse> findAllComment(@PathVariable("reviewId") Long reviewId,
+    @GetMapping("/reviews/{reviewId}/comments")
+    public Page<CommentResponse> getCommentsForReview(@PathVariable("reviewId") Long reviewId,
                                                 @RequestParam(name = "page", defaultValue = "0") int page){
-        Page<CommentResponse> commentResponses = commentService.findAllComment(reviewId, page);
+        Page<CommentResponse> commentResponses = commentService.getAllCommentsForReview(reviewId, page);
         return commentResponses;
     }
 
     // U(Update)
-    @PostMapping("/comment/edit/{commentNum}")
-    public ResponseEntity<?> updateComment(@PathVariable("commentNum") Long commentNum, @RequestBody CommentRequest dto){
+    @PatchMapping("/api/comment/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequest dto){
         try{
-            commentService.updateComment(commentNum, dto);
+            commentService.updateComment(commentId, dto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -47,10 +45,10 @@ public class CommentApiController {
     }
 
     // D(Delete)
-    @PostMapping("/comment/delete/{commentNum}")
-    public ResponseEntity<?> deleteComment(@PathVariable("commentNum") Long commentNum){
+    @DeleteMapping("/api/comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId){
         try{
-            String url = commentService.deleteComment(commentNum);
+            String url = commentService.deleteComment(commentId);
             return ResponseEntity.status(HttpStatus.OK).body(url);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

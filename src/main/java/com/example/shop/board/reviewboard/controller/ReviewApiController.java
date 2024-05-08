@@ -15,7 +15,7 @@ public class ReviewApiController {
     private final ReviewService reviewService;
 
     // R(Read)
-    @GetMapping("/api/review")
+    @GetMapping("/api/reviews")
     public ResponseEntity<?> reviewP(
                           @RequestParam(value = "keyword", required = false) String keyword,
                           @RequestParam(value = "page", defaultValue = "0") int page,
@@ -29,10 +29,10 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponses);
     }
 
-    @GetMapping("/api/review/{boardNum}")
-    public ResponseEntity<?> loadReviewDetails(@PathVariable("boardNum") Long boardNum){
+    @GetMapping("/api/reviews/{reviewId}")
+    public ResponseEntity<?> getReviewDetail(@PathVariable("reviewId") Long reviewId){
         try {
-            ReviewResponse reviewResponse = reviewService.readDetail(boardNum);
+            ReviewResponse reviewResponse = reviewService.readDetail(reviewId);
             return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -40,10 +40,10 @@ public class ReviewApiController {
     }
 
     // U(Update)
-    @PatchMapping("/api/review/{boardNum}")
-    public ResponseEntity<?> editReviewApi(@PathVariable("boardNum") Long boardNum, @RequestBody ReviewRequest dto){
+    @PatchMapping("/api/review/{reviewId}")
+    public ResponseEntity<?> updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest dto){
         try{
-            ReviewResponse reviewResponse = reviewService.edit(boardNum, dto);
+            ReviewResponse reviewResponse = reviewService.edit(reviewId, dto);
             return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

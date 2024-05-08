@@ -120,7 +120,7 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                .commentResponses(commentService.findAllComment(review.getId(), 0))
+                .commentResponses(commentService.getAllCommentsForReview(review.getId(), 0))
                 .view(review.incView())
                 .build();
     }
@@ -131,32 +131,6 @@ public class ReviewService {
 
         return review.getUser().getNickname();
     }
-
-    // U(Update)
-//    public ReviewResponse editP(Long boardNum) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication.getPrincipal() instanceof CustomUserDetails){
-//            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-//
-//            Review review = reviewRepository.findById(boardNum)
-//                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-//
-//            if(review.getUser().getId().equals(customUserDetails.getId())){
-//                return ReviewResponse.builder()
-//                        .id(review.getId())
-//                        .nickname(review.getUser().getNickname())
-//                        .title(review.getTitle())
-//                        .content(review.getContent())
-//                        .createDate(review.getCreateDate())
-//                        .view(review.getView())
-//                        .build();
-//            }else{
-//                throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다.");
-//            }
-//        }else {
-//            throw new IllegalArgumentException("로그인 후 이용하세요.");
-//        }
-//    }
 
     public ReviewResponse edit(Long boardNum, ReviewRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

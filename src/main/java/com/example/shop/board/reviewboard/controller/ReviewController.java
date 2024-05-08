@@ -37,17 +37,17 @@ public class ReviewController {
     }
 
     // R(Read)
-    @GetMapping("/review")
-    public String reviewP() {
+    @GetMapping("/reviews")
+    public String listReviews() {
         return "/reviewboard/list";
     }
 
-    @GetMapping("/review/{boardNum}")
-    public String reviewDetailP(@PathVariable("boardNum") Long boardNum, Model model){
+    @GetMapping("/reviews/{reviewId}")
+    public String showReviewDetail(@PathVariable("reviewId") Long reviewId, Model model){
         try {
-            String writer = reviewService.getWriter(boardNum);
+            String writer = reviewService.getWriter(reviewId);
             model.addAttribute("writer", writer);
-            model.addAttribute("reviewId", boardNum);
+            model.addAttribute("reviewId", reviewId);
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/qna");
@@ -55,19 +55,4 @@ public class ReviewController {
         }
         return "reviewboard/detail";
     }
-
-    @PostMapping("/review/edit/{boardNum}")
-    public String edit(@PathVariable("boardNum") Long boardNum, Model model, ReviewRequest dto){
-        try{
-            ReviewResponse reviewResponse = reviewService.edit(boardNum, dto);
-            model.addAttribute("msg", "게시글 수정 완료.");
-            model.addAttribute("url", "/review/" + boardNum);
-        } catch (IllegalArgumentException e){
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/review/" + boardNum);
-        }
-        return "message/main";
-    }
-
-    // D(Delete)
 }

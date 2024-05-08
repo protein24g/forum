@@ -22,18 +22,18 @@ public class CommentController {
 
 
     // C(Create)
-    @PostMapping("/qna/{boardNum}/comments")
-    public String createQna(@PathVariable("boardNum") Long boardNum, Model model, CommentRequest dto) {
+    @PostMapping("/qna/{reviewId}/comments")
+    public String createQna(@PathVariable("reviewId") Long reviewId, Model model, CommentRequest dto) {
         try {
-            commentService.createQna(boardNum, dto);
+            commentService.createCommentForQna(reviewId, dto);
             model.addAttribute("msg", "댓글 작성완료");
-            model.addAttribute("url", "/qna/" + boardNum);
+            model.addAttribute("url", "/qna/" + reviewId);
 
         } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/qna/" + boardNum);
+            model.addAttribute("url", "/qna/" + reviewId);
         }
-        return "redirect:/qna/" + boardNum;
+        return "redirect:/qna/" + reviewId;
     }
 
 

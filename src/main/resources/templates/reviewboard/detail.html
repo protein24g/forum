@@ -10,15 +10,63 @@
     <script>
         // 페이지 로드시 호출되는 함수
         window.onload = () => {
-            loadReviewDetails();
-            findAllComment(0);
+            getReviewDetails();
+            getAllComment(0);
         }
 
-        // Detail 페이지 로드
-        function loadReviewDetails(){
-            const reviewId = $("#reviewId").val();
+        // -------------- //
+        function editReview(){
+            $("#edit_title").val($("#title").text())
+            $("#edit_review_content").val($("#review_content").text())
+
+            document.getElementById("editReviewButton").onclick = function () {
+                updateReview();
+            }
+        }
+
+        function editComment(commentId, content) {
+            // 모달 내의 textarea에 댓글의 내용을 설정
+            $("#edit_content").val(content);
+
+            // '작성' 버튼에 onclick 이벤트 리스너 설정
+            // editComment 함수를 호출하도록 설정하며, commentId을 인자로 전달
+            document.getElementById("editCommentButton").onclick = function() {
+                updateComment(commentId);
+            };
+        }
+        // -------------- //
+
+        // C(Create)
+        function createUserComment(){
+            let reviewId = $("#reviewId").val();
+            let content = $("#content").val();
+            let _csrf = $("#_csrf").val();
             $.ajax({
-                url : `/api/review/${reviewId}`,
+                url : `/api/reviews/${reviewId}/comments`,
+                type : "POST",
+                contentType : "application/json",
+                headers : {
+                    "X-CSRF-TOKEN" : _csrf
+                },
+                data : JSON.stringify({ content : content }),
+                success : function (res){
+                    // 가정: 성공 응답(response)가 JSON 객체일 때, 댓글 내용 출력
+                    // 실제로 서버에서 JSON 응답을 보내는 경우, 아래와 같이 응답을 JSON으로 간주하고 처리
+                    alert("댓글 작성완료");
+                    $("#content").val('');
+                    getAllComment(0);
+                },
+                error : function (xhr){
+                    alert(xhr.responseText);
+                }
+            })
+        }
+
+        // R(Read)
+        function getReviewDetails(){ // 게시글 Detail
+            let reviewId = $("#reviewId").val();
+            $.ajax({
+                url : `/api/reviews/${reviewId}`,
                 type : "GET",
                 dataType : "json",
                 success : function (res){
@@ -34,42 +82,15 @@
             })
         }
 
-        // C(Create)
-        function submitComment(e){
-            e.preventDefault();
-            let reviewId = $("#reviewId").val();
-            let content = $("#content").val();
-            let _csrf = $("#_csrf").val();
-            $.ajax({
-                url : `/review/${reviewId}/comments`,
-                type : "POST",
-                contentType : "application/json",
-                headers : {
-                    "X-CSRF-TOKEN" : _csrf
-                },
-                data : JSON.stringify({ content : content }),
-                success : function (res){
-                    // 가정: 성공 응답(response)가 JSON 객체일 때, 댓글 내용 출력
-                    // 실제로 서버에서 JSON 응답을 보내는 경우, 아래와 같이 응답을 JSON으로 간주하고 처리
-                    console.log("댓글 작성완료");
-                    $("#content").val('');
-                    findAllComment();
-                },
-                error : function (xhr){
-                    alert(xhr.responseText);
-                }
-            })
-        }
-
-        function findAllComment(page){
+        function getAllComment(page){
             let reviewId = $("#reviewId").val();
 
             $.ajax({
-                url : `/review/${reviewId}/comments`,
+                url : `/reviews/${reviewId}/comments`,
                 type : "GET",
                 dataType : "json",
                 data : {
-                    page : page,
+                    page : page
                 },
                 success : function (res){
                     if(!res.content.length){
@@ -116,7 +137,7 @@
                                                 </div>
                                 `;
                             }
-                                commentHtml += `
+                            commentHtml += `
                                             </div>
                                             <div class="row">
                                                 <span class="p-0">${row.content}</span>
@@ -132,7 +153,7 @@
                     let pageHtml = "";
                     pageHtml += `
                         <li class="page-item ${(res.first) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findAllComment(${res.number - 1})"">Previous</a>
+                            <a class="page-link" onclick="getAllComment(${res.number - 1})"">Previous</a>
                         </li>
                         `;
 
@@ -141,14 +162,14 @@
                     for(let page = startPage; page < endPage ; page++){
                         pageHtml += `
                             <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                <a class="page-link" onclick="findAllComment(${page})">${page + 1}</a>
+                                <a class="page-link" onclick="getAllComment(${page})">${page + 1}</a>
                             </li>
                         `;
                     }
 
                     pageHtml += `
                         <li class="page-item ${(res.last) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findAllComment(${res.number + 1})">Previous</a>
+                            <a class="page-link" onclick="getAllComment(${res.number + 1})">Previous</a>
                         </li>
                     `;
 
@@ -160,29 +181,8 @@
             })
         }
 
-        // R(Read)
-        function editReview(){
-            $("#edit_title").val($("#title").text())
-            $("#edit_review_content").val($("#review_content").text())
-
-            document.getElementById("editReviewButton").onclick = function () {
-                editReviewApi();
-            }
-        }
-
-        function editComment(commentNum, content) {
-            // 모달 내의 textarea에 댓글의 내용을 설정
-            $("#edit_content").val(content);
-
-            // '작성' 버튼에 onclick 이벤트 리스너 설정
-            // editComment 함수를 호출하도록 설정하며, commentNum을 인자로 전달
-            document.getElementById("editCommentButton").onclick = function() {
-                editCommentApi(commentNum);
-            };
-        }
-
         // U(Update)
-        function editReviewApi() {
+        function updateReview() {
             let reviewId = $("#reviewId").val();
             let _csrf = $("#_csrf").val();
 
@@ -205,7 +205,7 @@
                 success : function (res){
                     // 모달을 닫습니다.
                     modalInstance.hide();
-                    loadReviewDetails();
+                    getReviewDetails();
                 },
                 error : function (xhr){
                     modalInstance.hide();
@@ -214,9 +214,8 @@
             })
         }
 
-        function editCommentApi(id){
-            event.preventDefault(); // 폼 기본 동작 방지
-            let commentNum = id;
+        function updateComment(id){
+            let commentId = id;
             let content = $("#edit_content").val();
             let _csrf = $("#_csrf").val();
 
@@ -226,8 +225,8 @@
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             $.ajax({
-                url : `/comment/edit/${commentNum}`,
-                type : "POST",
+                url : `/api/comment/${commentId}`,
+                type : "PATCH",
                 contentType : "application/json",
                 headers : {
                     "X-CSRF-TOKEN" : _csrf
@@ -237,7 +236,7 @@
                     // 모달을 닫습니다.
                     modalInstance.hide();
                     //댓글 리스트 함수 호출
-                    findAllComment();
+                    getAllComment();
                 },
                 error : function (xhr){
                     modalInstance.hide();
@@ -249,12 +248,12 @@
         // D(Delete)
         function deleteComment(id){
             if (!confirm("삭제하시겠습니까?")){ return; }
-            let commentNum = id;
+            let commentId = id;
             let _csrf = $("#_csrf").val();
 
             $.ajax({
-                url : `/comment/delete/${commentNum}`,
-                type : "POST",
+                url : `/api/comment/${commentId}`,
+                type : "DELETE",
                 contentType : "application/json",
                 headers : {
                     "X-CSRF-TOKEN" : _csrf
@@ -275,7 +274,7 @@
 <body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <input type="hidden" id="reviewId" th:value="${reviewId}">
-<input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
+<input type="hidden" id="_csrf" name="_csrf" th:if="${session != null}" th:value="${_csrf.token}">
 
 <div class="container">
 
@@ -362,10 +361,10 @@
         </div>
         <br>
         <hr>
-        <form onsubmit="submitComment(event);">
+        <form>
             <div class="d-flex">
                 <textarea class="col-11" name="comment_content" id="content"></textarea>
-                <input class="col-1 btn btn-primary" type="submit" value="작성">
+                <input class="col-1 btn btn-primary" type="button" onclick="createUserComment()" value="작성">
             </div>
         </form>
         <br>
@@ -378,25 +377,23 @@
 
     <!-- 댓글 수정 Modal -->
     <div>
-        <form>
-            <div class="modal fade" id="comment_modalView" tabindex="-1" aria-labelledby="comment_modal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title fs-5" id="comment_modal">수정</h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <textarea class="form-control" name="content" id="edit_content"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                            <button type="button" class="btn btn-primary" id="editCommentButton">작성</button>
-                        </div>
+        <div class="modal fade" id="comment_modalView" tabindex="-1" aria-labelledby="comment_modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="comment_modal">수정</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="form-control" name="content" id="edit_content"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-primary" id="editCommentButton">작성</button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <!--페이징-->
