@@ -33,7 +33,6 @@
             })
         }
 
-
         // C(Create)
         function submitComment(e){
             e.preventDefault();
@@ -104,7 +103,7 @@
                                                 <div class="col-auto d-flex">
                                                     <!-- Button trigger modal -->
                                                     <div class="pe-1">
-                                                        <button onclick="editComment(${row.id}, '${row.content}')" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="comment_modalView">
+                                                        <button onclick="editComment(${row.id}, '${row.content}')" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#comment_modalView">
                                                             <span>수정</span>
                                                         </button>
                                                         <button onclick="deleteComment(${row.id})" type="button" class="btn btn-sm btn-outline-danger">
@@ -160,6 +159,7 @@
             })
         }
 
+        // R(Read)
         function editReview(){
             $("#edit_title").val($("#title").text())
             $("#edit_review_content").val($("#review_content").text())
@@ -169,7 +169,6 @@
             }
         }
 
-        // R(Read)
         function editComment(commentNum, content) {
             // 모달 내의 textarea에 댓글의 내용을 설정
             $("#edit_content").val(content);
@@ -205,6 +204,7 @@
                 success : function (res){
                     // 모달을 닫습니다.
                     modalInstance.hide();
+                    loadReviewDetails();
                 },
                 error : function (xhr){
                     modalInstance.hide();
@@ -212,7 +212,6 @@
                 }
             })
         }
-
 
         function editCommentApi(id){
             event.preventDefault(); // 폼 기본 동작 방지
@@ -335,7 +334,7 @@
                 수정
             </button>
 
-            <!-- Modal -->
+            <!-- 게시글 Modal -->
             <div class="modal fade" id="review_modalView" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -375,7 +374,7 @@
 
     </div>
 
-    <!-- Modal -->
+    <!-- 댓글 Modal -->
     <div>
         <form>
             <div class="modal fade" id="comment_modalView" tabindex="-1" aria-labelledby="comment_modal" aria-hidden="true">

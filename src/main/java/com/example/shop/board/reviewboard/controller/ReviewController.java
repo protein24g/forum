@@ -56,13 +56,6 @@ public class ReviewController {
         return "reviewboard/detail";
     }
 
-    // U(Update)
-    @GetMapping("/review/edit/{boardNum}")
-    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
-        model.addAttribute("reviewId", boardNum);
-        return "reviewboard/edit";
-    }
-
     @PostMapping("/review/edit/{boardNum}")
     public String edit(@PathVariable("boardNum") Long boardNum, Model model, ReviewRequest dto){
         try{
