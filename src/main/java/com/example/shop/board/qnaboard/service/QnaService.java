@@ -61,6 +61,13 @@ public class QnaService {
     }
 
     // R(Read)
+    public String getWriter(Long boardNum){
+        QuestionAndAnswer questionAndAnswer = qnaRepository.findById(boardNum)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        return questionAndAnswer.getUser().getNickname();
+    }
+
     public Page<QnaResponse> page(String keyword, int page, String option) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<QuestionAndAnswer> questionAndAnswers = null;

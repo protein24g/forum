@@ -21,15 +21,14 @@
                 type : "GET",
                 dataType : "json",
                 success : function (res){
-                    console.log(res.content);
                     document.getElementById("createDate").innerText = res.createDate.replace('T', ' ').slice(0, 19);
                     document.getElementById("nickname").innerText = res.nickname;
                     document.getElementById("view").innerText = res.view;
                     document.getElementById("title").innerText = res.title;
-                    document.getElementById("riview_content").innerText = res.content;
+                    document.getElementById("review_content").innerText = res.content;
                 },
-                error : function (xhr, status, error){
-                    console.log("detail " + error);
+                error : function (xhr){
+                    alert(xhr.responseText);
                 }
             })
         }
@@ -56,23 +55,10 @@
                     $("#content").val('');
                     findAllComment();
                 },
-                error : function(xhr, status, error){
-                    // 오류 발생 시 서버에서 보낸 에러 메시지 출력
-                    console.log("C " + error);
+                error : function (xhr){
+                    alert(xhr.responseText);
                 }
             })
-        }
-
-        // R(Read)
-        function openModal(commentNum, content) {
-            // 모달 내의 textarea에 댓글의 내용을 설정
-            $("#edit-content").val(content);
-
-            // '작성' 버튼에 onclick 이벤트 리스너 설정
-            // editComment 함수를 호출하도록 설정하며, commentNum을 인자로 전달
-            document.getElementById("editCommentButton").onclick = function() {
-                editComment(commentNum);
-            };
         }
 
         function findAllComment(page){
@@ -86,9 +72,8 @@
                     page : page,
                 },
                 success : function (res){
-                    console.log(res);
                     if(!res.content.length){
-                        document.querySelector('.cm_list').innerHTML = '<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>';
+                        $('.cm_list').html('<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>');
                         return false;
                     }else {
                         // 렌더링 할 HTML을 저장할 변수
@@ -119,7 +104,7 @@
                                                 <div class="col-auto d-flex">
                                                     <!-- Button trigger modal -->
                                                     <div class="pe-1">
-                                                        <button onclick="openModal(${row.id}, '${row.content}')" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalView">
+                                                        <button onclick="editComment(${row.id}, '${row.content}')" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="comment_modalView">
                                                             <span>수정</span>
                                                         </button>
                                                         <button onclick="deleteComment(${row.id})" type="button" class="btn btn-sm btn-outline-danger">
@@ -141,7 +126,7 @@
                                 </div>
                                 `;
                         });
-                        document.querySelector(".cm_list").innerHTML = commentHtml;
+                        $(".cm_list").html(commentHtml);
                     }
 
                     let pageHtml = "";
@@ -167,20 +152,78 @@
                         </li>
                     `;
 
-                    document.querySelector(".page_list").innerHTML = pageHtml;
+                    $(".page_list").html(pageHtml);
                 },
-                error : function (request, status, error){
-                    console.log("R " + error);
+                error : function (xhr){
+                    alert(xhr.responseText);
                 }
             })
         }
 
+        function editReview(){
+            $("#edit_title").val($("#title").text())
+            $("#edit_review_content").val($("#review_content").text())
+
+            document.getElementById("editReviewButton").onclick = function () {
+                editReviewApi();
+            }
+        }
+
+        // R(Read)
+        function editComment(commentNum, content) {
+            // 모달 내의 textarea에 댓글의 내용을 설정
+            $("#edit_content").val(content);
+
+            // '작성' 버튼에 onclick 이벤트 리스너 설정
+            // editComment 함수를 호출하도록 설정하며, commentNum을 인자로 전달
+            document.getElementById("editCommentButton").onclick = function() {
+                editCommentApi(commentNum);
+            };
+        }
+
         // U(Update)
-        function editComment(id){
+        function editReviewApi() {
+            let reviewId = $("#reviewId").val();
+            let _csrf = $("#_csrf").val();
+
+            // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
+            let myModal = document.getElementById("review_modalView");
+            // Bootstrap Modal 인스턴스를 생성합니다.
+            let modalInstance = bootstrap.Modal.getInstance(myModal);
+
+            $.ajax({
+                url : `/api/review/${reviewId}`,
+                type : "PATCH",
+                contentType : "application/json",
+                headers : {
+                    "X-CSRF-TOKEN" : _csrf
+                },
+                data : JSON.stringify({
+                    "title" : $("#edit_title").val(),
+                    "content" : $("#edit_review_content").val()
+                }),
+                success : function (res){
+                    // 모달을 닫습니다.
+                    modalInstance.hide();
+                },
+                error : function (xhr){
+                    modalInstance.hide();
+                    alert(xhr.responseText);
+                }
+            })
+        }
+
+
+        function editCommentApi(id){
             event.preventDefault(); // 폼 기본 동작 방지
             let commentNum = id;
-            let content = $("#edit-content").val();
+            let content = $("#edit_content").val();
             let _csrf = $("#_csrf").val();
+
+            // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
+            let myModal = document.getElementById("comment_modalView");
+            // Bootstrap Modal 인스턴스를 생성합니다.
+            let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             $.ajax({
                 url : `/comment/edit/${commentNum}`,
@@ -191,27 +234,20 @@
                 },
                 data : JSON.stringify({ content : content }),
                 success : function(){
-                    console.log("댓글 수정완료");
-                    // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
-                    let myModal = document.getElementById("modalView");
-                    // Bootstrap Modal 인스턴스를 생성합니다.
-                    let modalInstance = bootstrap.Modal.getInstance(myModal);
-
                     // 모달을 닫습니다.
                     modalInstance.hide();
                     //댓글 리스트 함수 호출
                     findAllComment();
                 },
-                error : function (xhr, status, error){
-                    console.log("U " + error);
-                    window.location.href = "/";
+                error : function (xhr){
+                    modalInstance.hide();
+                    alert(xhr.responseText);
                 }
             })
         }
 
         // D(Delete)
         function deleteComment(id){
-            let isChk = false;
             if (!confirm("삭제하시겠습니까?")){ return; }
             let commentNum = id;
             let _csrf = $("#_csrf").val();
@@ -227,8 +263,8 @@
                     console.log("댓글 삭제 성공");
                     window.location.href = url;
                 },
-                error : function (xhr, status, error){
-                    console.log("D " + error);
+                error : function (xhr){
+                    alert(xhr.responseText);
                     window.location.href = "/";
                 }
             })
@@ -285,7 +321,7 @@
                 <span>내용</span>
             </td>
             <td colspan="3">
-                <span class="form-control-plaintext" id="riview_content" style="text-align: left;"></span>
+                <span class="form-control-plaintext" id="review_content" style="text-align: left;"></span>
             </td>
         </tr>
     </table>
@@ -293,13 +329,41 @@
     <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
     <div sec:authorize="isAuthenticated()">
         <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
-            <a class="btn btn-primary" th:href="@{'/review/edit/' + ${reviewId}}">수정</a>
+
+            <!-- Button trigger modal -->
+            <button type="button" onclick="editReview()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#review_modalView">
+                수정
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="review_modalView" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">수정</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>제목</label>
+                            <textarea type="text" class="form-control" id="edit_title"></textarea>
+                            <label>내용</label>
+                            <textarea type="text" class="form-control" id="edit_review_content"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="button" class="btn btn-primary" id="editReviewButton">작성</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
         <br>
         <hr>
         <form onsubmit="submitComment(event);">
             <div class="d-flex">
-                <textarea class="col-11" name="content" id="content"></textarea>
+                <textarea class="col-11" name="comment_content" id="content"></textarea>
                 <input class="col-1 btn btn-primary" type="submit" value="작성">
             </div>
         </form>
@@ -314,15 +378,15 @@
     <!-- Modal -->
     <div>
         <form>
-            <div class="modal fade" id="modalView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="comment_modalView" tabindex="-1" aria-labelledby="comment_modal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title fs-5" id="exampleModalLabel">수정</h2>
+                            <h2 class="modal-title fs-5" id="comment_modal">수정</h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <textarea class="form-control" name="content" id="edit-content"></textarea>
+                            <textarea class="form-control" name="content" id="edit_content"></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>

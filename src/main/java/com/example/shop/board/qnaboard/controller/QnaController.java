@@ -5,6 +5,8 @@ import com.example.shop.board.qnaboard.dto.response.QnaResponse;
 import com.example.shop.board.qnaboard.service.QnaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +41,10 @@ public class QnaController {
 
     // R(Read)
     @GetMapping("/qna")
-    public String qnaP(Model model,
-                      @RequestParam(value = "keyword", required = false) String keyword,
-                      @RequestParam(value = "page", defaultValue = "0") int page,
-                      @RequestParam(value = "option", required = false) String option) {
+    public ResponseEntity<?> qnaP(Model model,
+                               @RequestParam(value = "keyword", required = false) String keyword,
+                               @RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "option", required = false) String option) {
         Page<QnaResponse> qnaResponse;
 
         if (keyword != null && !keyword.isEmpty()) { // 키워드가 있으면
@@ -51,12 +53,7 @@ public class QnaController {
             qnaResponse = qnaService.page("", page, ""); // 기본 리스트 페이징
         }
 
-        int currentPage = qnaResponse.getNumber(); // 현재 페이지 번호
-        int totalPages = qnaResponse.getTotalPages();
-        model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
-        model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-        model.addAttribute("boards", qnaResponse);
-        return "qnaboard/list";
+        return ResponseEntity.status(HttpStatus.OK).body(qnaResponse);
     }
 
     @GetMapping("/qna/{boardNum}")

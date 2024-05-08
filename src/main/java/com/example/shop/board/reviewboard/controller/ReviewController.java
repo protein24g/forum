@@ -5,15 +5,9 @@ import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
 import com.example.shop.board.reviewboard.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,24 +38,7 @@ public class ReviewController {
 
     // R(Read)
     @GetMapping("/review")
-    public String reviewP(Model model,
-                      @RequestParam(value = "keyword", required = false) String keyword,
-                      @RequestParam(value = "page", defaultValue = "0") int page,
-                      @RequestParam(value = "option", required = false) String option) {
-        Page<ReviewResponse> reviewResponses;
-
-        if (keyword != null && !keyword.isEmpty()) { // 키워드가 있으면
-            reviewResponses = reviewService.page(keyword, page, option); // 검색 페이징
-        } else {
-            reviewResponses = reviewService.page("", page, ""); // 기본 리스트 페이징
-        }
-
-        int currentPage = reviewResponses.getNumber(); // 현재 페이지 번호
-        int totalPages = reviewResponses.getTotalPages();
-        model.addAttribute("startPage", Math.max(0, (currentPage - 5)));
-        model.addAttribute("endPage", Math.min(totalPages - 1, (currentPage + 5)));
-        model.addAttribute("boards", reviewResponses);
-        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 뷰에서 사용할 수 있도록 함
+    public String reviewP() {
         return "/reviewboard/list";
     }
 
@@ -81,16 +58,9 @@ public class ReviewController {
 
     // U(Update)
     @GetMapping("/review/edit/{boardNum}")
-    @ResponseBody
-    public ResponseEntity<?> editP(@PathVariable("boardNum") Long boardNum, Model model){
-        try{
-            ReviewResponse reviewResponse = reviewService.editP(boardNum);
-            return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
-        } catch (IllegalArgumentException e){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", e.getMessage(), "url", "/reviews/" + boardNum));
-        }
+    public String editP(@PathVariable("boardNum") Long boardNum, Model model){
+        model.addAttribute("reviewId", boardNum);
+        return "reviewboard/edit";
     }
 
     @PostMapping("/review/edit/{boardNum}")
