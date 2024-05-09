@@ -20,11 +20,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/reviews/{reviewId}/edit", "/qna/new", "/qna/{qnaId}/edit").authenticated()
-                        .requestMatchers("/", "/main", "/login", "/loginProc",
-                                "/join", "/joinProc", "/qna", "/qna/*", "/reviews", "/reviews/*",
-                                "/checkLoginId", "/checkNickname", "/reviews/*/comments", "/create/*/comments",
-                                "/api/reviews", "/api/reviews/*").permitAll()
+                        .requestMatchers("/", // 메인 페이지
+                                "/login", "/loginProc", "/join", "/joinProc",
+                                "/reviews", "/api/reviews", "/reviews/*", "/api/reviews/*", "/api/reviews/*/comments",
+                                "/qna", "/qna/*",
+                                "/checkLoginId", "/checkNickname").permitAll()
                         .anyRequest().authenticated());
 
         http

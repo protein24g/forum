@@ -30,7 +30,7 @@ public class CommentApiController {
     }
 
     // R(Read)
-    @GetMapping("/reviews/{reviewId}/comments")
+    @GetMapping("/api/reviews/{reviewId}/comments")
     public Page<CommentResponse> getCommentsForReview(@PathVariable("reviewId") Long reviewId,
                                                 @RequestParam(name = "page", defaultValue = "0") int page){
         Page<CommentResponse> commentResponses = commentService.getAllCommentsForReview(reviewId, page);
