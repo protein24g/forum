@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/", // 메인 페이지
+                        .requestMatchers("/",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/reviews", "/api/reviews", "/reviews/*", "/api/reviews/*", "/api/reviews/*/comments",
                                 "/qna", "/qna/*",
@@ -34,7 +34,6 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/", true)
                         .permitAll());
-
 
         http
                 .sessionManagement((auth) -> auth

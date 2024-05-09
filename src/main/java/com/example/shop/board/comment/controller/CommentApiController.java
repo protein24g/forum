@@ -3,10 +3,13 @@ package com.example.shop.board.comment.controller;
 import com.example.shop.board.comment.dto.requests.CommentRequest;
 import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.service.CommentService;
+import com.example.shop.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,7 +22,7 @@ public class CommentApiController {
     private final CommentService commentService;
 
     // C(Create)
-    @PostMapping("/api/reviews/{reviewId}/comments")
+    @PostMapping("/api/c/reviews/{reviewId}/comments")
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
         try{
             commentService.createCommentForReview(reviewId, dto);
@@ -38,7 +41,7 @@ public class CommentApiController {
     }
 
     // U(Update)
-    @PatchMapping("/api/comments/{commentId}")
+    @PutMapping("/api/comments/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequest dto){
         try{
             commentService.updateComment(commentId, dto);

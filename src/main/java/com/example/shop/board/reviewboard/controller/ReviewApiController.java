@@ -41,7 +41,7 @@ public class ReviewApiController {
     }
 
     // U(Update)
-    @PatchMapping("/api/reviews/{reviewId}")
+    @PutMapping("/api/reviews/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest dto){
         try{
             reviewService.edit(reviewId, dto);

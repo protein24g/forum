@@ -54,8 +54,6 @@ public class CommentService {
                     .build();
             commentRepository.save(comment);
             review.addComment(comment);
-        }else{
-            throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
     }
 
@@ -85,9 +83,6 @@ public class CommentService {
             }else{
                 throw new IllegalArgumentException("관리자만 답변 작성 가능합니다.");
             }
-
-        }else{
-            throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
     }
 
@@ -139,8 +134,6 @@ public class CommentService {
                     throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
                 }
             }
-        }else{
-            throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
     }
 
@@ -171,8 +164,6 @@ public class CommentService {
                     throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
                 }
             }
-        }else{
-            throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
     }
 }
