@@ -35,24 +35,18 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                         .permitAll());
 
-        http
-                .sessionManagement((auth) -> auth
-                        .maximumSessions(3) // 최대 세션 허용 수
-                        .maxSessionsPreventsLogin(true) // false = 기존 세션 만료
-                );
 
         http
                 .sessionManagement((auth) -> auth
-                        .sessionFixation().changeSessionId() // 사용자가 인증 성공하면, 기존 사용자의 세션에 Session ID만 변경
-                );
+                        .sessionFixation().changeSessionId() // 세션 고정 보호
+                        .maximumSessions(3) // 최대 세션 허용 수
+                        .maxSessionsPreventsLogin(true)); // 동시 로그인 방지
 
         http
                 .logout((auth) -> auth
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .deleteCookies("JSESSIONID", "remember-me")
-                );
-
+                        .deleteCookies("JSESSIONID", "remember-me"));
         return http.build();
     }
 }

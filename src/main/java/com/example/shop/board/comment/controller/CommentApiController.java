@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentApiController {
@@ -48,8 +50,7 @@ public class CommentApiController {
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId){
         try{
-            String url = commentService.deleteComment(commentId);
-            return ResponseEntity.status(HttpStatus.OK).body(url);
+            return ResponseEntity.status(HttpStatus.OK).body(commentService.deleteComment(commentId));
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

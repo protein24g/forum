@@ -137,7 +137,7 @@ public class CommentService {
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
                 }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 d가능합니다.");
+                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
                 }
             }else{ // QnA의 댓글이면
                 if(comment.getUser().getId().equals(user.getId())){
@@ -169,7 +169,7 @@ public class CommentService {
             if (comment.getReview() != null) { // 리뷰의 댓글이면
                 if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
-                    return "/review/" + comment.getReview().getId();
+                    return "/reviews/" + comment.getReview().getId();
                 } else {
                     throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
                 }
