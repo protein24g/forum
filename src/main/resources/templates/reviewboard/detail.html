@@ -50,7 +50,7 @@
                 data : JSON.stringify({ content : `${comment_content}` }),
                 success : function (res){
                     if (res.startsWith('<!doctype html>')) {
-                        alert('로그인 후 이용하세요.');
+                        alert('로그인 후 이용하세요');
                         window.location.href = "/login";
                     } else {
                         alert(res);
@@ -217,20 +217,17 @@
                     "content" : $("#edit_review_content").val()
                 }),
                 success : function (res){
-                    if (res.startsWith('<!doctype html>')) {
-                        alert('로그인 후 이용하세요.');
-                        window.location.href = "/login";
-                    }else{
-                        alert(res);
-                        // 모달을 닫습니다.
-                        modalInstance.hide();
-                        getReviewDetails();
-                    }
+                    alert(res);
+                    // 모달을 닫습니다.
+                    modalInstance.hide();
+                    getReviewDetails();
                 },
                 error : function (res){
-                    alert(res.statusText);
-                    modalInstance.hide();
-                    window.location.href = "/login";
+                    if(res.statusText === 'error'){
+                        alert("로그인 후 이용하세요");
+                        modalInstance.hide();
+                        window.location.href = "/login";
+                    }
                 }
             })
         }
@@ -254,19 +251,15 @@
                 },
                 data : JSON.stringify({ content : `${content}` }),
                 success : function(res){
-                    if (res.startsWith('<!doctype html>')) {
-                        alert('로그인 후 이용하세요...');
-                        window.location.href = "/login";
-                    }else{
-                        alert(res);
-                        // 모달을 닫습니다.
-                        modalInstance.hide();
-                        //댓글 리스트 함수 호출
-                        getAllComment();
-                    }
+                    alert(res);
+                    // 모달을 닫습니다.
+                    modalInstance.hide();
+                    //댓글 리스트 함수 호출
+                    getAllComment();
                 },
-                error : function (res){{
-                        alert("로그인 후 이용하세요ㅋ.");
+                error : function (res){
+                    if(res.statusText === 'error'){
+                        alert("로그인 후 이용하세요");
                         window.location.href = "/login";
                     }
                 }
@@ -287,18 +280,14 @@
                     "X-CSRF-TOKEN" : `${_csrf}`
                 },
                 success : function (res){
-                    if (res.startsWith('<!doctype html>')) {
-                        alert('로그인 후 이용하세요..');
-                        window.location.href = "/login";
-                    }else{
-                        alert(res);
-                        getAllComment();
-                    }
+                    alert(res);
+                    getAllComment();
                 },
                 error : function (res){
-                    console.log(res);
-                    // alert(res.statusText);
-                    // window.location.href = "/login";
+                    if(res.statusText === 'error'){
+                        alert("로그인 후 이용하세요");
+                        window.location.href = "/login";
+                    }
                 }
             })
         }
