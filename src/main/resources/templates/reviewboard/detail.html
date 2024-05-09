@@ -49,8 +49,6 @@
                 },
                 data : JSON.stringify({ content : `${comment_content}` }),
                 success : function (res){
-                    // 응답이 HTML 문서 형식인지 확인합니다.
-                    // 이는 로그인 페이지의 HTML 응답으로 가정합니다.
                     if (res.startsWith('<!doctype html>')) {
                         alert('로그인 후 이용하세요.');
                         window.location.href = "/login";
@@ -219,10 +217,15 @@
                     "content" : $("#edit_review_content").val()
                 }),
                 success : function (res){
-                    alert(res);
-                    // 모달을 닫습니다.
-                    modalInstance.hide();
-                    getReviewDetails();
+                    if (res.startsWith('<!doctype html>')) {
+                        alert('로그인 후 이용하세요.');
+                        window.location.href = "/login";
+                    }else{
+                        alert(res);
+                        // 모달을 닫습니다.
+                        modalInstance.hide();
+                        getReviewDetails();
+                    }
                 },
                 error : function (res){
                     alert(res.statusText);
@@ -251,11 +254,17 @@
                 },
                 data : JSON.stringify({ content : `${content}` }),
                 success : function(res){
-                    alert(res);
-                    // 모달을 닫습니다.
-                    modalInstance.hide();
-                    //댓글 리스트 함수 호출
-                    getAllComment();
+                    if (res.startsWith('<!doctype html>')) {
+                        alert('로그인 후 이용하세요.');
+                        window.location.href = "/login";
+                    }else{
+                        alert(res);
+                        // 모달을 닫습니다.
+                        modalInstance.hide();
+                        //댓글 리스트 함수 호출
+                        getAllComment();
+                    }
+
                 },
                 error : function (res){
                     alert(res.statusText);
@@ -278,8 +287,13 @@
                     "X-CSRF-TOKEN" : `${_csrf}`
                 },
                 success : function (res){
-                    alert(res);
-                    getAllComment();
+                    if (res.startsWith('<!doctype html>')) {
+                        alert('로그인 후 이용하세요.');
+                        window.location.href = "/login";
+                    }else{
+                        alert(res);
+                        getAllComment();
+                    }
                 },
                 error : function (res){
                     alert(res.statusText);
