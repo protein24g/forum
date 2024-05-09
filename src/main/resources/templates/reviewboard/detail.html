@@ -38,7 +38,7 @@
         // C(Create)
         function createUserComment(){
             let reviewId = $("#reviewId").val();
-            let content = $("#content").val();
+            let comment_content = $("#comment_content").val();
             let _csrf = $("#_csrf").val();
             $.ajax({
                 url : `/api/reviews/${reviewId}/comments`,
@@ -47,16 +47,22 @@
                 headers : {
                     "X-CSRF-TOKEN" : `${_csrf}`
                 },
-                data : JSON.stringify({ content : content }),
+                data : JSON.stringify({ content : `${comment_content}` }),
                 success : function (res){
-                    // 가정: 성공 응답(response)가 JSON 객체일 때, 댓글 내용 출력
-                    // 실제로 서버에서 JSON 응답을 보내는 경우, 아래와 같이 응답을 JSON으로 간주하고 처리
-                    alert("댓글 작성완료");
-                    $("#content").val('');
-                    getAllComment(0);
+                    // 응답이 HTML 문서 형식인지 확인합니다.
+                    // 이는 로그인 페이지의 HTML 응답으로 가정합니다.
+                    if (res.startsWith('<!doctype html>')) {
+                        alert('로그인 후 이용하세요.');
+                        window.location.href = "/login";
+                    } else {
+                        alert(res);
+                        $("#comment_content").val('');
+                        getAllComment(0);
+                    }
                 },
-                error : function (xhr){
-                    alert(xhr.responseText);
+                error : function (res){
+                    alert(res.statusText);
+                    window.location.href = "/login";
                 }
             })
         }
@@ -75,8 +81,9 @@
                     document.getElementById("title").innerText = res.title;
                     document.getElementById("review_content").innerText = res.content;
                 },
-                error : function (xhr){
-                    alert(xhr.responseText);
+                error : function (res){
+                    alert(res.statusText);
+                    window.location.href = "/";
                 }
             })
         }
@@ -172,8 +179,9 @@
 
                     $(".page_list").html(pageHtml);
                 },
-                error : function (xhr){
-                    alert(xhr.responseText);
+                error : function (res){
+                    alert(res.statusText);
+                    window.location.href = "/";
                 }
             });
         }
@@ -200,7 +208,7 @@
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             $.ajax({
-                url : `/api/review/${reviewId}`,
+                url : `/api/reviews/${reviewId}`,
                 type : "PATCH",
                 contentType : "application/json",
                 headers : {
@@ -211,13 +219,15 @@
                     "content" : $("#edit_review_content").val()
                 }),
                 success : function (res){
+                    alert(res);
                     // 모달을 닫습니다.
                     modalInstance.hide();
                     getReviewDetails();
                 },
-                error : function (xhr){
+                error : function (res){
+                    alert(res.statusText);
                     modalInstance.hide();
-                    alert(xhr.responseText);
+                    window.location.href = "/login";
                 }
             })
         }
@@ -233,22 +243,23 @@
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             $.ajax({
-                url : `/api/comment/${commentId}`,
+                url : `/api/comments/${commentId}`,
                 type : "PATCH",
                 contentType : "application/json",
                 headers : {
                     "X-CSRF-TOKEN" : `${_csrf}`
                 },
-                data : JSON.stringify({ content : content }),
-                success : function(){
+                data : JSON.stringify({ content : `${content}` }),
+                success : function(res){
+                    alert(res);
                     // 모달을 닫습니다.
                     modalInstance.hide();
                     //댓글 리스트 함수 호출
                     getAllComment();
                 },
-                error : function (xhr){
-                    modalInstance.hide();
-                    alert(xhr.responseText);
+                error : function (res){
+                    alert(res.statusText);
+                    window.location.href = "/login";
                 }
             })
         }
@@ -260,19 +271,19 @@
             let _csrf = $("#_csrf").val();
 
             $.ajax({
-                url : `/api/comment/${commentId}`,
+                url : `/api/comments/${commentId}`,
                 type : "DELETE",
                 contentType : "application/json",
                 headers : {
                     "X-CSRF-TOKEN" : `${_csrf}`
                 },
-                success : function (url){
-                    console.log("댓글 삭제 성공");
+                success : function (res){
+                    alert(res);
                     getAllComment();
                 },
-                error : function (xhr){
-                    alert(xhr.responseText);
-                    getAllComment();
+                error : function (res){
+                    alert(res.statusText);
+                    window.location.href = "/login";
                 }
             })
         }
@@ -334,10 +345,11 @@
         </tr>
     </table>
 
-    <!-- 로그인을 한 사용자만 댓글 작성 폼 보이도록 조건 추가 -->
+    <!-- 로그인 한 사용자만 보이는 댓글 작성, 수정, 삭제 -->
     <div sec:authorize="isAuthenticated()">
-        <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
 
+        <!-- 댓글 수정, 삭제 -->
+        <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
             <!-- Button trigger modal -->
             <button type="button" onclick="editReview()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#review_modalView">
                 수정
@@ -365,13 +377,14 @@
                 </div>
             </div>
 
-
         </div>
         <br>
         <hr>
+
+        <!-- 댓글 작성-->
         <form>
             <div class="d-flex">
-                <textarea class="col-11" name="comment_content" id="content"></textarea>
+                <textarea class="col-11" id="comment_content"></textarea>
                 <input class="col-1 btn btn-primary" type="button" onclick="createUserComment()" value="작성">
             </div>
         </form>

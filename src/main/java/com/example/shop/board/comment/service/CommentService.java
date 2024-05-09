@@ -33,7 +33,7 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
 
     // C(Create)
-    public CommentResponse createCommentForReview(Long reviewId, CommentRequest dto) {
+    public void createCommentForReview(Long reviewId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -54,14 +54,6 @@ public class CommentService {
                     .build();
             commentRepository.save(comment);
             review.addComment(comment);
-
-            return CommentResponse.builder()
-                    .id(comment.getId())
-                    .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
-                    .content(comment.getContent())
-                    .createDate(comment.getCreateDate())
-                    .isAuthor(false)
-                    .build();
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요.");
         }
@@ -153,7 +145,7 @@ public class CommentService {
     }
 
     // D(Delete)
-    public String deleteComment(Long commentId){
+    public void deleteComment(Long commentId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -169,14 +161,12 @@ public class CommentService {
             if (comment.getReview() != null) { // 리뷰의 댓글이면
                 if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
-                    return "/reviews/" + comment.getReview().getId();
                 } else {
                     throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
                 }
             } else { // QnA의 댓글이면
                 if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
-                    return "/qna/" + comment.getQuestionAndAnswer().getId();
                 } else {
                     throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
                 }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,13 +41,13 @@ public class ReviewApiController {
     }
 
     // U(Update)
-    @PatchMapping("/api/review/{reviewId}")
+    @PatchMapping("/api/reviews/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest dto){
         try{
-            ReviewResponse reviewResponse = reviewService.edit(reviewId, dto);
-            return ResponseEntity.status(HttpStatus.OK).body(reviewResponse);
+            reviewService.edit(reviewId, dto);
+            return ResponseEntity.status(HttpStatus.OK).body("리뷰 수정완료");
         }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

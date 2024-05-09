@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -20,10 +22,10 @@ public class CommentApiController {
     @PostMapping("/api/reviews/{reviewId}/comments")
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
         try{
-            CommentResponse commentResponse = commentService.createCommentForReview(reviewId, dto);
-            return ResponseEntity.status(HttpStatus.OK).body(commentResponse);
+            commentService.createCommentForReview(reviewId, dto);
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 생성완료");
         } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -36,23 +38,24 @@ public class CommentApiController {
     }
 
     // U(Update)
-    @PatchMapping("/api/comment/{commentId}")
+    @PatchMapping("/api/comments/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequest dto){
         try{
             commentService.updateComment(commentId, dto);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 수정완료");
         } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     // D(Delete)
-    @DeleteMapping("/api/comment/{commentId}")
+    @DeleteMapping("/api/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(commentService.deleteComment(commentId));
+            commentService.deleteComment(commentId);
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제완료");
         } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

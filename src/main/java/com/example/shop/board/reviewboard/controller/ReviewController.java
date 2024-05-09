@@ -16,12 +16,12 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // C(Create)
-    @GetMapping("/review/create")
+    @GetMapping("/reviews/create")
     public String createP(){
         return "reviewboard/create";
     }
 
-    @PostMapping("/review/create")
+    @PostMapping("/reviews/create")
     public String create(ReviewRequest dto, Model model){
         try {
             ReviewResponse reviewResponse = reviewService.create(dto);
