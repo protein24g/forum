@@ -1,6 +1,7 @@
 package com.example.shop.user.controller;
 
 import com.example.shop.user.dto.requests.JoinRequest;
+import com.example.shop.user.dto.response.UserResponse;
 import com.example.shop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -70,5 +68,11 @@ public class UserController {
     public ResponseEntity<Boolean> checkNickname(@RequestParam(name = "nickname") String nickname) {
         boolean isAvailable = userService.isNicknameAvailable(nickname);
         return ResponseEntity.ok(isAvailable);
+    }
+
+    @GetMapping("/users/{userId}")
+    public String getUserDetail(@PathVariable("userId") Long userId, Model model){
+        model.addAttribute("userId", userId);
+        return "user/detail";
     }
 }

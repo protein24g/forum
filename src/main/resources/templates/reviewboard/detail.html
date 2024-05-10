@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         // 페이지 로드시 호출되는 함수
-        $(document).ready(function (){
+        document.addEventListener("DOMContentLoaded", function (){
             getReviewDetails();
             getAllComment(0);
         })

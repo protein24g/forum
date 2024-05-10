@@ -22,9 +22,9 @@ public class ReviewController {
     }
 
     @PostMapping("/reviews/create")
-    public String create(ReviewRequest dto, Model model){
+    public String createReview(ReviewRequest dto, Model model){
         try {
-            ReviewResponse reviewResponse = reviewService.create(dto);
+            ReviewResponse reviewResponse = reviewService.createReview(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/review/" + reviewResponse.getId());
             return "message/main";

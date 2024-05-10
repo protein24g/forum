@@ -23,9 +23,9 @@ public class ReviewApiController {
                           @RequestParam(value = "option", required = false) String option) {
         Page<ReviewResponse> reviewResponses;
         if (keyword != null) { // 키워드가 있으면
-            reviewResponses = reviewService.page(keyword, page, option); // 검색 페이징
+            reviewResponses = reviewService.pageReviews(keyword, page, option); // 검색 페이징
         } else {
-            reviewResponses = reviewService.page("", page, ""); // 기본 리스트 페이징
+            reviewResponses = reviewService.pageReviews("", page, ""); // 기본 리스트 페이징
         }
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponses);
     }

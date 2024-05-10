@@ -33,7 +33,7 @@ public class ReviewService {
     private final CommentService commentService;
 
     // C(Create)
-    public ReviewResponse create(ReviewRequest dto) {
+    public ReviewResponse createReview(ReviewRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -63,7 +63,24 @@ public class ReviewService {
     }
 
     // R(Read)
-    public Page<ReviewResponse> page(String keyword, int page, String option) {
+    public Page<ReviewResponse> getReviewsForUser(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Review> reviews = reviewRepository.findByUserId(userId, pageable);
+
+        return reviews
+                .map(review -> ReviewResponse.builder()
+                    .id(review.getId())
+                    // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                    .nickname(review.getUser().getActive() ? review.getUser().getNickname() : "탈퇴한 사용자")
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .createDate(review.getCreateDate())
+                    .commentCount(review.getComments().size())
+                    .view(review.getView())
+                    .build());
+    }
+
+    public Page<ReviewResponse> pageReviews(String keyword, int page, String option) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<Review> reviews = null;
 
@@ -85,15 +102,15 @@ public class ReviewService {
 
         return reviews
                 .map(review -> ReviewResponse.builder()
-                        .id(review.getId())
-                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
-                        .nickname(review.getUser().getActive() ? review.getUser().getNickname() : "탈퇴한 사용자")
-                        .title(review.getTitle())
-                        .content(review.getContent())
-                        .createDate(review.getCreateDate())
-                        .commentCount(review.getComments().size())
-                        .view(review.getView())
-                        .build());
+                    .id(review.getId())
+                    // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                    .nickname(review.getUser().getActive() ? review.getUser().getNickname() : "탈퇴한 사용자")
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .createDate(review.getCreateDate())
+                    .commentCount(review.getComments().size())
+                    .view(review.getView())
+                    .build());
     }
 
     public ReviewResponse readDetail(Long boardNum) {
@@ -120,7 +137,7 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .createDate(review.getCreateDate())
-                .commentResponses(commentService.getAllCommentsForReview(review.getId(), 0))
+                .commentResponses(commentService.getCommentsForReview(review.getId(), 0))
                 .view(review.incView())
                 .build();
     }

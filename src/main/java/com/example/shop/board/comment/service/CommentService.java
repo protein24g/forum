@@ -87,7 +87,19 @@ public class CommentService {
     }
 
     // R(Read)
-    public Page<CommentResponse> getAllCommentsForReview(Long reviewId, int page) {
+    public Page<CommentResponse> getCommentsForUser(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Comment> comments = commentRepository.findByUserId(userId, pageable);
+
+        return comments.map(comment -> CommentResponse.builder()
+                .id(comment.getId())
+                .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
+                .content(comment.getContent())
+                .createDate(comment.getCreateDate())
+                .build());
+    }
+
+    public Page<CommentResponse> getCommentsForReview(Long reviewId, int page) {
         String username;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){

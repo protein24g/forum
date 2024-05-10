@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class userResponse {
+public class UserResponse {
     private String nickname;
     private LocalDateTime createDate;
     private boolean isActive;
@@ -21,7 +21,7 @@ public class userResponse {
     private Page<CommentResponse> comments;
 
     @Builder
-    public userResponse(String nickname, LocalDateTime createDate, boolean isActive,
+    public UserResponse(String nickname, LocalDateTime createDate, boolean isActive,
                         Page<ReviewResponse> reviews, Page<CommentResponse> comments){
         this.nickname = nickname;
         this.createDate = createDate;
