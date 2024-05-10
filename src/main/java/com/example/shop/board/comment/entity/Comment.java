@@ -1,7 +1,7 @@
 package com.example.shop.board.comment.entity;
 
+import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
-import com.example.shop.board.reviewboard.entity.Review;
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -25,17 +25,17 @@ public class Comment {
     private QuestionAndAnswer questionAndAnswer = null;
 
     @ManyToOne
-    private Review review = null;
+    private Board board = null;
 
     private String content;
 
     private LocalDateTime createDate;
 
     @Builder
-    public Comment(User user, QuestionAndAnswer questionAndAnswer, Review review, String content, LocalDateTime createDate){
+    public Comment(User user, QuestionAndAnswer questionAndAnswer, Board board, String content, LocalDateTime createDate){
         this.user = user;
         this.questionAndAnswer = questionAndAnswer;
-        this.review = review;
+        this.board = board;
         this.content = content;
         this.createDate = createDate;
     }
@@ -48,7 +48,7 @@ public class Comment {
         this.user = user;
     }
 
-    public void setReview(Review review) { this.review = review; }
+    public void setBoard(Board board) { this.board = board; }
 
     public void setContent(String content) { this.content = content; };
 }

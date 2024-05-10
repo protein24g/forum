@@ -1,13 +1,13 @@
 package com.example.shop.board.comment.service;
 
+import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.comment.dto.requests.CommentRequest;
 import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.repository.CommentRepository;
+import com.example.shop.board.freeboard.repository.BoardRepository;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.board.qnaboard.repository.QnaRepository;
-import com.example.shop.board.reviewboard.entity.Review;
-import com.example.shop.board.reviewboard.repository.ReviewRepository;
 import com.example.shop.user.dto.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
@@ -30,10 +30,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final QnaRepository qnaRepository;
-    private final ReviewRepository reviewRepository;
+    private final BoardRepository reviewRepository;
 
     // C(Create)
-    public void createCommentForReview(Long reviewId, CommentRequest dto) {
+    public void createCommentForBoard(Long reviewId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -43,12 +43,12 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            Review review = reviewRepository.findById(reviewId)
+            Board review = reviewRepository.findById(reviewId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
             Comment comment = Comment.builder()
                     .user(user)
-                    .review(review)
+                    .board(review)
                     .content(dto.getContent())
                     .createDate(LocalDateTime.now())
                     .build();
@@ -88,32 +88,41 @@ public class CommentService {
 
     // R(Read)
     public Page<CommentResponse> getCommentsForUser(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Comment> comments = commentRepository.findByUserId(userId, pageable);
-
-        return comments.map(comment -> CommentResponse.builder()
-                .id(comment.getId())
-                .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
-                .content(comment.getContent())
-                .createDate(comment.getCreateDate())
-                .build());
-    }
-
-    public Page<CommentResponse> getCommentsForReview(Long reviewId, int page) {
         String username;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             username = customUserDetails.getUsername();
-        } else { username = ""; }
+        } else username = "";
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Comment> comments = commentRepository.findByReviewId(reviewId, pageable);
+        Page<Comment> comments = commentRepository.findByUserId(userId, pageable);
         return comments.map(comment -> CommentResponse.builder()
                 .id(comment.getId())
                 .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                 .content(comment.getContent())
                 .createDate(comment.getCreateDate())
-                .isAuthor(comment.getUser().getNickname().equals(username) ? true : false)
+                .isAuthor(comment.getUser().getNickname().equals(username))
+                .boardId(comment.getBoard().getId())
+                .build());
+    }
+
+    public Page<CommentResponse> getCommentsForBoard(Long reviewId, int page) {
+        String username;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            username = customUserDetails.getUsername();
+        } else username = "";
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Comment> comments = commentRepository.findByBoardId(reviewId, pageable);
+        return comments.map(comment -> CommentResponse.builder()
+                .id(comment.getId())
+                .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
+                .content(comment.getContent())
+                .createDate(comment.getCreateDate())
+                .isAuthor(comment.getUser().getNickname().equals(username))
                 .build());
     }
 
@@ -131,7 +140,7 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if(comment.getReview() != null){ // 리뷰의 댓글이면
+            if(comment.getBoard() != null){ // 리뷰의 댓글이면
                 if(comment.getUser().getId().equals(user.getId())){
                     comment.setContent(dto.getContent());
                     commentRepository.save(comment);
@@ -163,7 +172,7 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if (comment.getReview() != null) { // 리뷰의 댓글이면
+            if (comment.getBoard() != null) { // 리뷰의 댓글이면
                 if (comment.getUser().getId().equals(user.getId())) {
                     commentRepository.delete(comment);
                 } else {

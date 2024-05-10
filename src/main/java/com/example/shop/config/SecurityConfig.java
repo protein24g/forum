@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/*",
-                                "/reviews", "/api/reviews", "/reviews/*", "/api/reviews/*", "/api/reviews/*/comments",
+                                "/boards", "/api/boards", "/boards/*", "/api/boards/*", "/api/boards/*/comments",
                                 "/qna", "/qna/*",
                                 "/checkLoginId", "/checkNickname").permitAll()
                         .anyRequest().authenticated());

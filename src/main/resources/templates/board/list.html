@@ -9,8 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         // 페이지 로드시 호출되는 함수
-        $(document).ready(function (){
-            findReviewList();
+        document.addEventListener("DOMContentLoaded", function (){
+            findBoardList();
         })
 
         // R(Read)
@@ -20,25 +20,27 @@
             // 검색어 입력란의 value 값을 가져옵니다.
             var keyword = document.querySelector("input[name='keyword']").value;
 
-            findReviewList(keyword, 0, optionValue);
+            findBoardList(keyword, 0, optionValue);
         }
 
-        function findReviewList(keyword, page, option){ // 게시글 리스트
-            $.ajax({
-                url : `/api/reviews`,
-                type : "GET",
-                dataType : "json",
-                data : {
-                    keyword : keyword,
-                    page : page,
-                    option : option
-                },
-                success : function (res) {
-                    console.log(res);
-                    let reviewHtml = "";
+        async function findBoardList(keyword, page, option){ // 게시글 리스트
+            try{
+                const response = await fetch(`/api/boards`, {
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    },
+                    data : JSON.stringify({
+                        keyword : keyword,
+                        page : page,
+                        option : option
+                    })
+                });
 
-                    res.content.forEach(row => {
-                        reviewHtml += `
+                const res = await response.json();
+                let boardHtml = "";
+                res.content.forEach(row => {
+                    boardHtml += `
                             <tr id=${row.id}>
                                 <td>${row.id}</td>
                                 <td>${row.view}</td>
@@ -47,45 +49,44 @@
                                 <td>${row.title} [${row.commentCount}]</td>
                             </tr>
                         `;
-                    });
+                });
 
-                    let pageHtml = "";
-                    pageHtml += `
+                let pageHtml = "";
+                pageHtml += `
                         <li class="page-item ${(res.first) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findReviewList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                            <a class="page-link" onclick="findBoardList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
                         </li>
                         `;
 
-                    let startPage = Math.max(0, res.number - 5);
-                    let endPage = Math.min(res.totalPages, res.number + 5);
-                    for(let page = startPage; page < endPage ; page++){
-                        pageHtml += `
+                let startPage = Math.max(0, res.number - 5);
+                let endPage = Math.min(res.totalPages, res.number + 5);
+                for(let page = startPage; page < endPage ; page++){
+                    pageHtml += `
                             <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                <a class="page-link" onclick="findReviewList(${keyword}, ${page}, ${option})">${page + 1}</a>
+                                <a class="page-link" onclick="findBoardList(${keyword}, ${page}, ${option})">${page + 1}</a>
                             </li>
                         `;
-                    }
+                }
 
-                    pageHtml += `
+                pageHtml += `
                         <li class="page-item ${(res.last) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findReviewList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                            <a class="page-link" onclick="findBoardList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
                         </li>
                     `;
 
-                    document.querySelector(".review_list").innerHTML = reviewHtml;
-                    document.querySelector(".page_list").innerHTML = pageHtml;
-                    addClickEventToRows();
-                },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                }
-            })
+                document.querySelector(".board_list").innerHTML = boardHtml;
+                document.querySelector(".page_list").innerHTML = pageHtml;
+                addClickEventToRows();
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
         }
 
         function addClickEventToRows() {
             document.querySelectorAll("tbody tr").forEach(function (tr) { // tbody 내에 모든 tr 태그를 찾아서 for
                 tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                    window.location.href = "/reviews/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                    window.location.href = "/boards/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
             })
         }
@@ -134,7 +135,7 @@
                 <th class="col-6">제목</th>
             </tr>
         </thead>
-        <tbody class="review_list">
+        <tbody class="board_list">
         </tbody>
     </table>
 
@@ -145,7 +146,7 @@
     </nav>
 
     <div sec:authorize="isAuthenticated()">
-        <a class="btn btn-primary" href="/reviews/create">글쓰기</a>
+        <a class="btn btn-primary" href="/boards/create">글쓰기</a>
     </div>
 
 </div>

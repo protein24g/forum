@@ -9,19 +9,19 @@
     <script>
         // 페이지 로드시 호출되는 함수
         document.addEventListener("DOMContentLoaded", function (){
-            getReviewDetails();
+            getBoardDetails();
             getAllComment(0);
         })
 
         // -------------- //
-        function editReview(){
+        function editBoard(){
             document.getElementById("edit_title").value = document.getElementById("title").innerText;
-            document.getElementById("edit_review_content").value = document.getElementById("review_content").innerText;
+            document.getElementById("edit_board_content").value = document.getElementById("board_content").innerText;
 
-            // 'editReviewButton' ID를 가진 요소에 click 이벤트 리스너 설정
-            // updateReview 함수를 호출
-            document.getElementById("editReviewButton").onclick = function (){
-                updateReview();
+            // 'editBoardButton' ID를 가진 요소에 click 이벤트 리스너 설정
+            // updateBoard 함수를 호출
+            document.getElementById("editBoardButton").onclick = function (){
+                updateBoard();
             };
         }
 
@@ -40,12 +40,12 @@
 
         // C(Create)
         async function createUserComment(){
-            let reviewId = document.getElementById("reviewId").value;
+            let boardId = document.getElementById("boardId").value;
             let comment_content = document.getElementById("comment_content").value;
             let _csrf = document.getElementById("_csrf").value;
 
             try{
-                const response = await fetch(`/api/c/reviews/${reviewId}/comments`, {
+                const response = await fetch(`/api/c/boards/${boardId}/comments`, {
                     method : "POST",
                     headers : {
                         "Content-Type" : "application/json",
@@ -67,16 +67,16 @@
                 }
             }catch (error){
                 alert(error);
-                window.location.href = "/reviews/" + reviewId;
+                window.location.href = "/boards/" + boardId;
             }
         }
 
         // R(Read)
-        async function getReviewDetails(){ // 게시글 Detail
-            let reviewId = document.getElementById("reviewId").value;
+        async function getBoardDetails(){ // 게시글 Detail
+            let boardId = document.getElementById("boardId").value;
 
             try{
-                const response = await fetch(`/api/reviews/${reviewId}`, {
+                const response = await fetch(`/api/boards/${boardId}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -90,20 +90,20 @@
                 document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("view").innerText = res.view;
                 document.getElementById("title").innerText = res.title;
-                document.getElementById("review_content").innerText = res.content;
+                document.getElementById("board_content").innerText = res.content;
             }catch (error){
                 if(error instanceof TypeError) alert("알 수 없는 오류입니다.");
                 else alert(error);
-                window.location.href = "/reviews/" + reviewId;
+                window.location.href = "/boards/" + boardId;
             }
         }
 
         async function getAllComment(page){
-            let reviewId = document.getElementById("reviewId").value;
+            let boardId = document.getElementById("boardId").value;
             document.getElementById("currentPage").value = page;
 
             try{
-                const response = await fetch(`/api/reviews/${reviewId}/comments?page=${page}`, {
+                const response = await fetch(`/api/boards/${boardId}/comments?page=${page}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -196,17 +196,17 @@
         }
 
         // U(Update)
-        async function updateReview() {
-            let reviewId = document.getElementById("reviewId").value;
+        async function updateBoard() {
+            let boardId = document.getElementById("boardId").value;
             let _csrf = document.getElementById("_csrf").value;
 
             // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
-            let myModal = document.getElementById("review_modalView");
+            let myModal = document.getElementById("board_modalView");
             // Bootstrap Modal 인스턴스를 생성합니다.
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             try{
-                const response = await fetch(`/api/reviews/${reviewId}`, {
+                const response = await fetch(`/api/boards/${boardId}`, {
                     method : "PUT",
                     headers : {
                         "Content-Type" : "application/json",
@@ -214,27 +214,27 @@
                     },
                     body : JSON.stringify({
                         title : document.getElementById("edit_title").value,
-                        content : document.getElementById("edit_review_content").value
+                        content : document.getElementById("edit_board_content").value
                     })
                 });
 
                 const res = await response.text();
                 alert(res);
                 modalInstance.hide();
-                getReviewDetails();
+                getBoardDetails();
             }catch (error){
                 if(error instanceof TypeError){
                     alert("로그인 후 이용하세요");
                     window.location.href = "/login";
                 }else{
                     alert(error);
-                    window.location.href = "/reviews/" + reviewId;
+                    window.location.href = "/boards/" + boardId;
                 }
             }
         }
 
         async function updateComment(id){ // fetch 로 수정중
-            let reviewId = document.getElementById("reviewId").value;
+            let boardId = document.getElementById("boardId").value;
             let commentId = id;
             let currentPage = document.getElementById("currentPage").value;
             let content = document.getElementById("edit_content").value;
@@ -265,7 +265,7 @@
                     window.location.href = "/login";
                 }else{
                     alert(error);
-                    window.location.href = "/reviews/" + reviewId;
+                    window.location.href = "/boards/" + boardId;
                 }
             }
         }
@@ -273,7 +273,7 @@
         // D(Delete)
         async function deleteComment(id){
             if (!confirm("삭제하시겠습니까?")){ return; }
-            let reviewId = document.getElementById("reviewId").value;
+            let boardId = document.getElementById("boardId").value;
             let commentId = id;
             let _csrf = document.getElementById("_csrf").value;
 
@@ -295,7 +295,7 @@
                     window.location.href = "/login";
                 }else{
                     alert(error);
-                    window.location.href = "/reviews/" + reviewId;
+                    window.location.href = "/boards/" + boardId;
                 }
             }
         }
@@ -305,7 +305,7 @@
 <body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <input type="hidden" id="currentPage" value="0">
-<input type="hidden" id="reviewId" th:value="${reviewId}">
+<input type="hidden" id="boardId" th:value="${boardId}">
 <input type="hidden" id="_csrf" th:value="${_csrf.token}">
 
 <div class="container">
@@ -353,7 +353,7 @@
                 <span>내용</span>
             </td>
             <td colspan="3">
-                <span class="form-control-plaintext" id="review_content" style="text-align: left;"></span>
+                <span class="form-control-plaintext" id="board_content" style="text-align: left;"></span>
             </td>
         </tr>
     </table>
@@ -364,12 +364,12 @@
         <!-- 댓글 수정, 삭제 -->
         <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
             <!-- Button trigger modal -->
-            <button type="button" onclick="editReview()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#review_modalView">
+            <button type="button" onclick="editBoard()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#board_modalView">
                 수정
             </button>
 
             <!-- 게시글 수정 Modal -->
-            <div class="modal fade" id="review_modalView" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="board_modalView" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -380,11 +380,11 @@
                             <label>제목</label>
                             <textarea type="text" class="form-control" id="edit_title"></textarea>
                             <label>내용</label>
-                            <textarea type="text" class="form-control" id="edit_review_content"></textarea>
+                            <textarea type="text" class="form-control" id="edit_board_content"></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                            <button type="button" class="btn btn-primary" id="editReviewButton">작성</button>
+                            <button type="button" class="btn btn-primary" id="editBoardButton">작성</button>
                         </div>
                     </div>
                 </div>
@@ -437,7 +437,7 @@
     </nav>
 
     <br>
-    <a class="btn btn-primary" href="/reviews">목록</a>
+    <a class="btn btn-primary" href="/boards">목록</a>
 
 </div>
 

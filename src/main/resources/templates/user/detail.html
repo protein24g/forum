@@ -11,6 +11,15 @@
                 getUserDetail();
             })
 
+            function addClickEventToRows(){
+                document.querySelectorAll("tbody tr").forEach(function (tr) { // tbody 내에 모든 tr 태그를 찾아서 for
+                    tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                        window.location.href = "/boards/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                    })
+                })
+            }
+
+            // R(Read)
             async function getUserDetail(){
                 let userId = document.getElementById("userId").value;
                 try{
@@ -23,18 +32,61 @@
 
                     const res = await response.json();
                     console.log(res);
-                    console.log(res.comments);
-                    console.log(res.comments.length);
-                    for(let i = 0; i < res.comments.numberOfElements; i++){
-                        console.log(res.comments.content[i]);
-                    }
-                    document.querySelector(".reviews").innerHTML = "<div>hi</div>";
 
+                    document.getElementById("nickname").innerText = res.nickname;
+                    document.getElementById("boards_count").innerText = "작성 글 : " + res.boards.totalElements + "개";
+
+                    let boardHtml = "";
+                    res.boards.content.forEach(row => {
+                        boardHtml += `
+                            <tr id=${row.id}>
+                                <td>${row.id}</td>
+                                <td>${row.view}</td>
+                                <td>${row.nickname}</td>
+                                <td>${row.createDate.replace('T', ' ').slice(0, 19)}</td>
+                                <td>${row.title} [${row.commentCount}]</td>
+                            </tr>
+                        `;
+                    });
+
+                    let commentHtml = ``;
+
+                    res.comments.content.forEach(row => {
+                        // 고유한 모달 ID 생성
+                        commentHtml += `
+                        <div class="row" onclick="window.location.href = '/boards/' + ${row.boardId}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-auto p-0">
+                                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="35">
+                                        </div>
+                                        <div class="col-auto p-0 me-3">
+                                            <span>${row.nickname}</span>
+                                        </div>
+                                        <div class="col-auto p-0 pe-1">
+                                            <span>|</span>
+                                        </div>
+                                        <div class="col"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                                            <span>${row.createDate.replace('T', ' ').slice(0, 19)}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <span class="p-0">${row.content}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+
+                    document.querySelector(".board_list").innerHTML = boardHtml;
+                    document.querySelector(".cm_list").innerHTML = commentHtml;
+                    addClickEventToRows();
                 }catch (error){
-                    alert(error);
-                    window.location.href = "/";
+                    console.log(error);
+                    //window.location.href = "/";
                 }
-
             }
         </script>
     </head>
@@ -45,33 +97,45 @@
             <div class="row">
                 <!-- 사용자 이미지 -->
                 <div class="col-2 text-center">
-                    <img src="https://cdn-icons-png.flaticon.com/128/3917/3917033.png" class="img-fluid" alt="사용자 이미지">
+                    <a href="/">
+                        <img src="https://cdn-icons-png.flaticon.com/128/3917/3917033.png" class="img-fluid" alt="사용자 이미지">
+                    </a>
                 </div>
                 <!-- 닉네임과 작성한 글 수 -->
                 <div class="col-8">
-                    <h3>사용자닉네임</h3>
+                    <h3 id="nickname"></h3>
                     <br>
-                    <p>작성한 글 수: 10</p>
+                    <p id="boards_count"></p>
                 </div>
             </div>
         </div>
 
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">리뷰</button>
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">작성글</button>
                 <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">댓글</button>
-                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active reviews" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                a
+            <div class="tab-pane fade show active"  id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                <!--게시글 Detail-->
+                <table class="table table-hover text-center">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="col-1">#</th>
+                        <th class="col-1">조회수</th>
+                        <th class="col-2">닉네임</th>
+                        <th class="col-2">날짜</th>
+                        <th class="col-6">제목</th>
+                    </tr>
+                    </thead>
+                    <tbody class="board_list">
+                    </tbody>
+                </table>
             </div>
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                b
-            </div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
-                c
+                <!--/* 댓글 렌더링 영역 */-->
+                <div class="cm_list"></div>
             </div>
         </div>
     </div>

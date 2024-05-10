@@ -1,4 +1,4 @@
-package com.example.shop.board.reviewboard.entity;
+package com.example.shop.board.freeboard.entity;
 
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.user.entity.User;
@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Review {
+public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,11 +34,11 @@ public class Review {
 
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
-    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Review(String title, String content, LocalDateTime createDate, User user, int view){
+    public Board(String title, String content, LocalDateTime createDate, User user, int view){
         this.title = title;
         this.content = content;
         this.createDate = createDate;
@@ -52,7 +52,7 @@ public class Review {
 
     public void addComment(Comment comment){
         this.comments.add(comment);
-        comment.setReview(this);
+        comment.setBoard(this);
     }
 
     public int incView() {

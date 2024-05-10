@@ -1,25 +1,17 @@
 package com.example.shop.user.service;
 
-import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.service.CommentService;
-import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
-import com.example.shop.board.reviewboard.service.ReviewService;
+import com.example.shop.board.freeboard.service.BoardService;
 import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.dto.response.UserResponse;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final ReviewService reviewService;
+    private final BoardService boardService;
     private final CommentService commentService;
 
     public void join(JoinRequest joinRequest) {
@@ -80,7 +72,7 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .reviews(reviewService.getReviewsForUser(userId, page))
+                    .boards(boardService.getBoardsForUser(userId, page))
                     .comments(commentService.getCommentsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();

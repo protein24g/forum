@@ -2,10 +2,10 @@ package com.example.shop;
 
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.repository.CommentRepository;
+import com.example.shop.board.freeboard.entity.Board;
+import com.example.shop.board.freeboard.repository.BoardRepository;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.board.qnaboard.repository.QnaRepository;
-import com.example.shop.board.reviewboard.entity.Review;
-import com.example.shop.board.reviewboard.repository.ReviewRepository;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class ShopApplicationTests {
 	QnaRepository qnaRepository;
 
 	@Autowired
-	ReviewRepository reviewRepository;
+	BoardRepository boardRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -34,7 +34,7 @@ class ShopApplicationTests {
 		User user = userRepository.findById(3L).orElse(null);
 
 		for(int i = 0; i < 50; i++){
-			reviewRepository.save(Review.builder()
+			boardRepository.save(Board.builder()
 					.title("테스트글 " + Integer.toString(i + 1))
 					.content("bbbbbbbbdbbb")
 					.createDate(LocalDateTime.now())

@@ -1,19 +1,11 @@
 package com.example.shop.board.comment.controller;
 
-import com.example.shop.board.comment.dto.response.CommentResponse;
-import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.service.CommentService;
 import com.example.shop.board.comment.dto.requests.CommentRequest;
-import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

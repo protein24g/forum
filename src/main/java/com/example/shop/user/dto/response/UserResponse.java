@@ -1,7 +1,7 @@
 package com.example.shop.user.dto.response;
 
 import com.example.shop.board.comment.dto.response.CommentResponse;
-import com.example.shop.board.reviewboard.dto.response.ReviewResponse;
+import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,16 +17,16 @@ public class UserResponse {
     private String nickname;
     private LocalDateTime createDate;
     private boolean isActive;
-    private Page<ReviewResponse> reviews;
+    private Page<BoardResponse> boards;
     private Page<CommentResponse> comments;
 
     @Builder
     public UserResponse(String nickname, LocalDateTime createDate, boolean isActive,
-                        Page<ReviewResponse> reviews, Page<CommentResponse> comments){
+                        Page<BoardResponse> boards, Page<CommentResponse> comments){
         this.nickname = nickname;
         this.createDate = createDate;
         this.isActive = isActive;
-        this.reviews = reviews;
+        this.boards = boards;
         this.comments = comments;
     }
 }

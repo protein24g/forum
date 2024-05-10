@@ -1,10 +1,9 @@
 package com.example.shop.user.entity;
 
+import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
-import com.example.shop.board.reviewboard.entity.Review;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -58,7 +57,7 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    private List<Board> reviews = new ArrayList<>();
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -84,9 +83,9 @@ public class User {
         comment.setUser(this);
     }
 
-    public void addReview(Review review){
-        this.reviews.add(review);
-        review.setUser(this);
+    public void addBoard(Board board){
+        this.reviews.add(board);
+        board.setUser(this);
     }
 
     public boolean getActive() {

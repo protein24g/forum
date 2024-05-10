@@ -22,10 +22,10 @@ public class CommentApiController {
     private final CommentService commentService;
 
     // C(Create)
-    @PostMapping("/api/c/reviews/{reviewId}/comments")
-    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Long reviewId, @RequestBody CommentRequest dto){
+    @PostMapping("/api/c/boards/{boardId}/comments")
+    public ResponseEntity<?> createCommentForBoard(@PathVariable("boardId") Long boardId, @RequestBody CommentRequest dto){
         try{
-            commentService.createCommentForReview(reviewId, dto);
+            commentService.createCommentForBoard(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("댓글 생성완료");
         } catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -33,10 +33,10 @@ public class CommentApiController {
     }
 
     // R(Read)
-    @GetMapping("/api/reviews/{reviewId}/comments")
-    public Page<CommentResponse> getCommentsForReview(@PathVariable("reviewId") Long reviewId,
+    @GetMapping("/api/boards/{boardId}/comments")
+    public Page<CommentResponse> getCommentsForBoard(@PathVariable("boardId") Long boardId,
                                                 @RequestParam(name = "page", defaultValue = "0") int page){
-        Page<CommentResponse> commentResponses = commentService.getCommentsForReview(reviewId, page);
+        Page<CommentResponse> commentResponses = commentService.getCommentsForBoard(boardId, page);
         return commentResponses;
     }
 
