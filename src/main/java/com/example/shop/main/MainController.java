@@ -26,7 +26,7 @@ public class MainController {
         } else {
             // getPrincipal()이 CustomUserDetails 인스턴스가 아닌 경우 (예: "anonymousUser")
             // 여기에 대한 처리 로직
-            model.addAttribute("nickname", "Guest");
+            model.addAttribute("nickname", "anonymousUser");
         }
         return "main/index";
     }
