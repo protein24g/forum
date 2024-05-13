@@ -7,8 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BoardRequest {
-    private String title;
-
-    private String content;
+public class BoardSearchDTO {
+    private String keyword;
+    private int page;
+    private String option;
 }

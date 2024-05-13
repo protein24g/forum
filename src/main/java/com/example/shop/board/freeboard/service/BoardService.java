@@ -117,19 +117,6 @@ public class BoardService {
         Board board = boardRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        // 댓글 목록 가져오기
-        List<Comment> comments = board.getComments();
-        // Comment 객체를 CommentResponse 로 변환
-        List<CommentResponse> commentResponses = comments.stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
-                        .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
-                        .content(comment.getContent())
-                        .createDate(comment.getCreateDate())
-                        .build())
-                .collect(Collectors.toList());
-
         return BoardResponse.builder()
                 .id(board.getId())
                 // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시

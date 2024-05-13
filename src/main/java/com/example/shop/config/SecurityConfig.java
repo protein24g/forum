@@ -22,7 +22,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/",
                                 "/login", "/loginProc", "/join", "/joinProc",
-                                "/users/*", "/api/users/*",
+                                "/users/*", "/api/users/*", "/users/search",
                                 "/boards", "/api/boards", "/boards/*", "/api/boards/*", "/api/boards/*/comments",
                                 "/qna", "/qna/*",
                                 "/checkLoginId", "/checkNickname").permitAll()

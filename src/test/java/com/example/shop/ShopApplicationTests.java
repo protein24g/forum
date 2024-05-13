@@ -30,8 +30,8 @@ class ShopApplicationTests {
 	CommentRepository commentRepository;
 
 	@Test
-	public void test0() { // 리뷰 글 생성
-		User user = userRepository.findById(3L).orElse(null);
+	public void test0() { // 글 작성 테스트
+		User user = userRepository.findById(1L).orElse(null);
 
 		for(int i = 0; i < 50; i++){
 			boardRepository.save(Board.builder()
@@ -44,40 +44,4 @@ class ShopApplicationTests {
 		}
 	}
 
-	@Test
-	public void test1() { // 질문 글 생성
-		User user = userRepository.findById(3L).orElse(null);
-
-		qnaRepository.save(QuestionAndAnswer.builder()
-				.title("testtesdt")
-				.content("bbbbbbbbdbbb")
-				.createDate(LocalDateTime.now())
-				.user(user)
-				.build());
-	}
-
-	@Test
-	public void test2(){ // 댓글 생성
-		User user = userRepository.findById(3L).orElse(null);
-		QuestionAndAnswer questionAndAnswer = qnaRepository.findById(16L).orElse(null);
-
-		commentRepository.save(Comment.builder()
-				.user(user)
-				.questionAndAnswer(questionAndAnswer)
-				.content("asdasd")
-				.createDate(LocalDateTime.now())
-				.build());
-	}
-
-	@Test
-	public void test3(){ // 댓글 삭제
-		QuestionAndAnswer questionAndAnswer = qnaRepository.findById(Long.valueOf(16)).orElse(null);
-		qnaRepository.delete(questionAndAnswer);
-	}
-
-	@Test
-	public void test4(){ // 질문 글 삭제
-		QuestionAndAnswer questionAndAnswer = qnaRepository.findById(Long.valueOf(16)).orElse(null);
-		qnaRepository.delete(questionAndAnswer);
-	}
 }

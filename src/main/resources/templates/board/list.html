@@ -7,30 +7,40 @@
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        @media (max-width: 768px) {
+            /* 모바일 화면에서 제목 글꼴 크기 조정 */
+            body{
+                font-size : 11px;
+            }
+        }
+    </style>
     <script>
         // 페이지 로드시 호출되는 함수
         document.addEventListener("DOMContentLoaded", function (){
-            findBoardList();
+            findBoardList("", 0, "");
         })
 
         // R(Read)
-        function search(){ // 검색 기능
+        function search(){
             // 옵션 선택 요소의 value 값을 가져옵니다.
-            var optionValue = document.querySelector("select[name='option']").value;
+            var optionValue = document.querySelector("#option").value;
             // 검색어 입력란의 value 값을 가져옵니다.
-            var keyword = document.querySelector("input[name='keyword']").value;
+            var keyword = document.querySelector("#keyword").value;
 
             findBoardList(keyword, 0, optionValue);
         }
 
         async function findBoardList(keyword, page, option){ // 게시글 리스트
+            let _csrf = document.getElementById("_csrf").value;
             try{
-                const response = await fetch(`/api/boards`, {
-                    method : "GET",
+                const response = await fetch("/api/boards", {
+                    method : "POST",
                     headers : {
-                        "Content-Type" : "application/json"
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : _csrf
                     },
-                    data : JSON.stringify({
+                    body : JSON.stringify({
                         keyword : keyword,
                         page : page,
                         option : option
@@ -54,7 +64,7 @@
                 let pageHtml = "";
                 pageHtml += `
                         <li class="page-item ${(res.first) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findBoardList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                            <a class="page-link" onclick="findBoardList('${keyword}', ${res.number + 1}, '${option}')">Previous</a>
                         </li>
                         `;
 
@@ -63,14 +73,14 @@
                 for(let page = startPage; page < endPage ; page++){
                     pageHtml += `
                             <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                <a class="page-link" onclick="findBoardList(${keyword}, ${page}, ${option})">${page + 1}</a>
+                                <a class="page-link" onclick="findBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
                             </li>
                         `;
                 }
 
                 pageHtml += `
                         <li class="page-item ${(res.last) ? "disabled" : ""}">
-                            <a class="page-link" onclick="findBoardList(${keyword}, ${res.number + 1}, ${option})">Previous</a>
+                            <a class="page-link" onclick="findBoardList('${keyword}', ${res.number + 1}, '${option}')">Next</a>
                         </li>
                     `;
 
@@ -78,8 +88,8 @@
                 document.querySelector(".page_list").innerHTML = pageHtml;
                 addClickEventToRows();
             }catch (error){
-                alert(error);
-                window.location.href = "/";
+                alert("알 수 없는 오류가 발생했습니다");
+                //window.location.href = "/";
             }
         }
 
@@ -95,25 +105,26 @@
 
 <body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+<input type="hidden" id="_csrf" th:value="${_csrf.token}">
 
 <div class="container">
-    <br><br>
+    <br><br><br>
     <h2>리뷰</h2>
 
     <!--검색-->
     <div class="row">
-        <div class="col-8"></div>
-        <div class="col-4">
+        <div class="col-lg-8"></div>
+        <div class="col-lg-4">
             <div class="row">
                 <form class="d-flex" role="search">
                     <div class="col-3">
-                        <select class="form-select" name="option">
+                        <select class="form-select" id="option">
                             <option value="1">제목</option>
                             <option value="2">내용</option>
                         </select>
                     </div>
                     <div class="col-7">
-                        <input class="form-control me-2" type="search" name="keyword" aria-label="Search">
+                        <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
                     </div>
                     <div class="col-2">
                         <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
@@ -125,14 +136,14 @@
     <br>
 
     <!--게시글 Detail-->
-    <table class="table table-hover text-center">
+    <table class="table table-hover text-center" style="text-overflow : ellipsis;">
         <thead class="table-light">
             <tr>
-                <th class="col-1">#</th>
-                <th class="col-1">조회수</th>
-                <th class="col-2">닉네임</th>
-                <th class="col-2">날짜</th>
-                <th class="col-6">제목</th>
+                <th class="col-lg-1">#</th>
+                <th class="col-lg-1">조회수</th>
+                <th class="col-lg-2">닉네임</th>
+                <th class="col-lg-2">날짜</th>
+                <th class="col-lg-6">제목</th>
             </tr>
         </thead>
         <tbody class="board_list">
@@ -145,6 +156,7 @@
         </ul>
     </nav>
 
+    <!--글쓰기-->
     <div sec:authorize="isAuthenticated()">
         <a class="btn btn-primary" href="/boards/create">글쓰기</a>
     </div>

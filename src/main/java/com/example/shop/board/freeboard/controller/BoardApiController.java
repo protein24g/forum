@@ -1,6 +1,7 @@
 package com.example.shop.board.freeboard.controller;
 
 import com.example.shop.board.freeboard.dto.requests.BoardRequest;
+import com.example.shop.board.freeboard.dto.requests.BoardSearchDTO;
 import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.board.freeboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,15 @@ public class BoardApiController {
     private final BoardService boardService;
 
     // R(Read)
-    @GetMapping("/api/boards")
-    public ResponseEntity<?> boardP(
-                          @RequestParam(value = "keyword", required = false) String keyword,
-                          @RequestParam(value = "page", defaultValue = "0") int page,
-                          @RequestParam(value = "option", required = false) String option) {
+    @PostMapping("/api/boards")
+    public ResponseEntity<?> boardP(@RequestBody BoardSearchDTO dto) {
         Page<BoardResponse> boardResponses;
-        if (keyword != null) { // 키워드가 있으면
-            boardResponses = boardService.pageBoards(keyword, page, option); // 검색 페이징
+        if (dto.getKeyword().length() != 0) { // 키워드가 있으면
+            boardResponses = boardService.pageBoards(dto.getKeyword(), dto.getPage(), dto.getOption()); // 검색 페이징
         } else {
-            boardResponses = boardService.pageBoards("", page, ""); // 기본 리스트 페이징
+            boardResponses = boardService.pageBoards("", dto.getPage(), ""); // 기본 리스트 페이징
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
     }
 

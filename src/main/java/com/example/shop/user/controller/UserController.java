@@ -75,4 +75,9 @@ public class UserController {
         model.addAttribute("userId", userId);
         return "user/detail";
     }
+
+    @GetMapping("/users/search")
+    public String searchUsers(){
+        return "user/search";
+    }
 }
