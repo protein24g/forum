@@ -42,7 +42,6 @@
                 });
 
                 const res = await response.json();
-                console.log(res);
                 document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("boards_count").innerText = "작성 글 : " + res.boards.totalElements + "개";
 
@@ -71,8 +70,8 @@
                             </li>
                             `;
 
-                let startPage = (Math.floor((res.boards.number) / 10)) * 10;
-                let endPage = Math.min(startPage + 10, res.boards.totalPages);
+                let startPage = (Math.floor((res.boards.number) / 5)) * 5;
+                let endPage = Math.min(startPage + 5, res.boards.totalPages);
                 for(let page = startPage; page < endPage ; page++){
                     boardPageHtml += `
                                 <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
@@ -98,16 +97,16 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-auto p-0">
                                             <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" class="img-fluid" width="35">
                                         </div>
-                                        <div class="col">
+                                        <div class="col-auto p-0">
                                             <span>${row.nickname}</span>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-auto">
                                             <span>|</span>
                                         </div>
-                                        <div class="col"> <!-- 자동으로 남은 공간을 차지하게 함 -->
+                                        <div class="col-auto p-0"> <!-- 자동으로 남은 공간을 차지하게 함 -->
                                             <span>${row.createDate.replace('T', ' ').slice(0, 19)}</span>
                                         </div>
                                     </div>
