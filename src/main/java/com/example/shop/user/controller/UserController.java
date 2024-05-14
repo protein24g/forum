@@ -29,14 +29,12 @@ public class UserController {
     @PostMapping("/joinProc")
     public String joinProc( @Valid JoinRequest joinRequest, // 클라이언트로부터 받은 JoinRequest 객체에 대해 @Valid 애너테이션을 통해 유효성 검증을 진행합니다.
                             BindingResult result, // 유효성 검사 과정에서 발생한 오류들을 담는 BindingResult 객체. 유효성 검사를 통과하지 못한 필드와 관련된 구체적인 오류 정보들을 가지고 있습니다.
-                            Model model) { // 뷰로 데이터를 전달하기 위한 Model 객체.
+                            Model model) { // 뷰로 데이터를 전달하기 위한 Model 객체
         // 검증 과정에서 오류가 발견되었는지 여부를 확인합니다.
         if (result.hasErrors()) {
-            // 검증 실패 시, 에러 메시지들을 뷰에 전달합니다.
-            // getAllErrors 메소드를 통해 발생한 모든 오류들을 가져와 model에 추가합니다.
-            model.addAttribute("errors", result.getAllErrors());
-            // 회원 가입 페이지(user/join)로 리다이렉트합니다. 이때, 오류 메시지들이 포함된 상태로 뷰를 렌더링하여 사용자가 오류를 인지하고 수정할 수 있도록 합니다.
-            return "user/join";
+            model.addAttribute("msg", "회원가입 실패");
+            model.addAttribute("url", "/join");
+            return "message/main";
         }
 
         // 유효성 검증을 통과했을 경우의 로직을 작성합니다.
