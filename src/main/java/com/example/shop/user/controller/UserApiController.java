@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.function.EntityResponse;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {
@@ -32,6 +34,16 @@ public class UserApiController {
     }
 
     // R(Read)
+    @GetMapping("/api/users")
+    public ResponseEntity<?> UsersByKeyword(@RequestParam(name = "UsersByKeyword", defaultValue = "") String nickname){
+        try{
+            List<UserResponse> userResponses = userService.UsersByKeyword(nickname);
+            return ResponseEntity.status(HttpStatus.OK).body(userResponses);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/api/users/{userId}")
     public ResponseEntity<?> getUserDetail(@PathVariable("userId") Long userId,
                                            @RequestParam(name = "page", defaultValue = "0") int page){

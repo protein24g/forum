@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class UserResponse {
+    private Long userId;
     private String nickname;
     private LocalDateTime createDate;
     private boolean isActive;
@@ -21,8 +22,9 @@ public class UserResponse {
     private Page<CommentResponse> comments;
 
     @Builder
-    public UserResponse(String nickname, LocalDateTime createDate, boolean isActive,
+    public UserResponse(Long userId, String nickname, LocalDateTime createDate, boolean isActive,
                         Page<BoardResponse> boards, Page<CommentResponse> comments){
+        this.userId = userId;
         this.nickname = nickname;
         this.createDate = createDate;
         this.isActive = isActive;

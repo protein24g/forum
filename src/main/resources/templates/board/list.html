@@ -113,7 +113,7 @@
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <input type="hidden" id="_csrf" th:value="${_csrf.token}">
 
-    <div class="container">
+    <div class="container vh-100">
         <h2>리뷰</h2>
 
         <!--검색-->
@@ -143,13 +143,13 @@
         <!--게시글 Detail-->
         <table class="table table-hover text-center">
             <thead class="table-light">
-                <tr>
-                    <th class="col">#</th>
-                    <th class="col">조회수</th>
-                    <th class="col">닉네임</th>
-                    <th class="col">날짜</th>
-                    <th class="col">제목</th>
-                </tr>
+            <tr>
+                <th class="col">#</th>
+                <th class="col">조회수</th>
+                <th class="col">닉네임</th>
+                <th class="col">날짜</th>
+                <th class="col">제목</th>
+            </tr>
             </thead>
             <tbody class="board_list">
             </tbody>

@@ -32,7 +32,7 @@ public class UserController {
                             Model model) { // 뷰로 데이터를 전달하기 위한 Model 객체
         // 검증 과정에서 오류가 발견되었는지 여부를 확인합니다.
         if (result.hasErrors()) {
-            model.addAttribute("msg", "회원가입 실패");
+            model.addAttribute("msg", result.hasErrors());
             model.addAttribute("url", "/join");
             return "message/main";
         }

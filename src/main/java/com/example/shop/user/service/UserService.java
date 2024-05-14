@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +83,16 @@ public class UserService {
         }else{
             throw new IllegalArgumentException("탈퇴한 사용자");
         }
+    }
+
+    public List<UserResponse> UsersByKeyword(String keyword){
+        List<User> users = userRepository.findByNicknameContaining(keyword);
+        return users.stream()
+                .map(user -> UserResponse.builder()
+                        .userId(user.getId())
+                        .nickname(user.getNickname())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     // U(Update)
