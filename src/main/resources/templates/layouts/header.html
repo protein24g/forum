@@ -10,7 +10,7 @@
         <div th:fragment="headerFragment">
             <nav class="navbar bg-body-tertiary fixed-top" style="position: sticky;">
                 <div class="container d-flex justify-content-between align-items-center" style="padding: 0 15px;"> <!-- 수정된 부분 -->
-                    <a class="navbar-brand" href="/">홈페이지 커뮤니티</a>
+                    <a class="navbar-brand" href="/">홈페이지</a>
                     <div sec:authorize="isAuthenticated()" style="margin-left: auto;"> <!-- 수정된 부분 -->
                         <span th:text="${#authorization.getAuthentication().getPrincipal().username} + ' 님 어서오세요'" style="margin-right: 10px;"></span>
                     </div>
@@ -26,23 +26,23 @@
                         </div>
                         <div class="offcanvas-body p-0">
                             <ul class="navbar-nav justify-content-end flex-grow-1">
-                                <li class="nav-item px-2" sec:authorize="isAnonymous()">
+                                <li class="px-2 nav-item" sec:authorize="isAnonymous()">
                                     <a href="/login" class="nav-link link-body-emphasis">
                                         <h5>로그인</h5>
                                     </a>
                                 </li>
-                                <li class="nav-item px-2" sec:authorize="isAnonymous()">
+                                <li class="px-2 nav-item" sec:authorize="isAnonymous()">
                                     <a href="/join" class="nav-link link-body-emphasis">
                                         <h5>회원가입</h5>
                                     </a>
                                 </li>
-                                <li class="nav-item px-2" sec:authorize="isAuthenticated()">
+                                <li class="px-2 nav-item" sec:authorize="isAuthenticated()">
                                     <form action="/logout" method="post">
                                         <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-                                        <button type="submit" class="nav-link link-body-emphasis px-2">로그아웃</button>
+                                        <button type="submit" class="nav-link link-body-emphasis">로그아웃</button>
                                     </form>
                                 </li>
-                                <li class="nav-item dropdown  px-2">
+                                <li class="px-2 nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="h5">메뉴</span>
                                     </a>

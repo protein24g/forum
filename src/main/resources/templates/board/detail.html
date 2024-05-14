@@ -310,9 +310,8 @@
         }
     </script>
 </head>
-
-<body>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+<body>
 <input type="hidden" id="currentPage" value="0">
 <input type="hidden" id="boardId" th:value="${boardId}">
 <input type="hidden" id="_csrf" th:value="${_csrf.token}">
