@@ -132,12 +132,12 @@
                                 </li>
                                 `;
 
-                    startPage = (Math.floor((res.comments.number) / 5)) * 5;
-                    endPage = Math.min(startPage + 5, res.comments.totalPages);
-                    for(let page = startPage; page < endPage ; page++){
+                    let startPage2 = (Math.floor((res.comments.number) / 5)) * 5;
+                    let endPage2 = Math.min(startPage2 + 5, res.comments.totalPages);
+                    for(let page2 = startPage2; page2 < endPage2 ; page2++){
                         commentPageHtml += `
-                                    <li class="page-item ${(page == res.comments.number) ? 'active' : ''}">
-                                        <a class="page-link" onclick="getUserDetail(${page})">${page + 1}</a>
+                                    <li class="page-item ${(page2 == res.comments.number) ? 'active' : ''}">
+                                        <a class="page-link" onclick="getUserDetail(${page2})">${page2 + 1}</a>
                                     </li>
                                 `;
                     }
@@ -201,7 +201,7 @@
                     </tbody>
                 </table>
                 <!--게시글 페이징-->
-                <nav aria-label="Page navigation example">
+                <nav aria-label="">
                     <ul class="pagination justify-content-center page_list board_page_list">
                     </ul>
                 </nav>
