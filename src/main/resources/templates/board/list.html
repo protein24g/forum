@@ -68,12 +68,12 @@
                     let pageHtml = "";
                     pageHtml += `
                             <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                <a class="page-link" onclick="findBoardList('${keyword}', ${res.number + 1}, '${option}')">Previous</a>
+                                <a class="page-link" onclick="findBoardList('${keyword}', ${res.number - 1}, '${option}')">Previous</a>
                             </li>
                             `;
 
-                    let startPage = Math.max(0, res.number - 5);
-                    let endPage = Math.min(res.totalPages, res.number + 5);
+                    let startPage = (Math.floor((res.number) / 10)) * 10;
+                    let endPage = Math.min(startPage + 10, res.totalPages);
                     for(let page = startPage; page < endPage ; page++){
                         pageHtml += `
                                 <li class="page-item ${(page == res.number) ? 'active' : ''}">

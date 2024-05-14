@@ -74,7 +74,6 @@
                 let startPage = (Math.floor((res.boards.number) / 10)) * 10;
                 let endPage = Math.min(startPage + 10, res.boards.totalPages);
                 for(let page = startPage; page < endPage ; page++){
-                    console.log(startPage);
                     boardPageHtml += `
                                 <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
                                     <a class="page-link" onclick="getUserDetail(${page})">${page + 1}</a>

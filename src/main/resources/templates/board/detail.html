@@ -182,8 +182,8 @@
                 </li>
                 `;
 
-                let startPage = Math.max(0, res.number - 5);
-                let endPage = Math.min(res.totalPages, res.number + 5);
+                let startPage = (Math.floor((res.number) / 10)) * 10;
+                let endPage = Math.min(startPage + 10, res.totalPages);
                 for(let page = startPage; page < endPage ; page++){
                     pageHtml += `
                     <li class="page-item ${page == res.number ? 'active' : ''}">
