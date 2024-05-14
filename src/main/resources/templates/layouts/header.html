@@ -10,12 +10,12 @@
         <div th:fragment="headerFragment">
             <nav class="navbar bg-body-tertiary fixed-top" style="position: sticky;">
                 <div class="container d-flex justify-content-between align-items-center" style="padding: 0 15px;"> <!-- 수정된 부분 -->
-                    <a class="navbar-brand">홈페이지 커뮤니티</a>
+                    <a class="navbar-brand" href="/">홈페이지 커뮤니티</a>
                     <div sec:authorize="isAuthenticated()" style="margin-left: auto;"> <!-- 수정된 부분 -->
                         <span th:text="${#authorization.getAuthentication().getPrincipal().username} + ' 님 어서오세요'" style="margin-right: 10px;"></span>
                     </div>
                     <div sec:authorize="isAnonymous()" style="margin-left: auto;"> <!-- 수정된 부분 -->
-                        <span style="margin-right: 10px;">로그인 하세요</span>
+                        <span style="margin-right: 10px;">비회원 님 안녕하세요</span>
                     </div>
                     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
