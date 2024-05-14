@@ -45,7 +45,7 @@
                 document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("boards_count").innerText = "작성 글 : " + res.boards.totalElements + "개";
 
-                let boardHtml = "";
+                let boardHtml = ""; // 유저 검색 창 게시글
                 res.boards.content.forEach(row => {
                     let title = row.title;
                     if(title.length >= 10) title = title.slice(0,10) + "...";
@@ -62,8 +62,9 @@
                             </tr>
                         `;
                 });
+                document.querySelector(".board_list").innerHTML = boardHtml;
 
-                let boardPageHtml = "";
+                let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                 boardPageHtml += `
                             <li class="page-item ${(res.boards.first) ? "disabled" : ""}">
                                 <a class="page-link" onclick="getUserDetail(${res.boards.number - 1})">Previous</a>
@@ -85,11 +86,9 @@
                                 <a class="page-link" onclick="getUserDetail(${res.boards.number + 1})">Next</a>
                             </li>
                         `;
-
                 document.querySelector(".board_page_list").innerHTML = boardPageHtml;
 
-                let commentHtml = ``;
-
+                let commentHtml = ""; // 유저 검색 창 댓글
                 res.comments.content.forEach(row => {
                     // 고유한 모달 ID 생성
                     commentHtml += `
@@ -118,10 +117,33 @@
                         </div>
                         `;
                 });
-
-                document.querySelector(".board_list").innerHTML = boardHtml;
                 document.querySelector(".cm_list").innerHTML = commentHtml;
-                addEventToRows();
+
+                let commentPageHtml = ""; // 유저 검색 창 댓글 페이징
+                commentPageHtml += `
+                            <li class="page-item ${(res.comments.first) ? "disabled" : ""}">
+                                <a class="page-link" onclick="getUserDetail(${res.comments.number - 1})">Previous</a>
+                            </li>
+                            `;
+
+                startPage = (Math.floor((res.comments.number) / 5)) * 5;
+                endPage = Math.min(startPage + 5, res.comments.totalPages);
+                for(let page = startPage; page < endPage ; page++){
+                    commentPageHtml += `
+                                <li class="page-item ${(page == res.comments.number) ? 'active' : ''}">
+                                    <a class="page-link" onclick="getUserDetail(${page})">${page + 1}</a>
+                                </li>
+                            `;
+                }
+
+                commentPageHtml += `
+                            <li class="page-item ${(res.comments.last) ? "disabled" : ""}">
+                                <a class="page-link" onclick="getUserDetail(${res.comments.number + 1})">Next</a>
+                            </li>
+                            `;
+                document.querySelector(".comment_page_list").innerHTML = commentPageHtml;
+
+                addEventToRows(); // row 클릭 이벤트 추가
             }catch (error){
                 alert(error);
                 window.location.href = "/";
