@@ -68,7 +68,7 @@ public class UserService {
     // C(Create)
 
     // R(Read)
-    public UserResponse getUserDetail(Long userId, int page) {
+    public UserResponse getUserBoards(Long userId, int page){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
@@ -77,6 +77,21 @@ public class UserService {
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
                     .boards(boardService.getBoardsForUser(userId, page))
+                    .isActive(user.getActive())
+                    .build();
+        }else{
+            throw new IllegalArgumentException("탈퇴한 사용자");
+        }
+    }
+
+    public UserResponse getUserComments(Long userId, int page){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        if(user.getActive()){
+            return UserResponse.builder()
+                    .nickname(user.getNickname())
+                    .createDate(user.getCreateDate())
                     .comments(commentService.getCommentsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();

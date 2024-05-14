@@ -20,7 +20,7 @@
         </style>
         <script>
             document.addEventListener("DOMContentLoaded", function (){
-                getUserDetail(0 );
+                tab1(0);
             })
 
             function addEventToRows() {
@@ -35,10 +35,10 @@
             }
 
             // R(Read)
-            async function getUserDetail(page){
+            async function tab1(page){
                 let userId = document.getElementById("userId").value;
                 try{
-                    const response = await fetch(`/api/users/${userId}?page=${page}`, {
+                    const response = await fetch(`/api/users/${userId}/boards?page=${page}`, {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json",
@@ -46,11 +46,11 @@
                     });
 
                     const res = await response.json();
+                    console.log(res);
                     document.getElementById("nickname").innerText = res.nickname;
-                    document.getElementById("boards_count").innerText = "작성 글 : " + res.boards.totalElements + "개";
-                    document.getElementById("comments_count").innerText = "작성 댓글 : " + res.comments.totalElements + "개";
+                    document.getElementById("count").innerText = "작성 글 : " + res.boards.totalElements + "개";
 
-                    let boardHtml = ""; // 유저 검색 창 게시글
+                    let boardHtml = "";
                     res.boards.content.forEach(row => {
                         let title = row.title;
                         if(title.length >= 10) title = title.slice(0,10) + "...";
@@ -72,7 +72,7 @@
                     let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                     boardPageHtml += `
                                 <li class="page-item ${(res.boards.first) ? "disabled" : ""}">
-                                    <a class="page-link" onclick="getUserDetail(${res.boards.number - 1})">Previous</a>
+                                    <a class="page-link" onclick="tab1(${res.boards.number - 1})">Previous</a>
                                 </li>
                                 `;
 
@@ -81,17 +81,38 @@
                     for(let page = startPage; page < endPage ; page++){
                         boardPageHtml += `
                                     <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
-                                        <a class="page-link" onclick="getUserDetail(${page})">${page + 1}</a>
+                                        <a class="page-link" onclick="tab1(${page})">${page + 1}</a>
                                     </li>
                                 `;
                     }
 
                     boardPageHtml += `
                                 <li class="page-item ${(res.boards.last) ? "disabled" : ""}">
-                                    <a class="page-link" onclick="getUserDetail(${res.boards.number + 1})">Next</a>
+                                    <a class="page-link" onclick="tab1(${res.boards.number + 1})">Next</a>
                                 </li>
                             `;
                     document.querySelector(".board_page_list").innerHTML = boardPageHtml;
+
+                    addEventToRows(); // row 클릭 이벤트 추가
+                }catch (error){
+                    alert(error);
+                    window.location.href = "/";
+                }
+            }
+
+            async function tab2(page){
+                let userId = document.getElementById("userId").value;
+                try{
+                    const response = await fetch(`/api/users/${userId}/comments?page=${page}`, {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json",
+                        }
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+                    document.getElementById("count").innerText = "작성 댓글 : " + res.comments.totalElements + "개";
 
                     let commentHtml = ""; // 유저 검색 창 댓글
                     res.comments.content.forEach(row => {
@@ -128,7 +149,7 @@
                     let commentPageHtml = ""; // 유저 검색 창 댓글 페이징
                     commentPageHtml += `
                                 <li class="page-item ${(res.comments.first) ? "disabled" : ""}">
-                                    <a class="page-link" onclick="getUserDetail(${res.comments.number - 1})">Previous</a>
+                                    <a class="page-link" onclick="tab2(${res.comments.number - 1})">Previous</a>
                                 </li>
                                 `;
 
@@ -137,14 +158,14 @@
                     for(let page2 = startPage2; page2 < endPage2 ; page2++){
                         commentPageHtml += `
                                     <li class="page-item ${(page2 == res.comments.number) ? 'active' : ''}">
-                                        <a class="page-link" onclick="getUserDetail(${page2})">${page2 + 1}</a>
+                                        <a class="page-link" onclick="tab2(${page2})">${page2 + 1}</a>
                                     </li>
                                 `;
                     }
 
                     commentPageHtml += `
                                 <li class="page-item ${(res.comments.last) ? "disabled" : ""}">
-                                    <a class="page-link" onclick="getUserDetail(${res.comments.number + 1})">Next</a>
+                                    <a class="page-link" onclick="tab2(${res.comments.number + 1})">Next</a>
                                 </li>
                                 `;
                     document.querySelector(".comment_page_list").innerHTML = commentPageHtml;
@@ -172,20 +193,19 @@
                 <div class="col-8">
                     <h3 id="nickname"></h3>
                     <br>
-                    <p id="boards_count"></p>
-                    <p id="comments_count"></p>
+                    <p id="count"></p>
                 </div>
             </div>
         </div>
 
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">작성글</button>
-                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">댓글</button>
+                <button class="nav-link active" onclick="tab1(0)" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">작성글</button>
+                <button class="nav-link" onclick="tab2(0)" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">댓글</button>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active"  id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
                 <!--게시글 Detail-->
                 <table class="table table-hover text-center">
                     <thead class="table-light">
