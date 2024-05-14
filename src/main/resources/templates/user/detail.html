@@ -16,7 +16,7 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function (){
-            getUserDetail();
+            getUserDetail(0 );
         })
 
         function addEventToRows() {
@@ -31,10 +31,10 @@
         }
 
         // R(Read)
-        async function getUserDetail(){
+        async function getUserDetail(page){
             let userId = document.getElementById("userId").value;
             try{
-                const response = await fetch(`/api/users/${userId}`, {
+                const response = await fetch(`/api/users/${userId}?page=${page}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -42,6 +42,7 @@
                 });
 
                 const res = await response.json();
+                console.log(res);
                 document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("boards_count").innerText = "작성 글 : " + res.boards.totalElements + "개";
 
@@ -62,6 +63,32 @@
                             </tr>
                         `;
                 });
+
+                let boardPageHtml = "";
+                boardPageHtml += `
+                            <li class="page-item ${(res.boards.first) ? "disabled" : ""}">
+                                <a class="page-link" onclick="getUserDetail(${res.boards.number - 1})">Previous</a>
+                            </li>
+                            `;
+
+                let startPage = (Math.floor((res.boards.number) / 10)) * 10;
+                let endPage = Math.min(startPage + 10, res.boards.totalPages);
+                for(let page = startPage; page < endPage ; page++){
+                    console.log(startPage);
+                    boardPageHtml += `
+                                <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
+                                    <a class="page-link" onclick="getUserDetail(${page})">${page + 1}</a>
+                                </li>
+                            `;
+                }
+
+                boardPageHtml += `
+                            <li class="page-item ${(res.boards.last) ? "disabled" : ""}">
+                                <a class="page-link" onclick="getUserDetail(${res.boards.number + 1})">Next</a>
+                            </li>
+                        `;
+
+                document.querySelector(".board_page_list").innerHTML = boardPageHtml;
 
                 let commentHtml = ``;
 
@@ -146,10 +173,20 @@
                 <tbody class="board_list">
                 </tbody>
             </table>
+            <!--게시글 페이징-->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center page_list board_page_list">
+                </ul>
+            </nav>
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
             <!--/* 댓글 렌더링 영역 */-->
             <div class="cm_list"></div>
+            <!--댓글 페이징-->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center page_list comment_page_list">
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

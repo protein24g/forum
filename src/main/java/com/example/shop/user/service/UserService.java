@@ -1,6 +1,7 @@
 package com.example.shop.user.service;
 
 import com.example.shop.board.comment.service.CommentService;
+import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.board.freeboard.service.BoardService;
 import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.dto.response.UserResponse;
@@ -8,6 +9,7 @@ import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -1,10 +1,12 @@
 package com.example.shop.user.controller;
 
+import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.dto.response.UserResponse;
 import com.example.shop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -32,7 +34,7 @@ public class UserApiController {
     // R(Read)
     @GetMapping("/api/users/{userId}")
     public ResponseEntity<?> getUserDetail(@PathVariable("userId") Long userId,
-                                        @RequestParam(name = "page", defaultValue = "0") int page){
+                                           @RequestParam(name = "page", defaultValue = "0") int page){
         try{
             UserResponse userResponse = userService.getUserDetail(userId, page);
             return ResponseEntity.status(HttpStatus.OK).body(userResponse);

@@ -33,9 +33,9 @@ class ShopApplicationTests {
 	public void test0() { // 글 작성 테스트
 		User user = userRepository.findById(1L).orElse(null);
 
-		for(int i = 0; i < 50; i++){
+		for(int i = 0; i < 100; i++){
 			boardRepository.save(Board.builder()
-					.title("테스트글 " + Integer.toString(i + 1))
+					.title("작성글 테스트" + Integer.toString(i + 1))
 					.content("bbbbbbbbdbbb")
 					.createDate(LocalDateTime.now())
 					.user(user)
