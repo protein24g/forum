@@ -34,7 +34,7 @@ public class UserController {
         if (result.hasErrors()) {
             model.addAttribute("msg", result.hasErrors());
             model.addAttribute("url", "/join");
-            return "message/main";
+            return "message/index";
         }
 
         // 유효성 검증을 통과했을 경우의 로직을 작성합니다.
@@ -51,9 +51,9 @@ public class UserController {
             model.addAttribute("url", "/join");
         }
 
-        // 모든 처리가 끝난 후, message/main 뷰로 이동하여 메시지를 보여줍니다.
+        // 모든 처리가 끝난 후, message/index 뷰로 이동하여 메시지를 보여줍니다.
         // 여기서는 회원 가입 성공, 실패 메시지와 같은 중요 정보들을 사용자에게 전달합니다.
-        return "message/main";
+        return "message/index";
     }
 
     @GetMapping("/checkLoginId")

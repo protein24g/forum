@@ -29,12 +29,12 @@ public class BoardController {
             BoardResponse boardResponse = boardService.createBoard(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/boards/" + boardResponse.getId());
-            return "message/main";
+            return "message/index";
 
         } catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/login");
-            return "message/main";
+            return "message/index";
         }
     }
 
@@ -53,7 +53,7 @@ public class BoardController {
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/boards");
-            return "message/main";
+            return "message/index";
         }
         return "board/detail";
     }
