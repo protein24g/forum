@@ -6,8 +6,6 @@ import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.repository.CommentRepository;
 import com.example.shop.board.freeboard.repository.BoardRepository;
-import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
-import com.example.shop.board.qnaboard.repository.QnaRepository;
 import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
@@ -29,7 +27,6 @@ import java.time.LocalDateTime;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final QnaRepository qnaRepository;
     private final BoardRepository boardRepository;
 
     // C(Create)
@@ -54,35 +51,6 @@ public class CommentService {
                     .build();
             commentRepository.save(comment);
             board.addComment(comment);
-        }
-    }
-
-    public void createCommentForQna(Long qnaId, CommentRequest dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
-            // 유저
-            User user = userRepository.findById(customUserDetails.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-
-            // 게시글
-            QuestionAndAnswer questionAndAnswer = qnaRepository.findById(qnaId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
-
-            if(user.getRole().equals(User.Role.ADMIN)){ // 관리자가 댓글을 달면 답변완료 처리
-                questionAndAnswer.setCompleted(true);
-                Comment comment = Comment.builder()
-                        .user(user)
-                        .questionAndAnswer(questionAndAnswer)
-                        .content(dto.getContent())
-                        .createDate(LocalDateTime.now())
-                        .build();
-                commentRepository.save(comment);
-                questionAndAnswer.addComment(comment);
-            }else{
-                throw new IllegalArgumentException("관리자만 답변 작성 가능합니다.");
-            }
         }
     }
 

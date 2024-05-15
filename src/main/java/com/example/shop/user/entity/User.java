@@ -2,7 +2,6 @@ package com.example.shop.user.entity;
 
 import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.comment.entity.Comment;
-import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -51,13 +50,10 @@ public class User {
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<QuestionAndAnswer> questionAndAnswers = new ArrayList<>();
+    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Board> boards = new ArrayList<>();
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -71,11 +67,6 @@ public class User {
         this.address = address;
         this.role = role;
         this.isActive = isActive;
-    }
-
-    public void addQuestionAndAnswer(QuestionAndAnswer questionAndAnswer) {
-        this.questionAndAnswers.add(questionAndAnswer);
-        questionAndAnswer.setUser(this);
     }
 
     public void addComments(Comment comment){

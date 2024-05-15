@@ -19,7 +19,6 @@ public class AdminApiController {
     @PostMapping("/api/admin/users")
     public ResponseEntity<?> getAllUsers(@RequestBody AdminSearch dto){
         try{
-            //getUserByNicknameForAdmin
             Page<AdminResponse> users = userService.getAllUsersForAdmin(dto.getKeyword(), dto.getPage(), dto.getOption());
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }catch (Exception e){

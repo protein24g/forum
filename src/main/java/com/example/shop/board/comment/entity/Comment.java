@@ -1,7 +1,6 @@
 package com.example.shop.board.comment.entity;
 
 import com.example.shop.board.freeboard.entity.Board;
-import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -22,9 +21,6 @@ public class Comment {
     private User user = null;
 
     @ManyToOne
-    private QuestionAndAnswer questionAndAnswer = null;
-
-    @ManyToOne
     private Board board = null;
 
     private String content;
@@ -32,16 +28,11 @@ public class Comment {
     private LocalDateTime createDate;
 
     @Builder
-    public Comment(User user, QuestionAndAnswer questionAndAnswer, Board board, String content, LocalDateTime createDate){
+    public Comment(User user, Board board, String content, LocalDateTime createDate){
         this.user = user;
-        this.questionAndAnswer = questionAndAnswer;
         this.board = board;
         this.content = content;
         this.createDate = createDate;
-    }
-
-    public void setQuestionAndAnswer(QuestionAndAnswer questionAndAnswer){
-        this.questionAndAnswer = questionAndAnswer;
     }
 
     public void setUser(User user){
