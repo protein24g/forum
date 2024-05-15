@@ -24,7 +24,6 @@ public class SecurityConfig {
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**", "/users/search",
                                 "/boards/**", "/api/boards/**", "/api/boards/*/comments",
-                                "/qna/**",
                                 "/checkLoginId", "/checkNickname").permitAll()
                         .anyRequest().authenticated());
 

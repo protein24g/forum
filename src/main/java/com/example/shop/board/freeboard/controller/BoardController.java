@@ -52,7 +52,7 @@ public class BoardController {
             model.addAttribute("boardId", boardId);
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/qna");
+            model.addAttribute("url", "/boards");
             return "message/main";
         }
         return "board/detail";

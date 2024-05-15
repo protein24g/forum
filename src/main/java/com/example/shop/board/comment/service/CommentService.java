@@ -108,20 +108,11 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if(comment.getBoard() != null){ // 리뷰의 댓글이면
-                if(comment.getUser().getId().equals(user.getId())){
-                    comment.setContent(dto.getContent());
-                    commentRepository.save(comment);
-                }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
-                }
-            }else{ // QnA의 댓글이면
-                if(comment.getUser().getId().equals(user.getId())){
-                    comment.setContent(dto.getContent());
-                    commentRepository.save(comment);
-                }else{
-                    throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
-                }
+            if(comment.getUser().getId().equals(user.getId())){
+                comment.setContent(dto.getContent());
+                commentRepository.save(comment);
+            }else{
+                throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
             }
         }
     }
@@ -140,18 +131,10 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if (comment.getBoard() != null) { // 리뷰의 댓글이면
-                if (comment.getUser().getId().equals(user.getId())) {
-                    commentRepository.delete(comment);
-                } else {
-                    throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
-                }
-            } else { // QnA의 댓글이면
-                if (comment.getUser().getId().equals(user.getId())) {
-                    commentRepository.delete(comment);
-                } else {
-                    throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
-                }
+            if (comment.getUser().getId().equals(user.getId())) {
+                commentRepository.delete(comment);
+            } else {
+                throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
             }
         }
     }
