@@ -1,6 +1,6 @@
 package com.example.shop.user.service;
 
-import com.example.shop.user.dto.CustomUserDetails;
+import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

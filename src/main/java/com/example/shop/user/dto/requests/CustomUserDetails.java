@@ -1,4 +1,4 @@
-    package com.example.shop.user.dto;
+    package com.example.shop.user.dto.requests;
 
     import com.example.shop.user.entity.User;
     import lombok.RequiredArgsConstructor;

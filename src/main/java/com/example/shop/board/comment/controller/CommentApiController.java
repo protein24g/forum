@@ -3,18 +3,12 @@ package com.example.shop.board.comment.controller;
 import com.example.shop.board.comment.dto.requests.CommentRequest;
 import com.example.shop.board.comment.dto.response.CommentResponse;
 import com.example.shop.board.comment.service.CommentService;
-import com.example.shop.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Collections;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

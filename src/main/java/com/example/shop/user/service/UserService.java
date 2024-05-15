@@ -1,7 +1,7 @@
 package com.example.shop.user.service;
 
+import com.example.shop.board.admin.dto.response.AdminResponse;
 import com.example.shop.board.comment.service.CommentService;
-import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.board.freeboard.service.BoardService;
 import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.dto.response.UserResponse;
@@ -10,6 +10,9 @@ import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +111,26 @@ public class UserService {
                         .nickname(user.getNickname())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public Page<AdminResponse> getAllUsersForAdmin(String keyword, int page, String option){
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<User> users = null;
+        if(keyword.length() != 0){ // 키워드가 있으면
+            users = userRepository.findByNicknameContaining(keyword, pageable);
+        }else{
+            users = userRepository.findAll(pageable);
+        }
+        return users.map(user -> AdminResponse.builder()
+                .id(user.getId())
+                .role(String.valueOf(user.getRole()))
+                .nickname(user.getNickname())
+                .userId(user.getLoginId())
+                .age(user.getAge())
+                .gender(String.valueOf(user.getGender()))
+                .createDate(user.getCreateDate())
+                .isActive(user.getActive())
+                .build());
     }
 
     // U(Update)

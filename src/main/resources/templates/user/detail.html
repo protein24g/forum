@@ -153,12 +153,12 @@
                                 </li>
                                 `;
 
-                    let startPage2 = (Math.floor((res.comments.number) / 5)) * 5;
-                    let endPage2 = Math.min(startPage2 + 5, res.comments.totalPages);
-                    for(let page2 = startPage2; page2 < endPage2 ; page2++){
+                    let startPage = (Math.floor((res.comments.number) / 5)) * 5;
+                    let endPage = Math.min(startPage + 5, res.comments.totalPages);
+                    for(let page = startPage; page < endPage ; page++){
                         commentPageHtml += `
-                                    <li class="page-item ${(page2 == res.comments.number) ? 'active' : ''}">
-                                        <a class="page-link" onclick="tab2(${page2})">${page2 + 1}</a>
+                                    <li class="page-item ${(page == res.comments.number) ? 'active' : ''}">
+                                        <a class="page-link" onclick="tab2(${page})">${page + 1}</a>
                                     </li>
                                 `;
                     }
@@ -200,12 +200,12 @@
 
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" onclick="tab1(0)" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">작성글</button>
-                <button class="nav-link" onclick="tab2(0)" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">댓글</button>
+                <button class="nav-link active" onclick="tab1(0)" id="nav-board-tab" data-bs-toggle="tab" data-bs-target="#nav-board" type="button" role="tab" aria-controls="nav-board" aria-selected="true">작성글</button>
+                <button class="nav-link" onclick="tab2(0)" id="nav-comment-tab" data-bs-toggle="tab" data-bs-target="#nav-comment" type="button" role="tab" aria-controls="nav-comment" aria-selected="false">댓글</button>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class="tab-pane fade show active" id="nav-board" role="tabpanel" aria-labelledby="nav-board-tab" tabindex="0">
                 <!--게시글 Detail-->
                 <table class="table table-hover text-center">
                     <thead class="table-light">
@@ -226,7 +226,7 @@
                     </ul>
                 </nav>
             </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+            <div class="tab-pane fade" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab" tabindex="0">
                 <!--/* 댓글 렌더링 영역 */-->
                 <div class="cm_list"></div>
                 <!--댓글 페이징-->

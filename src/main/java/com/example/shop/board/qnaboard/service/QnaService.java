@@ -6,7 +6,7 @@ import com.example.shop.board.qnaboard.dto.requests.QnaRequest;
 import com.example.shop.board.qnaboard.dto.response.QnaResponse;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.board.qnaboard.repository.QnaRepository;
-import com.example.shop.user.dto.CustomUserDetails;
+import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;

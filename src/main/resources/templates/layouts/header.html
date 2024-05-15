@@ -39,8 +39,15 @@
                                 <li class="px-2 nav-item" sec:authorize="isAuthenticated()">
                                     <form action="/logout" method="post">
                                         <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-                                        <button type="submit" class="nav-link link-body-emphasis">로그아웃</button>
+                                        <button type="submit" class="nav-link link-body-emphasis">
+                                            <h5>로그아웃</h5>
+                                        </button>
                                     </form>
+                                </li>
+                                <li class="px-2 nav-item" sec:authorize="isAuthenticated() and hasRole('ADMIN')">
+                                    <a href="/admin" class="nav-link link-body-emphasis">
+                                        <h5>관리자 페이지</h5>
+                                    </a>
                                 </li>
                                 <li class="px-2 nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

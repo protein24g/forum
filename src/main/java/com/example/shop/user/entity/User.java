@@ -57,7 +57,7 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Board> reviews = new ArrayList<>();
+    private List<Board> boards = new ArrayList<>();
 
     @Builder
     public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -84,7 +84,7 @@ public class User {
     }
 
     public void addBoard(Board board){
-        this.reviews.add(board);
+        this.boards.add(board);
         board.setUser(this);
     }
 

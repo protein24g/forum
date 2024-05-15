@@ -8,7 +8,7 @@ import com.example.shop.board.comment.repository.CommentRepository;
 import com.example.shop.board.freeboard.repository.BoardRepository;
 import com.example.shop.board.qnaboard.entity.QuestionAndAnswer;
 import com.example.shop.board.qnaboard.repository.QnaRepository;
-import com.example.shop.user.dto.CustomUserDetails;
+import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -30,10 +30,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final QnaRepository qnaRepository;
-    private final BoardRepository reviewRepository;
+    private final BoardRepository boardRepository;
 
     // C(Create)
-    public void createCommentForBoard(Long reviewId, CommentRequest dto) {
+    public void createCommentForBoard(Long boardId, CommentRequest dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -43,17 +43,17 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            Board review = reviewRepository.findById(reviewId)
+            Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
             Comment comment = Comment.builder()
                     .user(user)
-                    .board(review)
+                    .board(board)
                     .content(dto.getContent())
                     .createDate(LocalDateTime.now())
                     .build();
             commentRepository.save(comment);
-            review.addComment(comment);
+            board.addComment(comment);
         }
     }
 
@@ -107,7 +107,7 @@ public class CommentService {
                 .build());
     }
 
-    public Page<CommentResponse> getCommentsForBoard(Long reviewId, int page) {
+    public Page<CommentResponse> getCommentsForBoard(Long boardId, int page) {
         String username;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
@@ -116,7 +116,7 @@ public class CommentService {
         } else username = "";
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Comment> comments = commentRepository.findByBoardId(reviewId, pageable);
+        Page<Comment> comments = commentRepository.findByBoardId(boardId, pageable);
         return comments.map(comment -> CommentResponse.builder()
                 .id(comment.getId())
                 .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")

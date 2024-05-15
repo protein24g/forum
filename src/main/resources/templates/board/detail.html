@@ -94,7 +94,7 @@
                 const res = await response.json(); // JSON 형식으로 응답 본문을 파싱
 
                 // 파싱된 응답 데이터를 사용하여 UI 업데이트
-                document.getElementById("createDate").innerText = res.createDate.replace('T', ' ').slice(0, 19);
+                document.getElementById("createDate").innerText = res.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
                 document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("view").innerText = res.view;
                 document.getElementById("title").innerText = res.title;

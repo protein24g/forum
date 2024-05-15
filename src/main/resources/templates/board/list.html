@@ -24,11 +24,11 @@
             // R(Read)
             function search(){
                 // 옵션 선택 요소의 value 값을 가져옵니다.
-                var optionValue = document.querySelector("#option").value;
+                var option = document.querySelector("#option").value;
                 // 검색어 입력란의 value 값을 가져옵니다.
                 var keyword = document.querySelector("#keyword").value;
 
-                findBoardList(keyword, 0, optionValue);
+                findBoardList(keyword, 0, option);
             }
 
             async function findBoardList(keyword, page, option){ // 게시글 리스트

@@ -4,10 +4,8 @@ import com.example.shop.board.freeboard.dto.requests.BoardRequest;
 import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.freeboard.repository.BoardRepository;
-import com.example.shop.board.comment.dto.response.CommentResponse;
-import com.example.shop.board.comment.entity.Comment;
 import com.example.shop.board.comment.service.CommentService;
-import com.example.shop.user.dto.CustomUserDetails;
+import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.entity.User;
 import com.example.shop.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,8 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
