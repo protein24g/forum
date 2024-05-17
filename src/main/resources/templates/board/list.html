@@ -1,136 +1,141 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="/account/logout.js"></script>
-        <style>
-            @media (max-width: 768px) {
-                /* 모바일 화면에서 제목 글꼴 크기 조정 */
-                body{
-                    font-size : 10px;
-                }
-            }
-        </style>
-        <script>
-            // 페이지 로드시 호출되는 함수
-            document.addEventListener("DOMContentLoaded", function (){
-                findBoardList("", 0, "");
-            })
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/account/logout.js"></script>
+    <script>
+        // 페이지 로드시 호출되는 함수
+        document.addEventListener("DOMContentLoaded", function (){
+            findBoardList("", 0, "");
+        })
 
-            // R(Read)
-            function search(){
-                // 옵션 선택 요소의 value 값을 가져옵니다.
-                var option = document.querySelector("#option").value;
-                // 검색어 입력란의 value 값을 가져옵니다.
-                var keyword = document.querySelector("#keyword").value;
+        // R(Read)
+        function search(){
+            // 옵션 선택 요소의 value 값을 가져옵니다.
+            var option = document.querySelector("#option").value;
+            // 검색어 입력란의 value 값을 가져옵니다.
+            var keyword = document.querySelector("#keyword").value;
 
-                findBoardList(keyword, 0, option);
-            }
+            findBoardList(keyword, 0, option);
+        }
 
-            async function findBoardList(keyword, page, option){ // 게시글 리스트
-                let _csrf = document.getElementById("_csrf").value;
-                try{
-                    const response = await fetch("/api/boards", {
-                        method : "POST",
-                        headers : {
-                            "Content-Type" : "application/json",
-                            "X-CSRF-TOKEN" : _csrf
-                        },
-                        body : JSON.stringify({
-                            keyword : keyword,
-                            page : page,
-                            option : option
-                        })
-                    });
+        async function findBoardList(keyword, page, option){ // 게시글 리스트
+            let _csrf = document.getElementById("_csrf").value;
+            try{
+                const response = await fetch("/api/boards", {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : _csrf
+                    },
+                    body : JSON.stringify({
+                        keyword : keyword,
+                        page : page,
+                        option : option
+                    })
+                });
 
-                    const res = await response.json();
-                    let boardHtml = "";
-                    res.content.forEach(row => {
-                        let title = row.title;
-                        if(title.length >= 10) title = title.slice(0,10) + "...";
-                        let createDate = row.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
+                const res = await response.json();
+                let boardHtml = "";
+                res.content.forEach(row => {
+                    let title = row.title;
+                    if(title.length >= 10) title = title.slice(0,10) + "...";
+                    let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
-                        boardHtml += `
-                                <tr id=${row.id}>
-                                    <td>${row.id}</td>
-                                    <td>${row.view}</td>
-                                    <td>${row.nickname}</td>
-                                    <td>${createDate.replace('T', ' ')}</td>
-                                    <td>${title} [${row.commentCount}]</td>
-                                </tr>
+                    boardHtml += `
+                                <div class="card" id=${row.id}>
+                                    <div class="card-body">
+                                        <div class="row" id="title">
+                                            ${title}
+                                        </div>
+                                        <div class="row" id="content">
+                                            ${row.view}
+                                        </div>
+                                        <div class="row" id="bottom-bar">
+                                            <div class="col-auto p-0">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
+                                                ${row.commentCount}
+                                            </div>
+                                            <span class="col-auto">|</span>
+                                            <div class="col-auto p-0">
+                                                ${row.nickname}
+                                            </div>
+                                            <span class="col-auto">|</span>
+                                            <div class="col-auto p-0">
+                                                ${createDate}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             `;
-                    });
+                });
 
-                    let pageHtml = "";
-                    pageHtml += `
+                let pageHtml = "";
+                pageHtml += `
                             <li class="page-item ${(res.first) ? "disabled" : ""}">
                                 <a class="page-link" onclick="findBoardList('${keyword}', ${res.number - 1}, '${option}')">Previous</a>
                             </li>
                             `;
 
-                    let startPage = (Math.floor((res.number) / 5)) * 5;
-                    let endPage = Math.min(startPage + 5, res.totalPages);
-                    for(let page = startPage; page < endPage ; page++){
-                        pageHtml += `
+                let startPage = (Math.floor((res.number) / 5)) * 5;
+                let endPage = Math.min(startPage + 5, res.totalPages);
+                for(let page = startPage; page < endPage ; page++){
+                    pageHtml += `
                                 <li class="page-item ${(page == res.number) ? 'active' : ''}">
                                     <a class="page-link" onclick="findBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
                                 </li>
                             `;
-                    }
+                }
 
-                    pageHtml += `
+                pageHtml += `
                             <li class="page-item ${(res.last) ? "disabled" : ""}">
                                 <a class="page-link" onclick="findBoardList('${keyword}', ${res.number + 1}, '${option}')">Next</a>
                             </li>
                         `;
 
-                    document.querySelector(".board_list").innerHTML = boardHtml;
-                    document.querySelector(".page_list").innerHTML = pageHtml;
-                    addEventToRows();
-                }catch (error){
-                    alert("알 수 없는 오류가 발생했습니다");
-                    window.location.href = "/boards";
-                }
+                document.querySelector(".board-list").innerHTML = boardHtml;
+                document.querySelector(".page-list").innerHTML = pageHtml;
+                addEventToRows();
+            }catch (error){
+                alert("알 수 없는 오류가 발생했습니다");
+                window.location.href = "/boards";
             }
+        }
 
-            function addEventToRows() {
-                document.querySelectorAll("tbody tr").forEach(function (tr) { // tbody 내에 모든 tr 태그를 찾아서 for
-                    tr.querySelectorAll("td").forEach(function (td){ // tr 내에 모든 td 태그를 찾아서 px-0
-                        td.classList.add("px-0");
-                    })
-                    tr.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/boards/" + tr.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
-                    })
+        function addEventToRows() {
+            document.querySelectorAll(".card").forEach(function (card) { // tbody 내에 모든 tr 태그를 찾아서 for
+                card.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                    window.location.href = "/boards/" + card.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
-            }
-        </script>
-    </head>
-    <div th:insert="~{layouts/header.html :: headerFragment}"></div>
-    <body>
-        <div class="container vh-100">
-            <h2>리뷰</h2>
+            })
+        }
+    </script>
+</head>
+<div th:insert="~{layouts/header.html :: headerFragment}"></div>
+<body>
+    <div class="container-md">
 
+        <div class="col-lg-8 m-auto p-3 m-0">
             <!--검색-->
             <div class="row">
-                <div class="col-lg-7 col-md-5"></div>
-                <div class="col-lg-5 col-md-7">
+                <div class="col-lg-7 col-md-7 ms-auto">
                     <div class="row">
-                        <form class="d-flex" role="search">
+                        <form class="d-flex p-0" role="search">
                             <div class="col-3">
                                 <select class="form-select" id="option">
                                     <option value="1">제목</option>
                                     <option value="2">내용</option>
                                 </select>
                             </div>
-                            <div class="col-7">
+                            <div class="col">
                                 <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
                             </div>
-                            <div class="col-2">
+                            <div class="col-auto">
                                 <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
                             </div>
                         </form>
@@ -139,37 +144,33 @@
             </div>
             <br>
 
-            <!--게시글 Detail-->
-            <table class="table table-hover text-center">
-                <thead class="table-light">
-                <tr>
-                    <th class="col">#</th>
-                    <th class="col">조회수</th>
-                    <th class="col">닉네임</th>
-                    <th class="col">날짜</th>
-                    <th class="col">제목</th>
-                </tr>
-                </thead>
-                <tbody class="board_list">
-                </tbody>
-            </table>
-
-            <!--게시글 페이징-->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center page_list">
-                </ul>
-            </nav>
-
-            <!--글쓰기-->
-            <div sec:authorize="isAuthenticated()">
-                <a class="btn btn-primary" href="/boards/create">글쓰기</a>
+            <div class="row border">
+                <!-- 사용자 이미지 -->
+                <h1 class="p-0">리뷰 게시판</h1>
+                <hr>
             </div>
 
-        </div>
+            <div class="row">
+                <!--게시글 Detail-->
+                <div class="board-list p-0"></div>
 
-        <div th:insert="~{layouts/footer.html :: footerFragment}"></div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </body>
+                <!--게시글 페이징-->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center page-list">
+                    </ul>
+                </nav>
+
+                <!--글쓰기-->
+                <div sec:authorize="isAuthenticated()">
+                    <a class="btn btn-primary" href="/boards/create">글쓰기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:insert="~{layouts/footer.html :: footerFragment}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
 </html>
 
 

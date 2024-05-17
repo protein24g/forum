@@ -118,9 +118,10 @@
                 let commentHtml = ""; // 유저 검색 창 댓글
                 res.comments.content.forEach(row => {
                     let content = row.content.replace(/\n/g, "<br>");
+
                     // 고유한 모달 ID 생성
                     commentHtml += `
-                                <div class="row" onclick="window.location.href = '/boards/' + ${row.boardId}">
+                                <div onclick="window.location.href = '/boards/' + ${row.boardId}">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
@@ -182,9 +183,9 @@
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <body>
 <input type="hidden" id="userId" th:value="${userId}">
-<div class="container">
-    <div class="p-3 m-0" style="background:darkgray">
-        <div class="row">
+<div class="container-md">
+    <div class="col-lg-8 m-auto p-3 m-0">
+        <div class="row" style="background:darkgray">
             <!-- 사용자 이미지 -->
             <div class="col-auto text-center">
                 <a href="/">
@@ -198,14 +199,9 @@
                 <p class="m-0" id="count"></p>
             </div>
         </div>
-    </div>
-</div>
 
-
-<div class="container-md">
-    <div class="row">
-        <div class="col-lg-8 m-auto">
-            <nav>
+        <div class="row bg-body-tertiary">
+            <nav class="navbar">
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <button class="nav-link active" onclick="tab1(0)" id="nav-board-tab" data-bs-toggle="tab" data-bs-target="#nav-board" type="button" role="tab" aria-controls="nav-board" aria-selected="true">작성글</button>
                     <button class="nav-link" onclick="tab2(0)" id="nav-comment-tab" data-bs-toggle="tab" data-bs-target="#nav-comment" type="button" role="tab" aria-controls="nav-comment" aria-selected="false">댓글</button>
@@ -214,9 +210,8 @@
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-board" role="tabpanel" aria-labelledby="nav-board-tab" tabindex="0">
                     <!--게시글 Detail-->
-                    <div class="row board-list">
+                    <div class="board-list"></div>
 
-                    </div>
                     <!--게시글 페이징-->
                     <nav aria-label="">
                         <ul class="pagination justify-content-center page_list board_page_list">
@@ -236,6 +231,8 @@
         </div>
     </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
