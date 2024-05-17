@@ -21,7 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/",
-                                "/login", "/loginProc", "/join", "/joinProc",
+                                "/login", "/loginProc", "/join", "/joinProc", "/account/logout.js",
                                 "/users/*", "/api/users/**", "/users/search",
                                 "/boards/**", "/api/boards/**", "/api/boards/*/comments",
                                 "/checkLoginId", "/checkNickname").permitAll()

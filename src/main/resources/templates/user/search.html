@@ -5,39 +5,41 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bootstrap demo</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    </head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        async function searchUsers(){
-            let search_input = document.getElementById("search_input").value;
-            console.log(search_input);
-            try{
-                const response = await fetch(`/api/users?UsersByKeyword=${search_input}`, {
-                    method : "GET",
-                    headers : {
-                        "Content-Type" : "application/json"
-                    }
-                });
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="/account/logout.js"></script>
+        <script>
+            async function searchUsers(){
+                let search_input = document.getElementById("search_input").value;
+                console.log(search_input);
+                try{
+                    const response = await fetch(`/api/users?UsersByKeyword=${search_input}`, {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        }
+                    });
 
-                const res = await response.json();
-                console.log(res);
-                let searchHtml = "";
-                res.forEach(row => {
-                    searchHtml += `
-                        <div class="col">
-                            <a href="/users/${row.userId}">${row.nickname}</a>
-                        </div>
-                    `;
-                })
+                    const res = await response.json();
+                    console.log(res);
+                    let searchHtml = "";
+                    res.forEach(row => {
+                        searchHtml += `
+                            <div class="col">
+                                <a href="/users/${row.userId}">${row.nickname}</a>
+                            </div>
+                        `;
+                    })
 
-                document.getElementById("search_list").innerHTML = searchHtml;
-            }catch (error){
-                alert(error);
-                //window.location.href = "/";
+                    document.getElementById("search_list").innerHTML = searchHtml;
+                }catch (error){
+                    alert(error);
+                    //window.location.href = "/";
+                }
+
             }
-
-        }
-    </script>
+        </script>
+    </head>
+    <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body>
     <div class="container">
         <!--vh(Viewport Height) 단위는 브라우저 창의 높이에 따라 크기가 조절됩니다. vh-100은 현재 브라우저 창의 높이와 같은 높이를 가지도록 요소를 설정-->
