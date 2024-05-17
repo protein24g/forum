@@ -24,7 +24,7 @@
         async function tab1(page){
             let userId = document.getElementById("userId").value;
             try{
-                const response = await fetch(`/api/users/${userId}/boards?page=${page}`, {
+                const response = await fetch(`/api/admin/users/${userId}/boards?page=${page}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -37,35 +37,33 @@
 
                 let boardHtml = "";
                 res.boards.content.forEach(row => {
-                    let title = row.title;
-                    if(title.length >= 10) title = title.slice(0,10) + "...";
-
+                    let title = row.title.slice(0,15) + " ...";
+                    let content = row.content.slice(0, 30) + " ...";
                     let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
                     boardHtml += `
-                                <div class="card" id=${row.id}>
-                                    <div class="card-body">
-                                        <div class="row" id="title">
-                                            ${title}
-                                        </div>
-                                        <div class="row" id="content">
-                                            ${row.view}
-                                        </div>
-                                        <div class="row" id="bottom-bar">
-                                            <div class="col-auto p-0">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
-                                                ${row.commentCount}
+                                <div class="card p-3" id=${row.id}>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
                                             </div>
-                                            <span class="col-auto">|</span>
-                                            <div class="col-auto p-0">
-                                                ${row.nickname}
-                                            </div>
-                                            <span class="col-auto">|</span>
-                                            <div class="col-auto p-0">
+                                            ${row.nickname}
+                                            <div class="col d-flex justify-content-end">
                                                 ${createDate}
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <strong class="">${title}</strong>
+                                        </div>
+                                        <div class="row">
+                                            <span class="">${content}</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
+                                                ${row.commentCount}
+                                            </div>
+                                        </div>
                                 </div>
                             `;
                 });
@@ -105,7 +103,7 @@
         async function tab2(page){
             let userId = document.getElementById("userId").value;
             try{
-                const response = await fetch(`/api/users/${userId}/comments?page=${page}`, {
+                const response = await fetch(`/api/admin/users/${userId}/comments?page=${page}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -188,7 +186,7 @@
         <div class="row" style="background:darkgray">
             <!-- 사용자 이미지 -->
             <div class="col-auto text-center">
-                <a href="/">
+                <a href="/static">
                     <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="50px;" alt="사용자 이미지">
                 </a>
             </div>

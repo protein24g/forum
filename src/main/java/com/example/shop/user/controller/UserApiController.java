@@ -32,37 +32,4 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-    // R(Read)
-    @GetMapping("/api/users")
-    public ResponseEntity<?> UsersByKeyword(@RequestParam(name = "UsersByKeyword", defaultValue = "") String nickname){
-        try{
-            List<UserResponse> userResponses = userService.UsersByKeyword(nickname);
-            return ResponseEntity.status(HttpStatus.OK).body(userResponses);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/api/users/{userId}/boards") // 작성글 댓글 따로 만드는중
-    public ResponseEntity<?> getUserBoards(@PathVariable("userId") Long userId,
-                                           @RequestParam(name = "page", defaultValue = "0") int page){
-        try{
-            UserResponse userResponse = userService.getUserBoards(userId, page);
-            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
-        }catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
-
-    @GetMapping("/api/users/{userId}/comments") // 작성글 댓글 따로 만드는중
-    public ResponseEntity<?> getUserComments(@PathVariable("userId") Long userId,
-                                           @RequestParam(name = "page", defaultValue = "0") int page){
-        try{
-            UserResponse userResponse = userService.getUserComments(userId, page);
-            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
-        }catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
 }

@@ -15,7 +15,7 @@
             function addEventToRows(){
                 document.querySelectorAll("tbody tr").forEach(function (tr){
                     tr.addEventListener("click", function (){
-                        window.location.href = "/users/" + tr.getAttribute("id");
+                        window.location.href = "/admin/users/" + tr.getAttribute("id");
                     })
                 })
             }
@@ -113,7 +113,7 @@
                             <button onclick="tab1('', 0, '')" class="nav-link active" id="v-pills-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-1" type="button" role="tab" aria-controls="v-pills-1" aria-selected="true">전체 회원</button>
                         </li>
                         <li>
-                            <button class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-2" type="button" role="tab" aria-controls="v-pills-2" aria-selected="false">Profile</button>
+                            <button class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-2" type="button" role="tab" aria-controls="v-pills-2" aria-selected="false">사용자 검색</button>
                         </li>
                     </ul>
 
@@ -127,8 +127,6 @@
                                 <li>
                                     <a sec:authorize="isAuthenticated()" class="dropdown-item" id="logoutBtn">로그아웃</a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a sec:authorize="hasRole('ADMIN')" class="dropdown-item" href="/admin">관리자 페이지</a></li>
                             </ul>
                         </div>
                     </div>
@@ -153,8 +151,8 @@
                                     <form class="d-flex" role="search">
                                         <div class="col-3">
                                             <select class="form-select" id="option">
-                                                <option value="1">제목</option>
-                                                <option value="2">내용</option>
+                                                <option value="1">닉네임</option>
+                                                <option value="2">아이디</option>
                                             </select>
                                         </div>
                                         <div class="col-7">

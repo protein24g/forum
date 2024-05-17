@@ -67,15 +67,4 @@ public class UserController {
         boolean isAvailable = userService.isNicknameAvailable(nickname);
         return ResponseEntity.ok(isAvailable);
     }
-
-    @GetMapping("/users/{userId}")
-    public String getUserDetail(@PathVariable("userId") Long userId, Model model){
-        model.addAttribute("userId", userId);
-        return "user/detail";
-    }
-
-    @GetMapping("/users/search")
-    public String searchUsers(){
-        return "user/search";
-    }
 }

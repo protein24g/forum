@@ -43,34 +43,33 @@
                 const res = await response.json();
                 let boardHtml = "";
                 res.content.forEach(row => {
-                    let title = row.title;
-                    if(title.length >= 10) title = title.slice(0,10) + "...";
+                    let title = row.title.slice(0,15) + " ...";
+                    let content = row.content.slice(0, 30) + "...";
                     let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
                     boardHtml += `
-                                <div class="card" id=${row.id}>
-                                    <div class="card-body">
-                                        <div class="row" id="title">
-                                            ${title}
-                                        </div>
-                                        <div class="row" id="content">
-                                            ${row.view}
-                                        </div>
-                                        <div class="row" id="bottom-bar">
-                                            <div class="col-auto p-0">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
-                                                ${row.commentCount}
+                                <div class="card p-3" id=${row.id}>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
                                             </div>
-                                            <span class="col-auto">|</span>
-                                            <div class="col-auto p-0">
-                                                ${row.nickname}
-                                            </div>
-                                            <span class="col-auto">|</span>
-                                            <div class="col-auto p-0">
+                                            ${row.nickname}
+                                            <div class="col d-flex justify-content-end">
                                                 ${createDate}
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row">
+                                            <strong class="">${title}</strong>
+                                        </div>
+                                        <div class="row">
+                                            <span class="">${content}</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
+                                                ${row.commentCount}
+                                            </div>
+                                        </div>
                                 </div>
                             `;
                 });
@@ -144,11 +143,7 @@
             </div>
             <br>
 
-            <div class="row border">
-                <!-- 사용자 이미지 -->
-                <h1 class="p-0">리뷰 게시판</h1>
-                <hr>
-            </div>
+            <h1 class="p-0">자유게시판</h1>
 
             <div class="row">
                 <!--게시글 Detail-->

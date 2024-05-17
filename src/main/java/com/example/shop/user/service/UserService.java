@@ -103,21 +103,18 @@ public class UserService {
         }
     }
 
-    public List<UserResponse> UsersByKeyword(String keyword){
-        List<User> users = userRepository.findByNicknameContaining(keyword);
-        return users.stream()
-                .map(user -> UserResponse.builder()
-                        .userId(user.getId())
-                        .nickname(user.getNickname())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
     public Page<AdminResponse> getAllUsersForAdmin(String keyword, int page, String option){
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<User> users = null;
         if(keyword.length() != 0){ // 키워드가 있으면
-            users = userRepository.findByNicknameContaining(keyword, pageable);
+            switch (option){
+                case "1": // 1 닉네임
+                    users = userRepository.findByNicknameContaining(keyword, pageable);
+                    break;
+                case "2": // 2 아이디
+                    users = userRepository.findByLoginIdContaining(keyword, pageable);
+                    break;
+            }
         }else{
             users = userRepository.findAll(pageable);
         }
