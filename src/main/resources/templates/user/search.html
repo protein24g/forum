@@ -25,15 +25,20 @@
                     res.forEach(row => {
                         searchHtml += `
                             <div class="col">
-                                <a href="/users/${row.userId}">${row.nickname}</a>
+                                <div class="text-center">
+                                    <a href="/users/${row.userId}" class="text-black text-decoration-none">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="32" height="32" class="rounded-circle">
+                                        <strong>${row.nickname}</strong>
+                                    </a>
+                                </div>
                             </div>
                         `;
-                    })
+                    });
 
                     document.getElementById("search_list").innerHTML = searchHtml;
                 }catch (error){
                     alert(error);
-                    //window.location.href = "/";
+                    window.location.href = "/";
                 }
 
             }
@@ -41,24 +46,18 @@
     </head>
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body>
-    <div class="container">
-        <!--vh(Viewport Height) 단위는 브라우저 창의 높이에 따라 크기가 조절됩니다. vh-100은 현재 브라우저 창의 높이와 같은 높이를 가지도록 요소를 설정-->
-        <div class="text-center form-control">
-            <fieldset>
-                <legend>사용자 찾기</legend>
-                <form>
-                    <input type="text" class="form-control mb-3" id="search_input" placeholder="닉네임을 입력하세요">
-                    <button type="button" class="btn btn-primary form-control" onclick="searchUsers()">검색</button>
-                </form>
-            </fieldset>
+        <div class="container">
+            <div class="d-flex flex-column align-items-center text-center my-5">
+                <div class="col-md-4 col-lg-3">
+                    <h2>사용자 검색</h2>
+                    <form>
+                        <input type="text" class="form-control mb-3" id="search_input" placeholder="닉네임을 입력하세요">
+                        <button type="button" class="btn btn-primary form-control" onclick="searchUsers()">검색</button>
+                    </form>
+                </div>
+                <div class="row row-cols-2" id="search_list"></div>
+            </div>
         </div>
-
-        <div class="container text-center">
-            <div class="row" id="search_list"></div>
-        </div>
-    </div>
-
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
