@@ -126,6 +126,7 @@ public class UserService {
                 .age(user.getAge())
                 .gender(String.valueOf(user.getGender()))
                 .createDate(user.getCreateDate())
+                .address(user.getAddress())
                 .isActive(user.getActive())
                 .build());
     }

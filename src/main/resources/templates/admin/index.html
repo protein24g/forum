@@ -13,9 +13,9 @@
             })
 
             function addEventToRows(){
-                document.querySelectorAll("tbody tr").forEach(function (tr){
-                    tr.addEventListener("click", function (){
-                        window.location.href = "/admin/users/" + tr.getAttribute("id");
+                document.querySelectorAll(".card").forEach(function (card){
+                    card.addEventListener("click", function (){
+                        window.location.href = "/admin/users/" + card.getAttribute("id");
                     })
                 })
             }
@@ -48,21 +48,25 @@
                     });
 
                     const res = await response.json();
-
+                    console.log(res);
                     let usersListHtml = "";
                     res.content.forEach(row => {
                         let createDate = row.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
                         usersListHtml += `
-                                <tr id="${row.id}">
-                                    <th scope="row">${row.id}</th>
-                                    <td>${row.role}</td>
-                                    <td>${row.nickname}</td>
-                                    <td>${row.userId}</td>
-                                    <td>${row.age}</td>
-                                    <td>${row.gender}</td>
-                                    <td>${createDate}</td>
-                                    <td>${row.active}</td>
-                                </tr>
+                                <div class="card p-3" id=${row.id}>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
+                                            </div>
+                                            [${row.role}] Id.${row.id} ${row.nickname}(${row.userId}) | ${row.age} | ${row.gender}
+                                            <div class="col d-flex justify-content-end">
+                                                ${createDate}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <span>${row.address}</span>
+                                        </div>
+                                </div>
                             `;
                     })
                     document.querySelector(".users-list").innerHTML = usersListHtml;
@@ -89,7 +93,7 @@
                                             <a class="page-link" onclick="tab1(${res.number + 1})">Next</a>
                                         </li>
                                         `;
-                    document.querySelector(".users_page_list").innerHTML = usersPageHtml;
+                    document.querySelector(".users-page-list").innerHTML = usersPageHtml;
 
                     addEventToRows(); // row 클릭 이벤트 추가
                 }catch (error){
@@ -110,10 +114,10 @@
                 <div class="collapse navbar-collapse" id="navbarScroll">
                     <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="--bs-scroll-height: 100px;">
                         <li>
-                            <button onclick="tab1('', 0, '')" class="nav-link active" id="v-pills-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-1" type="button" role="tab" aria-controls="v-pills-1" aria-selected="true">전체 회원</button>
+                            <button onclick="tab1('', 0, '')" class="nav-link active" id="v-pills-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-1" type="button" role="tab" aria-controls="v-pills-1" aria-selected="true">회원관리</button>
                         </li>
                         <li>
-                            <button class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-2" type="button" role="tab" aria-controls="v-pills-2" aria-selected="false">사용자 검색</button>
+                            <button class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-2" type="button" role="tab" aria-controls="v-pills-2" aria-selected="false">test</button>
                         </li>
                     </ul>
 
@@ -134,60 +138,50 @@
             </div>
         </nav>
 
-        <!-- 탭 패널 -->
-        <div class="container">
-            <div class="row justify-content-center">
-                <h3>사용자 관리</h3>
 
+
+
+
+
+        <div class="container-md">
+            <div class="col-lg-8 m-auto p-3 m-0">
                 <!--탭 내용-->
-                <div class="col tab-content" id="v-pills-tabContent">
+                <div class="tab-content" id="v-pills-tabContent">
                     <!--탭1-->
                     <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-tab1" tabindex="0">
-                        <!--검색-->
                         <div class="row">
-                            <div class="col-lg-7 col-md-5"></div>
-                            <div class="col-lg-5 col-md-7">
+                            <h2 class="col p-0">회원관리</h2>
+                            <!--검색-->
+                            <div class="col-lg-8 d-flex justify-content-end align-items-center">
                                 <div class="row">
-                                    <form class="d-flex" role="search">
+                                    <form class="d-flex p-0" role="search">
                                         <div class="col-3">
                                             <select class="form-select" id="option">
                                                 <option value="1">닉네임</option>
                                                 <option value="2">아이디</option>
                                             </select>
                                         </div>
-                                        <div class="col-7">
+                                        <div class="col">
                                             <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
                                         </div>
-                                        <div class="col-2">
+                                        <div class="col-auto">
                                             <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <br>
+                        <div class="row bg-body-tertiary">
+                            <!--게시글 Detail-->
+                            <div class="users-list p-3"></div>
 
-                        <!--회원 테이블-->
-                        <table class="table text-center">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">회원 권한</th>
-                                <th scope="col">닉네임</th>
-                                <th scope="col">아이디</th>
-                                <th scope="col">나이</th>
-                                <th scope="col">성별</th>
-                                <th scope="col">가입날짜</th>
-                                <th scope="col">계정 활성화</th>
-                            </tr>
-                            </thead>
-                            <tbody class="users-list"></tbody>
-                        </table>
-                        <!--댓글 페이징-->
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center page_list users_page_list">
-                            </ul>
-                        </nav>
+                            <!--게시글 페이징-->
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center users-page-list">
+                                </ul>
+                            </nav>
+                        </div>
+
                     </div>
 
                     <!--탭2-->
@@ -195,6 +189,8 @@
                         ㄴㄴㄴㄴ
                     </div>
                 </div>
+
+
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
