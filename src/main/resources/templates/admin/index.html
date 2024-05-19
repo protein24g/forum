@@ -108,7 +108,9 @@
         <input type="hidden" id="_csrf" th:value="${_csrf.token}">
         <nav class="navbar navbar-expand-md bg-body-tertiary">
             <div class="container-md col-lg-8 m-auto">
-                <a class="navbar-brand" href="/">홈</a>
+                <a href="/">
+                    <img src="https://cdn-icons-png.flaticon.com/128/2550/2550392.png" width="30px;">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -121,7 +123,6 @@
                             <button class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-2" type="button" role="tab" aria-controls="v-pills-2" aria-selected="false">test</button>
                         </li>
                     </ul>
-
                     <div sec:authorize="isAuthenticated()">
                         <div class="dropdown">
                             <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -138,11 +139,6 @@
                 </div>
             </div>
         </nav>
-
-
-
-
-
 
         <div class="container-md">
             <div class="col-lg-8 m-auto p-3 m-0">
@@ -182,16 +178,12 @@
                                 </ul>
                             </nav>
                         </div>
-
                     </div>
-
                     <!--탭2-->
                     <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-tab2" tabindex="0">
                         ㄴㄴㄴㄴ
                     </div>
                 </div>
-
-
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

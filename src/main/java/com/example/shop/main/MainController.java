@@ -28,9 +28,4 @@ public class MainController {
         }
         return "main/index";
     }
-
-    @GetMapping("/mypage")
-    public String myPage(){
-        return "main/mypage";
-    }
 }

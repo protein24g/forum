@@ -2,7 +2,10 @@ package com.example.shop.user.service;
 
 import com.example.shop.board.admin.dto.response.AdminResponse;
 import com.example.shop.board.comment.service.CommentService;
+import com.example.shop.board.freeboard.dto.response.BoardResponse;
+import com.example.shop.board.freeboard.entity.Board;
 import com.example.shop.board.freeboard.service.BoardService;
+import com.example.shop.user.dto.requests.CustomUserDetails;
 import com.example.shop.user.dto.requests.JoinRequest;
 import com.example.shop.user.dto.response.UserResponse;
 import com.example.shop.user.entity.User;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -129,6 +134,24 @@ public class UserService {
                 .address(user.getAddress())
                 .isActive(user.getActive())
                 .build());
+    }
+
+    public Page<BoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
+        Page<BoardResponse> boardResponses = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            
+            User user = userRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+
+            if(id.equals("myboards")){
+                boardResponses =  boardService.getBoardsForUser(user.getId(), page);
+            }
+        }else{
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+        return boardResponses;
     }
 
     // U(Update)

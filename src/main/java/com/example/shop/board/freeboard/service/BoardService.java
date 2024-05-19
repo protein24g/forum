@@ -34,7 +34,7 @@ public class BoardService {
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
             Board boardEntity = Board.builder()
                     .title(dto.getTitle())
@@ -54,7 +54,7 @@ public class BoardService {
                     .createDate(boardEntity.getCreateDate())
                     .build();
         }else{
-            throw new IllegalArgumentException("로그인 후 이용 가능합니다.");
+            throw new IllegalArgumentException("로그인 후 이용하세요");
         }
     }
 
@@ -111,7 +111,7 @@ public class BoardService {
 
     public BoardResponse readDetail(Long boardNum) {
         Board board = boardRepository.findById(boardNum)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         return BoardResponse.builder()
                 .id(board.getId())
@@ -127,7 +127,7 @@ public class BoardService {
 
     public String getWriter(Long boardNum) {
         Board board = boardRepository.findById(boardNum)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         return board.getUser().getNickname();
     }
@@ -138,7 +138,7 @@ public class BoardService {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
             Board board = boardRepository.findById(boardNum)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
             if(board.getUser().getId().equals(customUserDetails.getId())){
                 board.setTitle(dto.getTitle());
@@ -152,10 +152,10 @@ public class BoardService {
                         .createDate(board.getCreateDate())
                         .build();
             }else{
-                throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다.");
+                throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다");
             }
         }else {
-            throw new IllegalArgumentException("로그인 후 이용하세요.");
+            throw new IllegalArgumentException("로그인 후 이용하세요");
         }
     }
 }

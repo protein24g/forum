@@ -13,13 +13,14 @@
 
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body>
-        <div class="container">
-            <div>
-                <span th:text="${nickname} + '님 어서오세요.'"></span>
-                <a>메인페이지에 리뷰 등 모든 게시판 글 5개씩 보이도록 만들 계획</a>
+        <div class="container-md">
+            <div class="col-lg-8 m-auto p-3 m-0">
+                <div class="row row bg-body-tertiary">
+                    <span th:text="${nickname} + '님 어서오세요.'"></span>
+                    <a>메인페이지에 리뷰 등 모든 게시판 글 5개씩 보이도록 만들 계획</a>
+                </div>
             </div>
         </div>
-
         <div th:insert="~{layouts/footer.html :: footerFragment}"></div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

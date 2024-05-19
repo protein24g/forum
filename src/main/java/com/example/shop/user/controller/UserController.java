@@ -1,10 +1,11 @@
 package com.example.shop.user.controller;
 
+import com.example.shop.board.freeboard.dto.response.BoardResponse;
 import com.example.shop.user.dto.requests.JoinRequest;
-import com.example.shop.user.dto.response.UserResponse;
 import com.example.shop.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String loginP(){
+    public String login(){
         return "user/login";
     }
 
@@ -66,5 +67,24 @@ public class UserController {
     public ResponseEntity<Boolean> checkNickname(@RequestParam(name = "nickname") String nickname) {
         boolean isAvailable = userService.isNicknameAvailable(nickname);
         return ResponseEntity.ok(isAvailable);
+    }
+
+    // R(Read)
+    @GetMapping("/mypage")
+    public String myPage(){ return "user/mypage/index"; }
+
+    @GetMapping("/mypage/boards")
+    public String myPageBoards(Model model, @RequestParam(name = "id") String id,
+                               @RequestParam(name = "page", defaultValue = "0") int page){
+
+        Page<BoardResponse> boardResponses = userService.myPageBoards(id, page);
+        int startPage = (int) (Math.floor((double) page / 5) * 5) + 1;
+        int endPage = Math.min(startPage + 4, boardResponses.getTotalPages());
+
+        model.addAttribute("title", id);
+        model.addAttribute("boards", boardResponses);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        return "user/mypage/boards";
     }
 }
