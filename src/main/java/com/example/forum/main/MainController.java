@@ -1,6 +1,6 @@
 package com.example.forum.main;
 
-import com.example.forum.board.freeboard.service.BoardService;
+import com.example.forum.base.board.service.BoardService;
 import com.example.forum.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

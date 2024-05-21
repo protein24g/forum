@@ -68,7 +68,7 @@
                                     </div>
                                 `;
                     });
-                    document.querySelector(".board-list").innerHTML = boardHtml;
+                    document.querySelector(".freeBoard-list").innerHTML = boardHtml;
 
                     let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                     boardPageHtml += `
@@ -138,7 +138,7 @@
                                     </div>
                                 `;
                     });
-                    document.querySelector(".comment-list").innerHTML = commentHtml;
+                    document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
 
                     let commentPageHtml = ""; // 유저 검색 창 댓글 페이징
                     commentPageHtml += `
@@ -205,14 +205,14 @@
                 <div class="row bg-body-tertiary">
                     <nav class="navbar">
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" onclick="tab1(0)" id="nav-board-tab" data-bs-toggle="tab" data-bs-target="#nav-board" type="button" role="tab" aria-controls="nav-board" aria-selected="true">작성글</button>
-                            <button class="nav-link" onclick="tab2(0)" id="nav-comment-tab" data-bs-toggle="tab" data-bs-target="#nav-comment" type="button" role="tab" aria-controls="nav-comment" aria-selected="false">댓글</button>
+                            <button class="nav-link active" onclick="tab1(0)" id="nav-freeBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoard" type="button" role="tab" aria-controls="nav-freeBoard" aria-selected="true">작성글</button>
+                            <button class="nav-link" onclick="tab2(0)" id="nav-freeBoardComment-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoardComment" type="button" role="tab" aria-controls="nav-freeBoardComment" aria-selected="false">댓글</button>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-board" role="tabpanel" aria-labelledby="nav-board-tab" tabindex="0">
+                        <div class="tab-pane fade show active" id="nav-freeBoard" role="tabpanel" aria-labelledby="nav-freeBoard-tab" tabindex="0">
                             <!--게시글 Detail-->
-                            <div class="board-list"></div>
+                            <div class="freeBoard-list"></div>
 
                             <!--게시글 페이징-->
                             <nav aria-label="">
@@ -220,9 +220,9 @@
                                 </ul>
                             </nav>
                         </div>
-                        <div class="tab-pane fade" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab" tabindex="0">
+                        <div class="tab-pane fade" id="nav-freeBoardComment" role="tabpanel" aria-labelledby="nav-freeBoardComment-tab" tabindex="0">
                             <!--/* 댓글 렌더링 영역 */-->
-                            <div class="comment-list"></div>
+                            <div class="freeBoardComment-list"></div>
                             <!--댓글 페이징-->
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-center page_list comment_page_list">

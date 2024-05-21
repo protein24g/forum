@@ -1,6 +1,6 @@
 package com.example.forum.user.controller;
 
-import com.example.forum.board.freeboard.dto.response.BoardResponse;
+import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.service.UserService;
 import jakarta.validation.Valid;
@@ -77,7 +77,7 @@ public class UserController {
     public String myPageBoards(Model model, @RequestParam(name = "id") String id,
                                @RequestParam(name = "page", defaultValue = "0") int page){
 
-        Page<BoardResponse> boardResponses = userService.myPageBoards(id, page);
+        Page<FreeBoardResponse> boardResponses = userService.myPageBoards(id, page);
         int startPage = (int) (Math.floor((double) page / 5) * 5) + 1;
         int endPage = Math.min(startPage + 4, boardResponses.getTotalPages());
 

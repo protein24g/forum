@@ -1,10 +1,10 @@
 package com.example.forum;
 
-import com.example.forum.board.comment.entity.Comment;
-import com.example.forum.board.comment.repository.CommentRepository;
-import com.example.forum.board.freeboard.entity.Board;
-import com.example.forum.board.freeboard.repository.BoardRepository;
-import com.example.forum.board.freeboard.service.BoardService;
+import com.example.forum.boards.freeboard.comment.entity.FreeBoardComment;
+import com.example.forum.boards.freeboard.comment.repository.FreeBoardCommentRepository;
+import com.example.forum.boards.freeboard.board.entity.FreeBoard;
+import com.example.forum.boards.freeboard.board.repository.FreeBoardRepository;
+import com.example.forum.base.board.service.BoardService;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,10 @@ class ForumApplicationTests {
 	UserRepository userRepository;
 
 	@Autowired
-	BoardRepository boardRepository;
+	FreeBoardRepository freeBoardRepository;
 
 	@Autowired
-	CommentRepository commentRepository;
+	FreeBoardCommentRepository freeBoardCommentRepository;
 
 	@Autowired
 	BoardService boardService;
@@ -33,7 +33,7 @@ class ForumApplicationTests {
 		User user = userRepository.findById(n).orElse(null);
 
 		for(int i = 0; i < 100; i++){
-			boardRepository.save(Board.builder()
+			freeBoardRepository.save(FreeBoard.builder()
 					.title("작성글 테스트" + Integer.toString(i + 1))
 					.content("bbbbbbbbdbbb")
 					.createDate(LocalDateTime.now())
@@ -46,11 +46,11 @@ class ForumApplicationTests {
 	@Test
 	public void test1(){ // 고유 id n번 유저의 댓글 작성
 		User user = userRepository.findById(1L).orElse(null);
-		Board board = boardRepository.findById(Long.valueOf(256)).orElse(null);
+		FreeBoard freeBoard = freeBoardRepository.findById(Long.valueOf(100)).orElse(null);
 
-		commentRepository.save(Comment.builder()
+		freeBoardCommentRepository.save(FreeBoardComment.builder()
 			.user(user)
-			.board(board)
+			.freeBoard(freeBoard)
 			.content("테스트 댓글")
 			.createDate(LocalDateTime.now())
 			.build()

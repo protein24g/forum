@@ -37,11 +37,11 @@
                         let title = row.title.slice(0,15) + " ...";
 
                         boardHtml += `
-                                <div class="board-item border p-2" id=${row.id} style="background: white;">${title}[${row.commentCount}]</div>
+                                <div class="freeBoard-item border p-2" id=${row.id} style="background: white;">${title}[${row.commentCount}]</div>
                             `;
                     });
 
-                    document.querySelector(".board-list").innerHTML = boardHtml;
+                    document.querySelector(".freeBoard-list").innerHTML = boardHtml;
                     addEventToRows();
                 }catch (error){
                     alert("알 수 없는 오류가 발생했습니다");
@@ -50,7 +50,7 @@
             }
 
             function addEventToRows(){
-                document.querySelectorAll(".board-item").forEach(function (row){
+                document.querySelectorAll(".freeBoard-item").forEach(function (row){
                     row.addEventListener("click", function (){
                         window.location.href = "/boards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
@@ -68,7 +68,7 @@
                         <div class="border p-2" style="background: white;">
                             <a href="/boards" class="text-black" style="text-decoration: none;">자유게시판</a>
                         </div>
-                        <div class="board-list"></div>
+                        <div class="freeBoard-list"></div>
                     </div>
 
                     <div class="col-lg-6 p-3" style="background: #ccc">

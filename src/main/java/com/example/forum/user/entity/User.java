@@ -1,7 +1,7 @@
     package com.example.forum.user.entity;
 
-    import com.example.forum.board.freeboard.entity.Board;
-    import com.example.forum.board.comment.entity.Comment;
+    import com.example.forum.boards.freeboard.board.entity.FreeBoard;
+    import com.example.forum.boards.freeboard.comment.entity.FreeBoardComment;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -49,10 +49,10 @@
         // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
         // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<Board> boards = new ArrayList<>();
+        private List<FreeBoard> freeBoards = new ArrayList<>();
 
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<Comment> comments = new ArrayList<>();
+        private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
 
         @Builder
         public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -68,14 +68,14 @@
             this.isActive = isActive;
         }
 
-        public void addBoard(Board board){
-            this.boards.add(board);
-            board.setUser(this);
+        public void addBoard(FreeBoard freeBoard){
+            this.freeBoards.add(freeBoard);
+            freeBoard.setUser(this);
         }
 
-        public void addComment(Comment comment){
-            this.comments.add(comment);
-            comment.setUser(this);
+        public void addComment(FreeBoardComment freeBoardComment){
+            this.freeBoardComments.add(freeBoardComment);
+            freeBoardComment.setUser(this);
         }
 
         public boolean getActive() {

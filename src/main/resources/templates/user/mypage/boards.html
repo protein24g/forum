@@ -28,27 +28,27 @@
                 <div class="row bg-body-tertiary">
                     <h2 th:text="${title}"></h2>
                     <!--게시글 Detail-->
-                    <div class="board-list p-3">
-                        <div th:each="board : ${boards}" class="card p-3" th:id="${board.getId()}">
+                    <div class="freeBoard-list p-3">
+                        <div th:each="freeBoard : ${boards}" class="card p-3" th:id="${freeBoard.getId()}">
                             <div class="row">
                                 <div class="col-auto">
                                     <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
                                 </div>
-                                <span class="col-auto p-0" th:text="${board.getNickname()}"></span>
+                                <span class="col-auto p-0" th:text="${freeBoard.getNickname()}"></span>
                                 <div class="col d-flex justify-content-end">
-                                    <span th:text="${#temporals.format(board.createDate, 'yy-MM-dd HH:mm:ss')}"></span>
+                                    <span th:text="${#temporals.format(freeBoard.createDate, 'yy-MM-dd HH:mm:ss')}"></span>
                                 </div>
                             </div>
                             <div class="row">
-                                <strong th:text="${board.getTitle()}"></strong>
+                                <strong th:text="${freeBoard.getTitle()}"></strong>
                             </div>
                             <div class="row">
-                                <span th:text="${board.getContent()}"></span>
+                                <span th:text="${freeBoard.getContent()}"></span>
                             </div>
                             <div class="row">
                                 <div class="col-auto d-flex">
                                     <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
-                                    <div class="px-2" th:text="${board.getCommentCount()}"></div>
+                                    <div class="px-2" th:text="${freeBoard.getCommentCount()}"></div>
                                 </div>
                             </div>
                         </div>

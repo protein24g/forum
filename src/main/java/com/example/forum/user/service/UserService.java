@@ -1,9 +1,9 @@
 package com.example.forum.user.service;
 
-import com.example.forum.board.admin.dto.response.AdminResponse;
-import com.example.forum.board.comment.service.CommentService;
-import com.example.forum.board.freeboard.dto.response.BoardResponse;
-import com.example.forum.board.freeboard.service.BoardService;
+import com.example.forum.admin.dto.response.AdminResponse;
+import com.example.forum.boards.freeboard.board.service.FreeBoardServiceImpl;
+import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
+import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
@@ -21,8 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +29,8 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final BoardService boardService;
-    private final CommentService commentService;
+    private final FreeBoardServiceImpl freeBoardServiceImpl;
+    private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
 
     public void join(JoinRequest joinRequest) {
         userRepository.findByLoginId(joinRequest.getLoginId())
@@ -83,7 +81,7 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .boards(boardService.getBoardsForUser(userId, page))
+                    .boards(freeBoardServiceImpl.getBoardsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();
         }else{
@@ -99,7 +97,7 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .comments(commentService.getCommentsForUser(userId, page))
+                    .comments(freeBoardCommentServiceImpl.getCommentsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();
         }else{
@@ -135,8 +133,8 @@ public class UserService {
                 .build());
     }
 
-    public Page<BoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
-        Page<BoardResponse> boardResponses = null;
+    public Page<FreeBoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
+        Page<FreeBoardResponse> boardResponses = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -145,9 +143,9 @@ public class UserService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
             if(id.equals("myboards")){
-                boardResponses = boardService.getBoardsForUser(user.getId(), page);
+                boardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
             }else{
-                boardResponses = commentService.getBoardsByUserComments(user, page);
+                boardResponses = freeBoardCommentServiceImpl.getBoardsByUserComments(user, page);
             }
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요");
