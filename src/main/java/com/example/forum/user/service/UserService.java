@@ -1,6 +1,7 @@
 package com.example.forum.user.service;
 
 import com.example.forum.board.admin.dto.response.AdminResponse;
+import com.example.forum.board.comment.repository.CommentRepository;
 import com.example.forum.board.comment.service.CommentService;
 import com.example.forum.board.freeboard.dto.response.BoardResponse;
 import com.example.forum.board.freeboard.entity.Board;
@@ -146,7 +147,9 @@ public class UserService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
             if(id.equals("myboards")){
-                boardResponses =  boardService.getBoardsForUser(user.getId(), page);
+                boardResponses = boardService.getBoardsForUser(user.getId(), page);
+            }else{
+                boardResponses = commentService.getBoardsByUserComments(user, page);
             }
         }else{
             throw new IllegalArgumentException("로그인 후 이용하세요");

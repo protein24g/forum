@@ -1,5 +1,6 @@
 package com.example.forum.board.comment.service;
 
+import com.example.forum.board.freeboard.dto.response.BoardResponse;
 import com.example.forum.board.freeboard.entity.Board;
 import com.example.forum.board.comment.dto.requests.CommentRequest;
 import com.example.forum.board.comment.dto.response.CommentResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +94,22 @@ public class CommentService {
                 .createDate(comment.getCreateDate())
                 .isAuthor(comment.getUser().getNickname().equals(username))
                 .build());
+    }
+
+    public Page<BoardResponse> getBoardsByUserComments(User user, int page){
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Board> boards = commentRepository.getBoardsByUserComments(user, pageable);
+        return boards
+                .map(board -> BoardResponse.builder()
+                    .id(board.getId())
+                    // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
+                    .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .createDate(board.getCreateDate())
+                    .commentCount(board.getComments().size())
+                    .view(board.getView())
+                    .build());
     }
 
     // U(Update)
