@@ -59,17 +59,17 @@
                         <ul class="pagination justify-content-center page-list">
                             <!-- 이전 버튼 -->
                             <li class="page-item" th:classappend="${boards.first} ? 'disabled' : ''">
-                                <a class="page-link" th:href="@{'/mypage/boards?id=' + ${title} + '&page=' + ${boards.number - 1}}">Previous</a>
+                                <a class="page-link" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${boards.number - 1}}">Previous</a>
                             </li>
 
                             <!-- 페이지 번호 버튼 -->
                             <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                                <a class="page-link" th:classappend="${i - 1 == boards.number} ? 'disabled' : ''" th:text="${i}" th:href="@{'/mypage/boards?id=' + ${title} + '&page=' + ${i - 1}}"></a>
+                                <a class="page-link" th:classappend="${i - 1 == boards.number} ? 'disabled' : ''" th:text="${i}" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${i - 1}}"></a>
                             </li>
 
                             <!-- 다음 버튼 -->
                             <li class="page-item" th:classappend="${boards.last} ? 'disabled' : ''">
-                                <a class="page-link" th:href="@{'/mypage/boards?id=' + ${title} + '&page=' + ${boards.number + 1}}">Next</a>
+                                <a class="page-link" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${boards.number + 1}}">Next</a>
                             </li>
                         </ul>
                     </nav>

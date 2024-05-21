@@ -12,7 +12,7 @@
     <script>
         // 페이지 로드시 호출되는 함수
         document.addEventListener("DOMContentLoaded", function (){
-            findBoardList("", 0, "");
+            getBoardList("", 0, "");
         })
 
         // R(Read)
@@ -22,10 +22,10 @@
             // 검색어 입력란의 value 값을 가져옵니다.
             var keyword = document.querySelector("#keyword").value;
 
-            findBoardList(keyword, 0, option);
+            getBoardList(keyword, 0, option);
         }
 
-        async function findBoardList(keyword, page, option){ // 게시글 리스트
+        async function getBoardList(keyword, page, option){ // 게시글 리스트
             let _csrf = document.getElementById("_csrf").value;
             try{
                 const response = await fetch("/api/boards", {
@@ -37,7 +37,8 @@
                     body : JSON.stringify({
                         keyword : keyword,
                         page : page,
-                        option : option
+                        option : option,
+                        pageSize: 10
                     })
                 });
 
@@ -78,7 +79,7 @@
                 let pageHtml = "";
                 pageHtml += `
                             <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                <a class="page-link" onclick="findBoardList('${keyword}', ${res.number - 1}, '${option}')">Previous</a>
+                                <a class="page-link" onclick="getBoardList('${keyword}', ${res.number - 1}, '${option}')">Previous</a>
                             </li>
                             `;
 
@@ -87,14 +88,14 @@
                 for(let page = startPage; page < endPage ; page++){
                     pageHtml += `
                                 <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                    <a class="page-link" onclick="findBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
+                                    <a class="page-link" onclick="getBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
                                 </li>
                             `;
                 }
 
                 pageHtml += `
                             <li class="page-item ${(res.last) ? "disabled" : ""}">
-                                <a class="page-link" onclick="findBoardList('${keyword}', ${res.number + 1}, '${option}')">Next</a>
+                                <a class="page-link" onclick="getBoardList('${keyword}', ${res.number + 1}, '${option}')">Next</a>
                             </li>
                         `;
 

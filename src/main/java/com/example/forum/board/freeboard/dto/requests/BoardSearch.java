@@ -11,4 +11,5 @@ public class BoardSearch {
     private String keyword;
     private int page;
     private String option;
+    private int pageSize;
 }

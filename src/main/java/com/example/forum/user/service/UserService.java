@@ -81,6 +81,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
+
+
         if(user.getActive()){
             return UserResponse.builder()
                     .nickname(user.getNickname())

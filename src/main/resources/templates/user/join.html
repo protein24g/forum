@@ -1,158 +1,156 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="/account/logout.js"></script>
-    <link href="/mobile/font.css" rel="stylesheet"></script>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap demo</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="/account/logout.js"></script>
+        <link href="/mobile/font.css" rel="stylesheet"></script>
+    </head>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
 
-    $(document).ready(function (){
-        $a = false;
-        $b = false;
-        $c = false;
-        $d = false;
+        $(document).ready(function (){
+            $a = false;
+            $b = false;
+            $c = false;
+            $d = false;
 
-        nickname = $("#nickname");
-        nickname.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
-            var regExp = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,9}$/;
-            if (!regExp.test(nickname.val())){ // 입력값이 정규식에 맞는지 검사
-                $("#nickname-error").text("닉네임은 2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성(한글 초성 및 모음 사용 불가능)해야합니다"); // 텍스트 메시지 표시
-            }else{
-                $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
-                    type : "GET", // 요청 방식
-                    url : "/checkNickname", // 요청을 보낼 서버의 URL
-                    data : {nickname : nickname.val()}, // 서버로 보낼 데이터
-                    success : function (data){ // 요청이 성공하면 실행될 함수
-                        if(data == true){ // 서버에서 true를 반환한 경우
-                            $("#nickname-error").text("이미 사용중인 닉네임입니다.");
-                            $a = false;
-                        }else{ // 서버에서 false를 반환한 경우
-                            $("#nickname-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
-                            $a = true;
+            nickname = $("#nickname");
+            nickname.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
+                var regExp = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,9}$/;
+                if (!regExp.test(nickname.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#nickname-error").text("닉네임은 2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성(한글 초성 및 모음 사용 불가능)해야합니다"); // 텍스트 메시지 표시
+                }else{
+                    $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
+                        type : "GET", // 요청 방식
+                        url : "/checkNickname", // 요청을 보낼 서버의 URL
+                        data : {nickname : nickname.val()}, // 서버로 보낼 데이터
+                        success : function (data){ // 요청이 성공하면 실행될 함수
+                            if(data == true){ // 서버에서 true를 반환한 경우
+                                $("#nickname-error").text("이미 사용중인 닉네임입니다.");
+                                $a = false;
+                            }else{ // 서버에서 false를 반환한 경우
+                                $("#nickname-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                                $a = true;
+                            }
+                        },
+                        error: function(error) { // 요청이 실패하면 실행될 함수
+                            alert(error); // 오류 메시지 출력
                         }
-                    },
-                    error: function(error) { // 요청이 실패하면 실행될 함수
-                        alert(error); // 오류 메시지 출력
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
 
-        $loginId = $("#loginId");
-        $loginId.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
-            var regExp = /^(?=.*[a-z0-9])[a-z0-9]{6,16}$/;
-            if (!regExp.test($loginId.val())){ // 입력값이 정규식에 맞는지 검사
-                $("#loginId-error").text("아이디는 6자 이상 16자 이하, 영어 또는 숫자로 구성");
-            }else{
-                $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
-                    type : "GET", // 요청 방식
-                    url : "/checkLoginId", // 요청을 보낼 서버의 URL
-                    data : {loginId : $loginId.val()}, // 서버로 보낼 데이터
-                    success : function (data){ // 요청이 성공하면 실행될 함수
-                        if(data == true){ // 서버에서 true를 반환한 경우
-                            $("#loginId-error").text("이미 존재하는 아이디입니다.");
-                            $b = false;
-                        }else{ // 서버에서 false를 반환한 경우
-                            $("#loginId-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
-                            $b = true;
+            $loginId = $("#loginId");
+            $loginId.on("focusout", function (){ // 입력 필드에서 포커스가 벗어났을 때 이벤트 핸들러 등록
+                var regExp = /^(?=.*[a-z0-9])[a-z0-9]{6,16}$/;
+                if (!regExp.test($loginId.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#loginId-error").text("아이디는 6자 이상 16자 이하, 영어 또는 숫자로 구성");
+                }else{
+                    $.ajax({ // 입력값이 유효할 때만 AJAX 요청 실행
+                        type : "GET", // 요청 방식
+                        url : "/checkLoginId", // 요청을 보낼 서버의 URL
+                        data : {loginId : $loginId.val()}, // 서버로 보낼 데이터
+                        success : function (data){ // 요청이 성공하면 실행될 함수
+                            if(data == true){ // 서버에서 true를 반환한 경우
+                                $("#loginId-error").text("이미 존재하는 아이디입니다.");
+                                $b = false;
+                            }else{ // 서버에서 false를 반환한 경우
+                                $("#loginId-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                                $b = true;
+                                document.querySelector(".test").addClass("")
+                            }
+                        },
+                        error: function(error) { // 요청이 실패하면 실행될 함수
+                            alert(error); // 오류 메시지 출력
                         }
-                    },
-                    error: function(error) { // 요청이 실패하면 실행될 함수
-                        alert(error); // 오류 메시지 출력
-                    }
-                })
-            }
+                    })
+                }
+            })
+
+            $loginPw = $("#loginPw");
+            $loginPwCheck = $("#loginPwCheck");
+            $loginPw.on("focusout", function (){
+                //적어도 하나의 영문자를 포함해야 합니다. ((?=.*[a-zA-Z]))
+                //적어도 하나의 특수 문자(!@#$)를 포함해야 합니다. ((?=.*[!@#$]))
+                var regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$])[a-zA-Z0-9!@#$]{6,16}$/; // _ -를 포함한 특수문자도 같이 허용
+                if(!regExp.test($loginPw.val())){ // 입력값이 정규식에 맞는지 검사
+                    $("#loginPw-error").text("영문자, 숫자, 그리고 특수 문자(!@#$)들 중 하나 이상을 포함하여 총 6자 이상, 16자 이하여야 합니다.");
+                    $c = false;
+                }else{
+                    $("#loginPw-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
+                    $c = true;
+                }
+                if($loginPw.val() !== $loginPwCheck.val()){
+                    $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
+                    $d = false;
+                }else{
+                    $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
+                    $d = true;
+                }
+            })
+
+            $loginPwCheck.on("focusout", function (){
+                if($loginPw.val() !== $loginPwCheck.val()){
+                    $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
+                    $d = false;
+                }else{
+                    $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
+                    $d = true;
+                }
+            });
+
+            $("#joinForm").on("submit", function(event) {
+                if(!($a && $b && $c && $d)){
+                    // 하나라도 거짓인 경우, 폼 제출을 막습니다.
+                    event.preventDefault();
+                    alert("모든 조건을 만족해야 합니다."); // 사용자에게 모든 조건을 만족해야 한다는 것을 알립니다.
+                }
+            });
         })
+    </script>
+    <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+    <body>
+    <div class="container-md">
+        <div class="col-lg-8 m-auto p-3 m-0">
+            <form action="/joinProc" method="post" id="joinForm">
+                <input class="form-control test" type="text" name="nickname" id="nickname" placeholder="닉네임">
+                <label id="nickname-error"></label>
+                <input class="form-control" type="text" name="loginId" id="loginId" placeholder="아이디">
+                <label id="loginId-error"></label>
+                <p>
+                    <input class="form-control" type="password" name="loginPw" id="loginPw" placeholder="비밀번호">
+                    <label id="loginPw-error"></label>
+                </p>
+                <p>
+                    <input class="form-control" type="password" name="loginPwCheck" id="loginPwCheck" placeholder="비밀번호 확인">
+                    <label id="loginPwCheck-error"></label>
+                </p>
+                <p>
+                    <input class="form-control" type="number" name="age" id="age" placeholder="나이">
+                </p>
+                <p>
+                    <input type="radio" id="male" name="gender" value="MALE" checked>
+                    <label for="male">남자</label>
+                    <input type="radio" id="female" name="gender" value="FEMALE">
+                    <label for="female">여자</label>
+                </p>
+                <p>
+                    <input class="form-control" type="text" name="address" placeholder="주소">
+                </p>
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                <input class="btn btn-primary" type="submit" value="회원가입">
+            </form>
+        </div>
+    </div>
 
-        $loginPw = $("#loginPw");
-        $loginPwCheck = $("#loginPwCheck");
-        $loginPw.on("focusout", function (){
-            //적어도 하나의 영문자를 포함해야 합니다. ((?=.*[a-zA-Z]))
-            //적어도 하나의 특수 문자(!@#$)를 포함해야 합니다. ((?=.*[!@#$]))
-            var regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$])[a-zA-Z0-9!@#$]{6,16}$/; // _ -를 포함한 특수문자도 같이 허용
-            if(!regExp.test($loginPw.val())){ // 입력값이 정규식에 맞는지 검사
-                $("#loginPw-error").text("영문자, 숫자, 그리고 특수 문자(!@#$)들 중 하나 이상을 포함하여 총 6자 이상, 16자 이하여야 합니다.");
-                $c = false;
-            }else{
-                $("#loginPw-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>"); // 이미지 태그 표시
-                $c = true;
-            }
-            if($loginPw.val() !== $loginPwCheck.val()){
-                $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
-                $d = false;
-            }else{
-                $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
-                $d = true;
-            }
-        })
+    <div class="d-flex justify-content-center align-items-center">
 
-        $loginPwCheck.on("focusout", function (){
-            if($loginPw.val() !== $loginPwCheck.val()){
-                $("#loginPwCheck-error").text("비밀번호가 일치하지 않습니다."); // 수정된 부분
-                $d = false;
-            }else{
-                $("#loginPwCheck-error").html("<img src='https://cdn-icons-png.flaticon.com/128/11450/11450152.png' width='25px;'/>");
-                $d = true;
-            }
-        });
+    </div>
 
-        $("#joinForm").on("submit", function(event) {
-            if(!($a && $b && $c && $d)){
-                // 하나라도 거짓인 경우, 폼 제출을 막습니다.
-                event.preventDefault();
-                alert("모든 조건을 만족해야 합니다."); // 사용자에게 모든 조건을 만족해야 한다는 것을 알립니다.
-            }
-        });
-    })
-</script>
-<div th:insert="~{layouts/header.html :: headerFragment}"></div>
-<body>
-<!-- 에러 메시지가 존재하는 경우에만 아래 div가 표시됩니다. -->
-<div th:if="${errors} and ${errors.size() > 0}" class="alert alert-danger">
-    <ul>
-        <!-- 모델에 추가된 에러 메시지를 순회하며 각각을 li 요소로 표시합니다. -->
-        <li th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</li>
-    </ul>
-</div>
-
-<form action="/joinProc" method="post" id="joinForm">
-    <p>
-        <input type="text" name="nickname" id="nickname" placeholder="닉네임">
-        <label id="nickname-error"></label>
-    </p>
-    <p>
-        <input type="text" name="loginId" id="loginId" placeholder="아이디">
-        <label id="loginId-error"></label>
-    </p>
-    <p>
-        <input type="password" name="loginPw" id="loginPw" placeholder="비밀번호">
-        <label id="loginPw-error"></label>
-    </p>
-    <p>
-        <input type="password" name="loginPwCheck" id="loginPwCheck" placeholder="비밀번호 확인">
-        <label id="loginPwCheck-error"></label>
-    </p>
-    <p>
-        <input type="number" name="age" id="age" placeholder="나이">
-    </p>
-    <p>
-        <input type="radio" id="male" name="gender" value="MALE" checked>
-        <label for="male">남자</label>
-        <input type="radio" id="female" name="gender" value="FEMALE">
-        <label for="female">여자</label>
-    </p>
-    <p>
-        <input type="text" name="address" placeholder="주소">
-    </p>
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-    <input type="submit" value="회원가입">
-</form>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
 </html>

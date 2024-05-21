@@ -1,6 +1,7 @@
 package com.example.forum.board.freeboard.service;
 
 import com.example.forum.board.freeboard.dto.requests.BoardRequest;
+import com.example.forum.board.freeboard.dto.requests.BoardSearch;
 import com.example.forum.board.freeboard.dto.response.BoardResponse;
 import com.example.forum.board.freeboard.entity.Board;
 import com.example.forum.board.freeboard.repository.BoardRepository;
@@ -59,7 +60,7 @@ public class BoardService {
     }
 
     // R(Read)
-    public Page<BoardResponse> getBoardsForUser(Long userId, int page) {
+    public Page<BoardResponse> getBoardsForUser(Long userId, int page) { // 특정 유저 게시글 리스트
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<Board> boards = boardRepository.findByUserId(userId, pageable);
 
@@ -76,21 +77,20 @@ public class BoardService {
                     .build());
     }
 
-    public Page<BoardResponse> pageBoards(String keyword, int page, String option) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+    public Page<BoardResponse> pageBoards(BoardSearch dto) { // 게시글 리스트
+        Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Board> boards = null;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        if (dto.getKeyword().length() != 0) {
             // 검색어가 있는 경우
-            switch (option){
+            switch (dto.getOption()){
                 case "1":
-                    boards = boardRepository.findByTitleContaining(keyword, pageable);
+                    boards = boardRepository.findByTitleContaining(dto.getKeyword(), pageable);
                     break;
                 case "2":
-                    boards = boardRepository.findByContentContaining(keyword, pageable);
+                    boards = boardRepository.findByContentContaining(dto.getKeyword(), pageable);
                     break;
             }
-
         } else {
             // 검색어가 없는 경우
             boards = boardRepository.findAll(pageable);

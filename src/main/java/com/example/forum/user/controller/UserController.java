@@ -82,8 +82,10 @@ public class UserController {
         int endPage = Math.min(startPage + 4, boardResponses.getTotalPages());
 
         if(id.equals("myboards")){
+            model.addAttribute("id", "myboards");
             model.addAttribute("title", "내가 쓴 글");
         } else if (id.equals("mycommentboards")) {
+            model.addAttribute("id", "mycommentboards");
             model.addAttribute("title", "댓글 단 글");
         }
         model.addAttribute("boards", boardResponses);

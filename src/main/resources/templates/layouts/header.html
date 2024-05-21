@@ -14,7 +14,7 @@
     <nav class="navbar navbar-expand-md bg-body-tertiary">
         <div class="container-md col-lg-8 m-auto">
             <a href="/">
-                <img src="https://cdn-icons-png.flaticon.com/128/2550/2550392.png" width="30px;">
+                <img src="https://cdn-icons-png.flaticon.com/128/3917/3917032.png" width="30px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -36,7 +36,7 @@
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                            <strong>mdo</strong>
+                            <strong th:text="${#authentication.principal.username}"></strong>
                         </a>
                         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
                             <li>
@@ -45,10 +45,8 @@
                             <li>
                                 <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">마이페이지</a>
                             </li>
-                            <li>
+                            <li sec:authorize="hasRole('ADMIN')">
                                 <hr class="dropdown-divider">
-                            </li>
-                            <li>
                                 <a sec:authorize="hasRole('ADMIN')" class="dropdown-item" href="/admin">관리자 페이지</a>
                             </li>
                         </ul>

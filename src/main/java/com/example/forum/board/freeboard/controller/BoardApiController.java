@@ -19,13 +19,8 @@ public class BoardApiController {
     // R(Read)
     @PostMapping("/api/boards")
     public ResponseEntity<?> boardP(@RequestBody BoardSearch dto) {
-        Page<BoardResponse> boardResponses;
-        if (dto.getKeyword().length() != 0) { // 키워드가 있으면
-            boardResponses = boardService.pageBoards(dto.getKeyword(), dto.getPage(), dto.getOption()); // 검색 페이징
-        } else {
-            boardResponses = boardService.pageBoards("", dto.getPage(), ""); // 기본 리스트 페이징
-        }
-
+        System.out.println(dto.toString());
+        Page<BoardResponse> boardResponses = boardService.pageBoards(dto); // 검색 페이징
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
     }
 
