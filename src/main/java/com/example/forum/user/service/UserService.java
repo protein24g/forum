@@ -1,10 +1,8 @@
 package com.example.forum.user.service;
 
 import com.example.forum.board.admin.dto.response.AdminResponse;
-import com.example.forum.board.comment.repository.CommentRepository;
 import com.example.forum.board.comment.service.CommentService;
 import com.example.forum.board.freeboard.dto.response.BoardResponse;
-import com.example.forum.board.freeboard.entity.Board;
 import com.example.forum.board.freeboard.service.BoardService;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.dto.requests.JoinRequest;
@@ -80,8 +78,6 @@ public class UserService {
     public UserResponse getUserBoards(Long userId, int page){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-
-
 
         if(user.getActive()){
             return UserResponse.builder()
