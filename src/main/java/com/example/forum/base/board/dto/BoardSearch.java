@@ -1,4 +1,4 @@
-package com.example.forum.boards.freeboard.board.dto.requests;
+package com.example.forum.base.board.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class FreeBoardSearch {
+public class BoardSearch {
     private String keyword;
     private int page;
     private String option;

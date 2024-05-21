@@ -2,7 +2,7 @@ package com.example.forum.boards.freeboard.board.controller;
 
 import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
-import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardSearch;
+import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.boards.freeboard.board.service.FreeBoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ public class FreeBoardApiController {
 
     // R(Read)
     @PostMapping("/api/boards")
-    public ResponseEntity<?> boardP(@RequestBody FreeBoardSearch dto) {
+    public ResponseEntity<?> boardP(@RequestBody BoardSearch dto) {
         System.out.println(dto.toString());
         Page<FreeBoardResponse> boardResponses = freeBoardServiceImpl.pageBoards(dto); // 검색 페이징
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);

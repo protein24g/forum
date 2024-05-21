@@ -33,6 +33,7 @@
                     });
 
                     const res = await response.json();
+                    console.log(res);
                     document.getElementById("nickname").innerText = res.nickname;
                     document.getElementById("count").innerText = "게시글 : " + res.boards.totalElements + "개";
 

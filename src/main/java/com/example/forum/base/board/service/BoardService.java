@@ -1,7 +1,7 @@
 package com.example.forum.base.board.service;
 
 import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
-import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardSearch;
+import com.example.forum.base.board.dto.BoardSearch;
 import org.springframework.data.domain.Page;
 
 // interface : 추상 메서드의 집합
@@ -11,7 +11,7 @@ public interface BoardService<T> {
     T createBoard(FreeBoardRequest dto); // 게시글 생성
 
     // R(Read)
-    Page<T> pageBoards(FreeBoardSearch dto); // 페이지별 게시글 목록 조회
+    Page<T> pageBoards(BoardSearch dto); // 페이지별 게시글 목록 조회
 
     T getDetail(Long boardNum); // 특정 게시글 상세 조회
 

@@ -3,7 +3,7 @@ package com.example.forum.boards.freeboard.board.service;
 import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
-import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardSearch;
+import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.boards.freeboard.board.entity.FreeBoard;
 import com.example.forum.boards.freeboard.board.repository.FreeBoardRepository;
 import com.example.forum.base.board.service.BoardService;
@@ -63,7 +63,7 @@ public class FreeBoardServiceImpl implements BoardService {
 
     // R(Read)
     @Override
-    public Page<FreeBoardResponse> pageBoards(FreeBoardSearch dto) { // 게시글 리스트
+    public Page<FreeBoardResponse> pageBoards(BoardSearch dto) { // 게시글 리스트
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         Page<FreeBoard> boards = null;
 
