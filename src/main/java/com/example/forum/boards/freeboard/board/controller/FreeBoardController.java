@@ -20,7 +20,7 @@ public class FreeBoardController {
     // C(Create)
     @GetMapping("/boards/create")
     public String createP(){
-        return "board/create";
+        return "freeboard/board/create";
     }
 
     @PostMapping("/boards/create")
@@ -41,7 +41,7 @@ public class FreeBoardController {
     // R(Read)
     @GetMapping("/boards")
     public String listBoards() {
-        return "/board/list";
+        return "freeboard/board/list";
     }
 
     @GetMapping("/boards/{boardId}")
@@ -55,6 +55,6 @@ public class FreeBoardController {
             model.addAttribute("url", "/boards");
             return "message/index";
         }
-        return "board/detail";
+        return "freeboard/board/detail";
     }
 }
