@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
     /* 모바일 화면에서 제목 글꼴 크기 조정 */
     body{
-        font-size : 14px;
+        font-size : 18px;
     }
 }

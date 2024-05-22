@@ -14,9 +14,9 @@
             })
 
             function addEventToRows() {
-                document.querySelectorAll(".card").forEach(function (card) { // tbody 내에 모든 tr 태그를 찾아서 for
-                    card.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/boards/" + card.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                document.querySelectorAll(".board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
+                    row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                        window.location.href = "/boards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
             }
@@ -39,34 +39,25 @@
 
                     let boardHtml = "";
                     res.boards.content.forEach(row => {
-                        let title = row.title.slice(0,15) + " ...";
-                        let content = row.content.slice(0, 30) + " ...";
                         let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
                         boardHtml += `
-                                    <div class="card p-3" id=${row.id}>
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
-                                            </div>
-                                            ${row.nickname}
-                                            <div class="col d-flex justify-content-end">
-                                                ${createDate}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <strong class="">${title}</strong>
-                                        </div>
-                                        <div class="row">
-                                            <span class="">${content}</span>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
-                                                ${row.commentCount}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <tr id="${row.id}">
+                                        <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
+                                        <td class="col-auto d-none d-md-table-cell text-truncate">게시판이름</td>
+                                        <td class="text-truncate col-auto">
+                                            <strong>${row.title}</strong>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-md-table-cell">
+                                            <span class="col-auto p-0">${row.nickname}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto">
+                                            <span>${createDate}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-lg-table-cell">
+                                            <span>${row.view}</span>
+                                        </td>
+                                    </tr>
                                 `;
                     });
                     document.querySelector(".freeBoard-list").innerHTML = boardHtml;
@@ -118,25 +109,19 @@
 
                     let commentHtml = ""; // 유저 검색 창 댓글
                     res.comments.content.forEach(row => {
-                        let content = row.content.slice(0, 30) + " ...";
                         let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
                         // 고유한 모달 ID 생성
                         commentHtml += `
-                                    <div class="card p-3" id=${row.boardId}>
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
-                                            </div>
-                                            ${row.nickname}
-                                            <div class="col d-flex justify-content-end">
-                                                <div class="col-auto px-2">${createDate}</div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <span class="">${content}</span>
-                                        </div>
-                                    </div>
+                                    <tr id="${row.boardId}">
+                                        <th class="col-auto">${row.boardId}</th>
+                                        <td class="text-truncate col">
+                                            <strong>${row.content}</strong>
+                                        </td>
+                                        <td class="text-truncate col-auto">
+                                            <strong>${createDate}</strong>
+                                        </td>
+                                    </tr>
                                 `;
                     });
                     document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
@@ -175,68 +160,82 @@
     </head>
     <body>
         <input type="hidden" id="userId" th:value="${userId}">
-        <div class="container-md">
-            <div class="col-lg-8 m-auto p-3 m-0">
-                <div class="row" style="background:darkgray">
-                    <!-- 사용자 이미지 -->
-                    <div class="col-auto text-center">
-                        <a>
-                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="50px;" alt="사용자 이미지">
-                        </a>
-                    </div>
-                    <!-- 닉네임과 작성한 글 수 -->
-                    <div class="col p-0">
-                        <div class="row">
-                            <div class="col-auto">
-                                <h3 id="nickname"></h3>
-                                <br>
-                            </div>
-                            <div class="col d-flex justify-content-end">
-                                <a href="/admin">
-                                    <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <p class="m-0" id="count"></p>
-                        </div>
-                    </div>
+        <div class="container">
+            <h2 th:text="${title}"></h2>
+            <div class="row" style="background:darkgray">
+                <!-- 사용자 이미지 -->
+                <div class="col-auto text-center">
+                    <a>
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="50px;" alt="사용자 이미지">
+                    </a>
                 </div>
-
-                <div class="row bg-body-tertiary">
-                    <nav class="navbar">
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" onclick="tab1(0)" id="nav-freeBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoard" type="button" role="tab" aria-controls="nav-freeBoard" aria-selected="true">작성글</button>
-                            <button class="nav-link" onclick="tab2(0)" id="nav-freeBoardComment-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoardComment" type="button" role="tab" aria-controls="nav-freeBoardComment" aria-selected="false">댓글</button>
-                        </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-freeBoard" role="tabpanel" aria-labelledby="nav-freeBoard-tab" tabindex="0">
-                            <!--게시글 Detail-->
-                            <div class="freeBoard-list"></div>
-
-                            <!--게시글 페이징-->
-                            <nav aria-label="">
-                                <ul class="pagination justify-content-center page_list board_page_list">
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="tab-pane fade" id="nav-freeBoardComment" role="tabpanel" aria-labelledby="nav-freeBoardComment-tab" tabindex="0">
-                            <!--/* 댓글 렌더링 영역 */-->
-                            <div class="freeBoardComment-list"></div>
-                            <!--댓글 페이징-->
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center page_list comment_page_list">
-                                </ul>
-                            </nav>
-                        </div>
+                <!-- 닉네임과 작성한 글 수 -->
+                <div class="col p-0">
+            <div class="row">
+                <div class="col-auto mb-3">
+                    <h3 id="nickname"></h3>
+                </div>
+                <div class="col-auto d-flex ms-auto">
+                    <a href="/admin">
+                        <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;">
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <p class="m-0" id="count"></p>
+            </div>
+        </div>
+        </div>
+            <div class="row bg-body-tertiary">
+                <nav class="navbar">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" onclick="tab1(0)" id="nav-freeBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoard" type="button" role="tab" aria-controls="nav-freeBoard" aria-selected="true">작성글</button>
+                        <button class="nav-link" onclick="tab2(0)" id="nav-freeBoardComment-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoardComment" type="button" role="tab" aria-controls="nav-freeBoardComment" aria-selected="false">댓글</button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-freeBoard" role="tabpanel" aria-labelledby="nav-freeBoard-tab" tabindex="0">
+                        <!--게시글 Detail-->
+                        <table class="table text-center">
+                            <thead>
+                                <tr>
+                                    <th class="col-auto d-none d-lg-table-cell">번호</th>
+                                    <th class="col-auto d-none d-md-table-cell ">분류</th>
+                                    <th class="col-auto">제목</th>
+                                    <th class="col-auto d-none d-md-table-cell">작성자</th>
+                                    <th class="col-auto d-md-table-cell">등록일</th>
+                                    <th class="col-auto d-none d-lg-table-cell">조회</th>
+                                </tr>
+                            </thead>
+                            <tbody class="freeBoard-list board-list"></tbody>
+                        </table>
+                        <!--게시글 페이징-->
+                        <nav aria-label="">
+                            <ul class="pagination justify-content-center board_page_list">
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="tab-pane fade" id="nav-freeBoardComment" role="tabpanel" aria-labelledby="nav-freeBoardComment-tab" tabindex="0">
+                        <!--/* 댓글 렌더링 영역 */-->
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th class="col-auto">번호</th>
+                                <th class="col-auto">댓글</th>
+                                <th class="col-auto">등록일</th>
+                            </tr>
+                            </thead>
+                            <tbody class="freeBoardComment-list board-list"></tbody>
+                        </table>
+                        <!--댓글 페이징-->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center comment_page_list">
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
