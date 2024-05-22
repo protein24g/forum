@@ -77,10 +77,6 @@ public class UserController {
     public String myPageBoards(Model model, @RequestParam(name = "id") String id,
                                @RequestParam(name = "page", defaultValue = "0") int page){
 
-        Page<FreeBoardResponse> boardResponses = userService.myPageBoards(id, page);
-        int startPage = (int) (Math.floor((double) page / 5) * 5) + 1;
-        int endPage = Math.min(startPage + 4, boardResponses.getTotalPages());
-
         if(id.equals("myboards")){
             model.addAttribute("id", "myboards");
             model.addAttribute("title", "내가 쓴 글");
@@ -88,9 +84,6 @@ public class UserController {
             model.addAttribute("id", "mycommentboards");
             model.addAttribute("title", "댓글 단 글");
         }
-        model.addAttribute("boards", boardResponses);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
         return "user/mypage/boards";
     }
 }

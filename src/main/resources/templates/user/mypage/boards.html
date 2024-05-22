@@ -9,22 +9,91 @@
         <link href="/mobile/font.css" rel="stylesheet">
         <script>
             document.addEventListener("DOMContentLoaded", function (){
-                addEventToRows();
+                myPageBoards(0);
             })
 
             function addEventToRows() {
-                document.querySelectorAll(".card").forEach(function (card) { // tbody 내에 모든 tr 태그를 찾아서 for
-                    card.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/boards/" + card.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                document.querySelectorAll(".board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
+                    row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                        window.location.href = "/boards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
+            }
+
+            async function myPageBoards(page){
+                let id = document.querySelector("#id").value;
+                try{
+                    const response = await fetch(`/api/mypage/boards?id=${id}&page=${page}`, {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        }
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+
+                    let boardHtml = "";
+                    res.content.forEach(row => {
+                        let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
+                        boardHtml += `
+                                    <tr id="${row.id}">
+                                        <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
+                                        <td class="col-auto d-none d-md-table-cell text-truncate">게시판이름</td>
+                                        <td class="text-truncate col-auto">
+                                            <strong>${row.title}</strong>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-md-table-cell">
+                                            <span class="col-auto p-0">${row.nickname}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto">
+                                            <span>${createDate}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-lg-table-cell">
+                                            <span>${row.view}</span>
+                                        </td>
+                                    </tr>
+                                `;
+                    });
+                    document.querySelector(".myBoard-list").innerHTML = boardHtml;
+
+                    let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
+                    boardPageHtml += `
+                                            <li class="page-item ${(res.first) ? "disabled" : ""}">
+                                                <a class="page-link" onclick="myPageBoards(${res.number - 1})">Previous</a>
+                                            </li>
+                                            `;
+
+                    let startPage = (Math.floor((res.number) / 5)) * 5;
+                    let endPage = Math.min(startPage + 5, res.totalPages);
+                    for(let page = startPage; page < endPage ; page++){
+                        boardPageHtml += `
+                                                <li class="page-item ${(page == res.number) ? 'active' : ''}">
+                                                    <a class="page-link" onclick="myPageBoards(${page})">${page + 1}</a>
+                                                </li>
+                                            `;
+                    }
+
+                    boardPageHtml += `
+                                            <li class="page-item ${(res.last) ? "disabled" : ""}">
+                                                <a class="page-link" onclick="myPageBoards(${res.number + 1})">Next</a>
+                                            </li>
+                                        `;
+                    document.querySelector(".board-page-list").innerHTML = boardPageHtml;
+
+                    addEventToRows(); // row 클릭 이벤트 추가
+                }catch (error){
+                    alert(error);
+                    window.location.href = "/";
+                }
             }
         </script>
     </head>
     <body>
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+        <input type="hidden" id="id" th:value="${id}">
         <div class="container">
-            <h2 th:text="${title}"></h2>
+            <!--게시글 Detail-->
             <table class="table text-center">
                 <thead>
                 <tr>
@@ -36,43 +105,11 @@
                     <th class="col-auto d-none d-lg-table-cell">조회</th>
                 </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="freeBoard : ${boards}" th:id="${freeBoard.getId()}">
-                        <th class="col-auto d-none d-lg-table-cell" th:text="${freeBoard.getId()}"></th>
-                        <td class="col-auto d-none d-md-table-cell text-truncate">게시판이름</td>
-                        <td class="text-truncate col-auto">
-                            <strong th:text="${freeBoard.getTitle()}"></strong>
-                        </td>
-                        <td class="text-truncate col-auto d-none d-md-table-cell">
-                            <span class="col-auto p-0" th:text="${freeBoard.getNickname()}"></span>
-                        </td>
-                        <td class="text-truncate col-auto">
-                            <span th:text="${#temporals.format(freeBoard.createDate, 'yy-MM-dd HH:mm:ss')}"></span>
-                        </td>
-                        <td class="text-truncate col-auto d-none d-lg-table-cell">
-                            <span th:text="${freeBoard.getCommentCount()}"></span>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody class="myBoard-list board-list"></tbody>
             </table>
-
             <!--게시글 페이징-->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center page-list">
-                    <!-- 이전 버튼 -->
-                    <li class="page-item" th:classappend="${boards.first} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${boards.number - 1}}">Previous</a>
-                    </li>
-
-                    <!-- 페이지 번호 버튼 -->
-                    <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                        <a class="page-link" th:classappend="${i - 1 == boards.number} ? 'disabled' : ''" th:text="${i}" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${i - 1}}"></a>
-                    </li>
-
-                    <!-- 다음 버튼 -->
-                    <li class="page-item" th:classappend="${boards.last} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'/mypage/boards?id=' + ${id} + '&page=' + ${boards.number + 1}}">Next</a>
-                    </li>
+            <nav aria-label="">
+                <ul class="pagination justify-content-center board-page-list">
                 </ul>
             </nav>
         </div>

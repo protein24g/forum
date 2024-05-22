@@ -59,38 +59,38 @@
                                         </td>
                                     </tr>
                                 `;
-                    });
-                    document.querySelector(".freeBoard-list").innerHTML = boardHtml;
+                        });
+                        document.querySelector(".freeBoard-list").innerHTML = boardHtml;
 
-                    let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
-                    boardPageHtml += `
-                                        <li class="page-item ${(res.boards.first) ? "disabled" : ""}">
-                                            <a class="page-link" onclick="tab1(${res.boards.number - 1})">Previous</a>
-                                        </li>
-                                        `;
-
-                    let startPage = (Math.floor((res.boards.number) / 5)) * 5;
-                    let endPage = Math.min(startPage + 5, res.boards.totalPages);
-                    for(let page = startPage; page < endPage ; page++){
+                        let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                         boardPageHtml += `
-                                            <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
-                                                <a class="page-link" onclick="tab1(${page})">${page + 1}</a>
+                                            <li class="page-item ${(res.boards.first) ? "disabled" : ""}">
+                                                <a class="page-link" onclick="tab1(${res.boards.number - 1})">Previous</a>
+                                            </li>
+                                            `;
+
+                        let startPage = (Math.floor((res.boards.number) / 5)) * 5;
+                        let endPage = Math.min(startPage + 5, res.boards.totalPages);
+                        for(let page = startPage; page < endPage ; page++){
+                            boardPageHtml += `
+                                                <li class="page-item ${(page == res.boards.number) ? 'active' : ''}">
+                                                    <a class="page-link" onclick="tab1(${page})">${page + 1}</a>
+                                                </li>
+                                            `;
+                        }
+
+                        boardPageHtml += `
+                                            <li class="page-item ${(res.boards.last) ? "disabled" : ""}">
+                                                <a class="page-link" onclick="tab1(${res.boards.number + 1})">Next</a>
                                             </li>
                                         `;
+                        document.querySelector(".board-page-list").innerHTML = boardPageHtml;
+
+                        addEventToRows(); // row 클릭 이벤트 추가
+                    }catch (error){
+                        alert(error);
+                        window.location.href = "/";
                     }
-
-                    boardPageHtml += `
-                                        <li class="page-item ${(res.boards.last) ? "disabled" : ""}">
-                                            <a class="page-link" onclick="tab1(${res.boards.number + 1})">Next</a>
-                                        </li>
-                                    `;
-                    document.querySelector(".board_page_list").innerHTML = boardPageHtml;
-
-                    addEventToRows(); // row 클릭 이벤트 추가
-                }catch (error){
-                    alert(error);
-                    window.location.href = "/";
-                }
             }
 
             async function tab2(page){
@@ -148,7 +148,7 @@
                                             <a class="page-link" onclick="tab2(${res.comments.number + 1})">Next</a>
                                         </li>
                                         `;
-                    document.querySelector(".comment_page_list").innerHTML = commentPageHtml;
+                    document.querySelector(".comment-page-list").innerHTML = commentPageHtml;
 
                     addEventToRows(); // row 클릭 이벤트 추가
                 }catch (error){
@@ -171,21 +171,21 @@
                 </div>
                 <!-- 닉네임과 작성한 글 수 -->
                 <div class="col p-0">
-            <div class="row">
-                <div class="col-auto mb-3">
-                    <h3 id="nickname"></h3>
-                </div>
-                <div class="col-auto d-flex ms-auto">
-                    <a href="/admin">
-                        <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;">
-                    </a>
+                    <div class="row">
+                        <div class="col-auto mb-3">
+                            <h3 id="nickname"></h3>
+                        </div>
+                        <div class="col-auto d-flex ms-auto">
+                            <a href="/admin">
+                                <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="m-0" id="count"></p>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <p class="m-0" id="count"></p>
-            </div>
-        </div>
-        </div>
             <div class="row bg-body-tertiary">
                 <nav class="navbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -211,7 +211,7 @@
                         </table>
                         <!--게시글 페이징-->
                         <nav aria-label="">
-                            <ul class="pagination justify-content-center board_page_list">
+                            <ul class="pagination justify-content-center board-page-list">
                             </ul>
                         </nav>
                     </div>
@@ -229,7 +229,7 @@
                         </table>
                         <!--댓글 페이징-->
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center comment_page_list">
+                            <ul class="pagination justify-content-center comment-page-list">
                             </ul>
                         </nav>
                     </div>

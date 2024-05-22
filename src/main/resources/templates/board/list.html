@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/account/logout.js"></script>
     <link href="/mobile/font.css" rel="stylesheet"></script>
     <script>
@@ -43,38 +42,31 @@
                 });
 
                 const res = await response.json();
+                console.log(res);
                 let boardHtml = "";
                 res.content.forEach(row => {
-                    let title = row.title.slice(0,15) + " ...";
-                    let content = row.content.slice(0, 30) + "...";
                     let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
 
                     boardHtml += `
-                                <div class="card p-3" id=${row.id}>
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
-                                            </div>
-                                            ${row.nickname}
-                                            <div class="col d-flex justify-content-end">
-                                                ${createDate}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <strong>${title}</strong>
-                                        </div>
-                                        <div class="row">
-                                            <span>${content}</span>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-auto d-flex">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/9256/9256384.png" width="20px;">
-                                                <div class="px-2">${row.commentCount}</div>
-                                            </div>
-                                        </div>
-                                </div>
+                                <tr id="${row.id}">
+                                        <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
+                                        <td class="col-auto d-none d-md-table-cell text-truncate">게시판이름</td>
+                                        <td class="text-truncate col-auto">
+                                            <strong>${row.title}</strong>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-md-table-cell">
+                                            <span class="col-auto p-0">${row.nickname}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto">
+                                            <span>${createDate}</span>
+                                        </td>
+                                        <td class="text-truncate col-auto d-none d-lg-table-cell">
+                                            <span>${row.view}</span>
+                                        </td>
+                                    </tr>
                             `;
                 });
+                document.querySelector(".freeBoard-list").innerHTML = boardHtml;
 
                 let pageHtml = "";
                 pageHtml += `
@@ -99,8 +91,7 @@
                             </li>
                         `;
 
-                document.querySelector(".freeBoard-list").innerHTML = boardHtml;
-                document.querySelector(".page-list").innerHTML = pageHtml;
+                document.querySelector(".board-page-list").innerHTML = pageHtml;
                 addEventToRows();
             }catch (error){
                 alert("알 수 없는 오류가 발생했습니다");
@@ -109,9 +100,9 @@
         }
 
         function addEventToRows() {
-            document.querySelectorAll(".card").forEach(function (card) { // tbody 내에 모든 tr 태그를 찾아서 for
-                card.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                    window.location.href = "/boards/" + card.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+            document.querySelectorAll(".board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
+                row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                    window.location.href = "/boards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
             })
         }
@@ -119,48 +110,61 @@
 </head>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <body>
-    <div class="container-md">
-        <div class="col-lg-8 m-auto p-3 m-0">
-            <div class="row">
-                <h2 class="col p-0">자유게시판</h2>
+    <div class="container">
+        <div class="row">
+            <h2 class="col p-0">자유게시판</h2>
 
-                <!--검색-->
-                <div class="col-lg-8 d-flex justify-content-end align-items-center">
-                    <div class="row">
-                        <form class="d-flex p-0" role="search">
-                            <div class="col-3">
-                                <select class="form-select" id="option">
-                                    <option value="1">제목</option>
-                                    <option value="2">내용</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row bg-body-tertiary">
-                <!--게시글 Detail-->
-                <div class="freeBoard-list p-3"></div>
-
-                <!--게시글 페이징-->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center page-list">
-                    </ul>
-                </nav>
-
-                <!--글쓰기-->
-                <div sec:authorize="isAuthenticated()">
-                    <a class="btn btn-primary" href="/boards/create">글쓰기</a>
+            <!--검색-->
+            <div class="col-lg-8 d-flex justify-content-end align-items-center">
+                <div class="row">
+                    <form class="d-flex p-0" role="search">
+                        <div class="col-3">
+                            <select class="form-select" id="option">
+                                <option value="1">제목</option>
+                                <option value="2">내용</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <div class="row bg-body-tertiary">
+            <!--게시글 Detail-->
+            <table class="table text-center">
+                <thead>
+                <tr>
+                    <th class="col-auto d-none d-lg-table-cell">번호</th>
+                    <th class="col-auto d-none d-md-table-cell ">분류</th>
+                    <th class="col-auto">제목</th>
+                    <th class="col-auto d-none d-md-table-cell">작성자</th>
+                    <th class="col-auto d-md-table-cell">등록일</th>
+                    <th class="col-auto d-none d-lg-table-cell">조회</th>
+                </tr>
+                </thead>
+                <tbody class="freeBoard-list board-list"></tbody>
+            </table>
+            <!--게시글 페이징-->
+            <nav aria-label="">
+                <ul class="pagination justify-content-center board-page-list">
+                </ul>
+            </nav>
+
+            <!--글쓰기-->
+            <div sec:authorize="isAuthenticated()">
+                <a class="btn btn-primary" href="/boards/create">글쓰기</a>
+            </div>
+        </div>
+
+
+
+
     </div>
 
 <div th:insert="~{layouts/footer.html :: footerFragment}"></div>
