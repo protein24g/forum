@@ -104,6 +104,7 @@
     <body>
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
         <input type="hidden" id="id" th:value="${id}">
+        <h2 class="col-auto p-0" th:text="${title}"></h2>
         <div class="container">
             <!--게시글 Detail-->
             <table class="table text-center">
