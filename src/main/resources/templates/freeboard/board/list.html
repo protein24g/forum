@@ -9,20 +9,11 @@
     <script src="/account/logout.js"></script>
     <link href="/mobile/font.css" rel="stylesheet"></script>
     <style>
-        td, td strong {
-            max-width: 250px;
+        td {
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-        }
-        @media (max-width: 575px) {
-            td strong {
-                max-width: 100px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                color: violet;
-            }
         }
     </style>
     <script>
@@ -62,15 +53,17 @@
                 console.log(res);
                 let boardHtml = "";
                 res.content.forEach(row => {
-                    let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
+                    let createDate = row.createDate.replace(/[T,-]/g, "-").slice(2,10);
 
                     boardHtml += `
                                 <tr id="${row.id}">
                                     <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
                                     <td class="col-auto d-none d-md-table-cell">게시판이름</td>
-                                    <td class="col">
-                                        <strong class="d-none d-md-table-cell">${row.title}</strong>
-                                        <strong class="d-sm-table-cell d-md-none">${row.title} [${row.commentCount}]</strong>
+                                    <td class="col d-none d-md-table-cell">
+                                        ${row.title}
+                                    </td>
+                                    <td class="d-sm-table-cell d-md-none">
+                                        ${row.title} [${row.commentCount}]
                                     </td>
                                     <td class="col-auto d-none d-md-table-cell">
                                         <span class="col-auto p-0">${row.nickname}</span>

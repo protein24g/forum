@@ -8,11 +8,11 @@
         <script src="/account/logout.js"></script>
         <link href="/mobile/font.css" rel="stylesheet">
         <style>
-            strong {
-                max-width: 150px;
+            td {
+                max-width: 200px;
                 overflow: hidden;
-                white-space: nowrap;
                 text-overflow: ellipsis;
+                white-space: nowrap;
             }
         </style>
         <script>
@@ -43,25 +43,28 @@
 
                     let boardHtml = "";
                     res.content.forEach(row => {
-                        let createDate = row.createDate.replace(/[T,-]/g, " ").slice(2,16);
+                        let createDate = row.createDate.replace(/[T,-]/g, "-").slice(2,10);
+
                         boardHtml += `
                                     <tr id="${row.id}">
-                                        <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                        <td class="col-auto d-none d-md-table-cell ">게시판이름</td>
-                                        <td class=" col">
-                                            <strong class="d-none d-md-table-cell">${row.title}</strong>
-                                            <strong class="d-sm-table-cell d-md-none">${row.title} [${row.commentCount}]</strong>
-                                        </td>
-                                        <td class=" col-auto d-none d-md-table-cell">
-                                            <span class="col-auto p-0">${row.nickname}</span>
-                                        </td>
-                                        <td class="col-auto">
-                                            <span>${createDate}</span>
-                                        </td>
-                                        <td class="col-auto d-none d-lg-table-cell">
-                                            <span>${row.view}</span>
-                                        </td>
-                                    </tr>
+                                    <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
+                                    <td class="col-auto d-none d-md-table-cell">게시판이름</td>
+                                    <td class="col d-none d-md-table-cell">
+                                        ${row.title}
+                                    </td>
+                                    <td class="d-sm-table-cell d-md-none">
+                                        ${row.title} [${row.commentCount}]
+                                    </td>
+                                    <td class="col-auto d-none d-md-table-cell">
+                                        <span class="col-auto p-0">${row.nickname}</span>
+                                    </td>
+                                    <td class="col-auto">
+                                        <span>${createDate}</span>
+                                    </td>
+                                    <td class="col-auto d-none d-lg-table-cell">
+                                        <span>${row.view}</span>
+                                    </td>
+                                </tr>
                                 `;
                         });
                         document.querySelector(".myBoard-list").innerHTML = boardHtml;
