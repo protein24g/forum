@@ -8,11 +8,13 @@
         <script src="/account/logout.js"></script>
         <link href="/mobile/font.css" rel="stylesheet">
         <style>
-            td {
-                max-width: 200px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .title {
+                max-width: 250px; /* 제목의 최대 너비를 200픽셀로 설정 */
+                overflow: hidden; /* 제목이 최대 너비를 초과할 경우 숨김 처리 */
+                text-overflow: ellipsis; /* 넘친 제목을 생략하고 '...'로 표시 */
+                white-space: nowrap; /* 제목을 한 줄로 표시, 줄바꿈 방지 */
+                display: inline-block; /* 인라인 블록 요소로 설정, 너비와 높이 적용 가능 */
+                vertical-align: middle; /* 수직 정렬을 중간으로 설정 */
             }
         </style>
         <script>
@@ -47,24 +49,22 @@
 
                         boardHtml += `
                                     <tr id="${row.id}">
-                                    <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                    <td class="col-auto d-none d-md-table-cell">게시판이름</td>
-                                    <td class="col d-none d-md-table-cell">
-                                        ${row.title}
-                                    </td>
-                                    <td class="d-sm-table-cell d-md-none">
-                                        ${row.title} [${row.commentCount}]
-                                    </td>
-                                    <td class="col-auto d-none d-md-table-cell">
-                                        <span class="col-auto p-0">${row.nickname}</span>
-                                    </td>
-                                    <td class="col-auto">
-                                        <span>${createDate}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span>${row.view}</span>
-                                    </td>
-                                </tr>
+                                        <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
+                                        <td class="col-auto d-none d-md-table-cell">게시판이름</td>
+                                        <td class="col">
+                                            <span class="title">${row.title}</span>
+                                            <span>[${row.commentCount}]</span>
+                                        </td>
+                                        <td class="col-auto d-none d-md-table-cell">
+                                            <span class="col-auto p-0">${row.nickname}</span>
+                                        </td>
+                                        <td class="col-auto">
+                                            <span>${createDate}</span>
+                                        </td>
+                                        <td class="col-auto d-none d-lg-table-cell">
+                                            <span>${row.view}</span>
+                                        </td>
+                                    </tr>
                                 `;
                         });
                         document.querySelector(".myBoard-list").innerHTML = boardHtml;
@@ -104,8 +104,8 @@
     <body>
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
         <input type="hidden" id="id" th:value="${id}">
-        <h2 class="col-auto p-0" th:text="${title}"></h2>
         <div class="container">
+            <h2 class="col-auto p-0" th:text="${title}"></h2>
             <!--게시글 Detail-->
             <table class="table text-center">
                 <thead>

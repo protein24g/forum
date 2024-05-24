@@ -133,6 +133,13 @@
                                 <li>
                                     <a sec:authorize="isAuthenticated()" class="dropdown-item" id="logoutBtn">로그아웃</a>
                                 </li>
+                                <li>
+                                    <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">마이페이지</a>
+                                </li>
+                                <hr class="dropdown-divider">
+                                <li>
+                                    <a sec:authorize="hasRole('ADMIN')" class="dropdown-item" href="/admin">관리자 페이지</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
