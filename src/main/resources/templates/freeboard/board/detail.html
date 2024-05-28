@@ -73,29 +73,44 @@
         }
 
         // R(Read)
-        async function getBoardDetails(){ // 게시글 Detail
+        async function getBoardDetails() { // 게시글 Detail
             let boardId = document.getElementById("boardId").value;
 
-            try{
+            try {
                 const response = await fetch(`/api/boards/${boardId}`, {
-                    method : "GET",
-                    headers : {
-                        "Content-Type" : "application/json",
-                    }
+                    method: "GET"
                 });
 
                 const res = await response.json(); // JSON 형식으로 응답 본문을 파싱
                 console.log(res);
 
-                // 파싱된 응답 데이터를 사용하여 UI 업데이트
+                // 응답 데이터를 업데이트
                 document.getElementById("createDate").innerText = res.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
                 document.getElementById("nickname").innerText = res.nickname;
-                document.getElementById("view").innerText = res.view;
+                document.getElementById("view").innerHTML = `
+                    <img src="https://cdn-icons-png.flaticon.com/128/158/158746.png" width="15px;">
+                    ${res.view}
+                    `;
                 document.getElementById("title").innerText = res.title;
                 document.getElementById("freeBoard-content").innerText = res.content;
-            }catch (error){
-                if(error instanceof TypeError) alert("알 수 없는 오류입니다.");
-                else alert(error);
+                document.getElementById("commentCount").innerHTML = `
+                    <img src="https://cdn-icons-png.flaticon.com/128/6386/6386838.png" width="15px;">
+                    ${res.commentCount}
+                    `;
+
+                let images_html = "";
+                res.images.forEach(image => {
+                    images_html += `<img src='/freeBoardUpload/${image}' width="100%;">`;
+                });
+                document.querySelector("#freeBoard-images").innerHTML += images_html;
+
+            } catch (error) {
+                if (error instanceof TypeError) {
+                    alert("알 수 없는 오류 입니다.");
+                    alert(error);
+                } else {
+                    alert(error);
+                }
                 window.location.href = "/boards/" + boardId;
             }
         }
@@ -125,46 +140,50 @@
                         let content = row.content.replace(/\n/g, "<br>");
                         let createDate = row.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
 
-                        // 고유한 모달 ID 생성
                         commentHtml += `
                                     <div class="card p-3" id=${row.boardId}>
                                         <div class="row">
                                             <div class="col-auto">
-                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="55" class="rounded-circle">
                                             </div>
-                                            <div class="col-auto p-0 d-flex align-items-center">
-                                                ${row.nickname}
-                                            </div>
-                                            <div class="col d-flex justify-content-end align-items-center">
-                                                <div class="col-auto px-2">${createDate}</div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-auto">
+                                                        ${row.nickname}
+                                                    </div>
+                                                    <div class="col d-flex justify-content-end">
+                                                        <div class="col-auto px-2">${createDate}</div>
                                         `;
+                        // 고유한 모달 ID 생성
 
 
 
                         if(row.author) {
                             commentHtml += `
-                                                <div class="col-auto px-2">
-                                                    <div class="dropdown">
-                                                      <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
-                                                        </button>
-                                                      <ul class="dropdown-menu text-center">
-                                                        <li>
-                                                            <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
-                                                        </li>
-                                                        <li>
-                                                            <button onclick="deleteComment(${row.id})" type="button" class="dropdown-item">삭제</button>
-                                                        </li>
-                                                      </ul>
-                                                    </div>
-                                                </div>
+                                                        <div class="col-auto px-2">
+                                                            <div class="dropdown">
+                                                              <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
+                                                              </button>
+                                                              <ul class="dropdown-menu text-center">
+                                                                <li>
+                                                                    <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
+                                                                </li>
+                                                                <li>
+                                                                    <button onclick="deleteComment(${row.id})" type="button" class="dropdown-item">삭제</button>
+                                                                </li>
+                                                              </ul>
+                                                            </div>
+                                                        </div>
                                             `;
                         }
                         commentHtml += `
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <span>${content}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <span class="">${content}</span>
                                         </div>
                                     </div>
                                     `;
@@ -196,7 +215,7 @@
             `;
                 document.querySelector(".page-list").innerHTML = pageHtml;
             }catch (error){
-                alert(error+'asdasd');
+                alert(error);
                 window.location.href = "/";
             }
         }
@@ -314,116 +333,111 @@
 <input type="hidden" id="boardId" th:value="${boardId}">
 
 <div class="container-md">
-    <div class="col-lg-8 m-auto p-3 m-0">
-        <div class="row p-3 bg-body-tertiary">
-            <!-- 게시글 Detail -->
-
-            <div class="card border p-3">
-                <div class="row">
-                    <div class="col-auto">
-                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="30" height="30" class="rounded-circle">
-                    </div>
-                    <div class="col-auto p-0 d-flex align-items-center" id="nickname"></div>
-                    <div class="col d-flex justify-content-end d-flex align-items-center">
-                        <div id="createDate"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <strong id="title"></strong>
-                </div>
-                <div class="row">
-                    <div id="freeBoard-content"></div>
-                </div>
-                <div class="row">
-                    <div class="col-auto d-flex">
-                        <img src="https://cdn-icons-png.flaticon.com/128/7835/7835667.png" width="20px;">
-                        <div class="px-2" id="view"></div>
-                    </div>
-                </div>
+    <!-- 게시글 Detail -->
+    <div class="row">
+        <div class="row">
+            <strong class="py-3" id="title" style="word-wrap: break-word;"></strong>
+        </div>
+        <div class="row">
+            <div class="col-auto">
+                <span id="nickname"></span>
             </div>
 
-            <div sec:authorize="isAnonymous()" class="p-0">
-                <br>
-                <hr>
+            <div class="col-auto p-0">
+                <span id="createDate"></span>
+                <span class="p-1">|</span>
+                <span id="view"></span>
+                <span class="p-1">|</span>
+                <span id="commentCount"></span>
             </div>
-            <!-- 로그인 한 사용자만 보이는 댓글 작성, 수정, 삭제 -->
-            <div sec:authorize="isAuthenticated()" class="p-0">
-                <!-- 댓글 수정, 삭제 -->
-                <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
-                    <!-- Button trigger modal -->
-                    <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#freeBoard-modalView">
-                        수정
-                    </button>
-
-                    <!-- 게시글 수정 Modal -->
-                    <div class="modal fade" id="freeBoard-modalView" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">수정</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <label>제목</label>
-                                    <textarea type="text" class="form-control" id="edit-title"></textarea>
-                                    <label>내용</label>
-                                    <textarea type="text" class="form-control" id="edit-freeBoard-content"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                    <button type="button" class="btn btn-sm btn-primary" id="editBoardButton">작성</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <hr>
-
-                <!-- 댓글 작성-->
-                    <div class="d-flex">
-                        <textarea class="col col-lg-11" id="comment_content" rows="3"></textarea>
-                        <input class="col-lg-1 btn btn-sm btn-primary" type="button" onclick="createUserComment()" value="작성">
-                    </div>
-                <br>
-            </div>
-
-            <!--/* 댓글 렌더링 영역 */-->
-            <div class="freeBoardComment-list p-0">
-
-            </div>
-
-            <!-- 댓글 수정 Modal -->
-            <div>
-                <div class="modal fade" id="freeBoardComment-modalView" tabindex="-1" aria-labelledby="freeBoardComment-modal" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h2 class="modal-title fs-5" id="freeBoardComment-modal">수정</h2>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <textarea type="text" class="form-control" id="edit-content"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                <button type="button" class="btn btn-sm btn-primary" id="editCommentButton">작성</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--페이징-->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center page-list">
-                </ul>
-            </nav>
-
-            <br>
-            <a class="btn btn-sm btn-primary" href="/boards">목록</a>
+        </div>
+        <hr class="my-2">
+        <span id="freeBoard-content"></span>
+        <!--이미지 영역-->
+        <div id="freeBoard-images">
         </div>
     </div>
+
+    <div sec:authorize="isAnonymous()" class="p-0">
+        <br>
+        <hr>
+    </div>
+    <!-- 로그인 한 사용자만 보이는 댓글 작성, 수정, 삭제 -->
+    <div sec:authorize="isAuthenticated()" class="p-0">
+        <!-- 댓글 수정, 삭제 -->
+        <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
+            <!-- Button trigger modal -->
+            <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#freeBoard-modalView">
+                수정
+            </button>
+
+            <!-- 게시글 수정 Modal -->
+            <div class="modal fade" id="freeBoard-modalView" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">수정</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>제목</label>
+                            <textarea type="text" class="form-control" id="edit-title"></textarea>
+                            <label>내용</label>
+                            <textarea type="text" class="form-control" id="edit-freeBoard-content"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="editBoardButton">작성</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <hr>
+
+        <!-- 댓글 작성-->
+        <div class="d-flex">
+            <textarea class="col col-lg-11" id="comment_content" rows="3"></textarea>
+            <input class="col-lg-1 btn btn-sm btn-primary" type="button" onclick="createUserComment()" value="작성">
+        </div>
+        <br>
+    </div>
+
+    <!--/* 댓글 렌더링 영역 */-->
+    <div class="freeBoardComment-list p-0">
+
+    </div>
+
+    <!-- 댓글 수정 Modal -->
+    <div>
+        <div class="modal fade" id="freeBoardComment-modalView" tabindex="-1" aria-labelledby="freeBoardComment-modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="freeBoardComment-modal">수정</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea type="text" class="form-control" id="edit-content"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-sm btn-primary" id="editCommentButton">작성</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--페이징-->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center page-list">
+        </ul>
+    </nav>
+
+    <br>
+    <a class="btn btn-sm btn-primary" href="/boards">목록</a>
 
 
 </div>

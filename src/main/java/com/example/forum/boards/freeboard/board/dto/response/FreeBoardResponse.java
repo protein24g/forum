@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,10 +22,12 @@ public class FreeBoardResponse {
     private Page<FreeBoardCommentResponse> commentResponses;
     private int commentCount;
     private int view;
+    private List<String> images;
+    private boolean hasImage;
 
     @Builder
     public FreeBoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
-                             Page<FreeBoardCommentResponse> commentResponses, int commentCount, int view){
+                             Page<FreeBoardCommentResponse> commentResponses, int commentCount, int view, List<String> images, boolean hasImage){
         this.id = id;
         this.nickname = nickname;
         this.title = title;
@@ -33,5 +36,7 @@ public class FreeBoardResponse {
         this.commentResponses = commentResponses;
         this.commentCount = commentCount;
         this.view = view;
+        this.images = images;
+        this.hasImage = hasImage;
     }
 }

@@ -1,5 +1,8 @@
 package com.example.forum.boards.freeboard.board.service;
 
+import com.example.forum.base.image.dto.ImageResponse;
+import com.example.forum.base.image.entity.Image;
+import com.example.forum.base.image.service.ImageService;
 import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
@@ -21,6 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,7 @@ public class FreeBoardServiceImpl implements BoardService {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
+    private final ImageService imageService;
 
     // C(Create)
     @Override
@@ -46,6 +52,15 @@ public class FreeBoardServiceImpl implements BoardService {
                     .createDate(LocalDateTime.now())
                     .view(0)
                     .build();
+
+            try {
+                List<Image> images = imageService.saveImage(dto.getImages());
+                for(Image image : images){
+                    freeBoardEntity.addImage(image);
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
             user.addBoard(freeBoardEntity);
             freeBoardRepository.save(freeBoardEntity);
 
@@ -88,10 +103,10 @@ public class FreeBoardServiceImpl implements BoardService {
                         // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
-                        .content(board.getContent())
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
+                        .hasImage((board.getImages().size() >= 1) ? true : false)
                         .build());
     }
 
@@ -99,6 +114,10 @@ public class FreeBoardServiceImpl implements BoardService {
     public FreeBoardResponse getDetail(Long boardNum) {
         FreeBoard freeBoard = freeBoardRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+        List<String> imagesName = freeBoard.getImages().stream()
+                .map(Image::getFileName)  // 이미지에서 파일 이름 추출
+                .collect(Collectors.toList());  // 문자열 리스트로 변환
 
         return FreeBoardResponse.builder()
                 .id(freeBoard.getId())
@@ -108,7 +127,9 @@ public class FreeBoardServiceImpl implements BoardService {
                 .content(freeBoard.getContent())
                 .createDate(freeBoard.getCreateDate())
                 .commentResponses(freeBoardCommentServiceImpl.getCommentsForBoard(freeBoard.getId(), 0))
+                .commentCount(freeBoard.getFreeBoardComments().size())
                 .view(freeBoard.incView())
+                .images(imagesName)
                 .build();
     }
 
@@ -127,6 +148,7 @@ public class FreeBoardServiceImpl implements BoardService {
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
+                        .hasImage((board.getImages().size() >= 1 ? true : false))
                         .build());
     }
 

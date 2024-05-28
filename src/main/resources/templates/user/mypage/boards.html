@@ -47,6 +47,8 @@
                     res.content.forEach(row => {
                         let createDate = row.createDate.replace(/[T,-]/g, "-").slice(2,10);
 
+                        // 이미지 태그를 조건에 따라 동적으로 생성
+                        let imageTag = row.hasImage ? '<img src="https://cdn-icons-png.flaticon.com/128/876/876210.png" width="15px;">' : '';
                         boardHtml += `
                                     <tr id="${row.id}">
                                         <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
@@ -54,6 +56,7 @@
                                         <td class="col">
                                             <span class="title">${row.title}</span>
                                             <span>[${row.commentCount}]</span>
+                                            ${imageTag}
                                         </td>
                                         <td class="col-auto d-none d-md-table-cell">
                                             <span class="col-auto p-0">${row.nickname}</span>

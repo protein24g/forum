@@ -61,22 +61,26 @@
 
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body>
-        <div class="container-md">
-            <div class="col-lg-8 m-auto p-3 m-0">
-                <div class="row row bg-body-tertiary">
-                    <div class="col-lg-6 p-3" style="background: #ccc">
-                        <div class="border p-2" style="background: white;">
-                            <a href="/boards" class="text-black" style="text-decoration: none;">자유게시판</a>
-                        </div>
-                        <div class="freeBoard-list"></div>
+        <div class="container">
+            <div class="row bg-body-tertiary">
+                <div class="col-lg-6 p-5">
+                    <div class="border p-2" style="background: #ccc;">
+                        <a href="/boards" class="text-black" style="text-decoration: none;">자유게시판</a>
                     </div>
+                    <div class="freeBoard-list"></div>
+                </div>
 
-                    <div class="col-lg-6 p-3" style="background: #ccc">
-                        <div class="border p-2" style="background: white;">
-                            <a href="/boards" class="text-black" style="text-decoration: none;">ㅁㅁ게시판</a>
-                        </div>
+                <div class="col-lg-6 p-5">
+                    <div class="border p-2" style="background: #ccc;">
+                        <a href="/boards" class="text-black" style="text-decoration: none;">ㅁㅁ게시판</a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="container-md">
+            <div class="col-lg-8 m-auto p-3 m-0">
+
             </div>
         </div>
         <div th:insert="~{layouts/footer.html :: footerFragment}"></div>

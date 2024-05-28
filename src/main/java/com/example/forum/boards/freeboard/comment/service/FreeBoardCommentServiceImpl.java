@@ -114,6 +114,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
+                        .hasImage((board.getImages().size() >= 1 ? true : false))
                         .build());
     }
 

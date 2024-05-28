@@ -19,7 +19,6 @@ public class FreeBoardApiController {
     // R(Read)
     @PostMapping("/api/boards")
     public ResponseEntity<?> boardP(@RequestBody BoardSearch dto) {
-        System.out.println(dto.toString());
         Page<FreeBoardResponse> boardResponses = freeBoardServiceImpl.pageBoards(dto); // 검색 페이징
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
     }

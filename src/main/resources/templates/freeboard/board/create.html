@@ -24,7 +24,7 @@
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body>
         <div class="container">
-            <form action="/boards/create" method="post" id="createForm">
+            <form action="/boards/create" method="post" id="createForm" enctype="multipart/form-data">
                 <table class="table table-bordered text-center">
                     <tr>
                         <td class="table-active col-2">
@@ -32,6 +32,14 @@
                         </td>
                         <td colspan="3">
                             <input class="form-control" type="text" name="title">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-active col-2">
+                            <span>이미지</span>
+                        </td>
+                        <td colspan="3">
+                            <input type="file" name="images" multiple><br>
                         </td>
                     </tr>
                     <tr>

@@ -18,7 +18,7 @@
                     </div>
                     <div class="col-auto">
                         <div class="row">
-                            <strong th:text="${#authentication.principal.username}" style="font-size: 18px;"></strong>
+                            <strong th:text="${#authentication.principal.username}"></strong>
                         </div>
                         <div class="row">
                             <span th:text="${#authentication.principal.loginId}"></span>
@@ -47,20 +47,8 @@
                     <ul style="list-style: none;" class="p-3 pt-0 m-0">
                         <li>
                             <form action="/mypage/boards" method="get">
-                                <input type="hidden" name="id" value="changepassword">
-                                <a href="#" class="form-control p-3" style="text-decoration: none;" onclick="this.parentElement.submit()">비밀번호 변경</a>
-                            </form>
-                        </li>
-                        <li>
-                            <form action="/mypage/boards" method="get">
-                                <input type="hidden" name="id" value="setnickname">
-                                <a href="#" class="form-control p-3" style="text-decoration: none;" onclick="this.parentElement.submit()">닉네임 설정</a>
-                            </form>
-                        </li>
-                        <li>
-                            <form action="/mypage/boards" method="get">
                                 <input type="hidden" name="id" value="withdraw">
-                                <a href="#" class="form-control p-3" style="text-decoration: none;" onclick="this.parentElement.submit()">회원 탈퇴(개발 중)</a>
+                                <a href="#" class="form-control p-3" style="text-decoration: none;" onclick="this.parentElement.submit()">회원 탈퇴 등 뭐 만들지 고민 중</a>
                             </form>
                         </li>
                     </ul>
