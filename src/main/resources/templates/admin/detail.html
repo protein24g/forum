@@ -56,7 +56,6 @@
                         boardHtml += `
                                 <tr id="${row.id}">
                                     <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                    <td class="col-auto d-none d-md-table-cell">게시판이름</td>
                                     <td class="col text-start">
                                         <span class="title">${row.title}</span>
                                         <span>[${row.commentCount}]</span>
@@ -175,7 +174,6 @@
     <body>
         <input type="hidden" id="userId" th:value="${userId}">
         <div class="container">
-            <h2 th:text="${title}"></h2>
             <div class="row" style="background:darkgray">
                 <!-- 사용자 이미지 -->
                 <div class="col-auto text-center">
@@ -214,7 +212,6 @@
                             <thead>
                                 <tr>
                                     <th class="col-auto d-none d-lg-table-cell">번호</th>
-                                    <th class="col-auto d-none d-md-table-cell ">분류</th>
                                     <th class="col">제목</th>
                                     <th class="col-auto d-none d-md-table-cell">작성자</th>
                                     <th class="col-auto d-md-table-cell">등록일</th>

@@ -52,7 +52,6 @@
                         boardHtml += `
                                 <tr id="${row.id}">
                                     <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                    <td class="col-auto d-none d-md-table-cell">게시판이름</td>
                                     <td class="col text-start">
                                         <span class="title">${row.title}</span>
                                         <span>[${row.commentCount}]</span>
@@ -108,13 +107,12 @@
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
         <input type="hidden" id="id" th:value="${id}">
         <div class="container">
-            <h2 class="col-auto p-0" th:text="${title}"></h2>
+            <h2 class="text-center my-4" th:text="${title}"></h2>
             <!--게시글 Detail-->
             <table class="table text-center">
                 <thead>
                 <tr>
                     <th class="col-auto d-none d-lg-table-cell">번호</th>
-                    <th class="col-auto d-none d-md-table-cell ">분류</th>
                     <th class="col">제목</th>
                     <th class="col-auto d-none d-md-table-cell">작성자</th>
                     <th class="col-auto d-md-table-cell">등록일</th>
