@@ -1,19 +1,17 @@
 package com.example.forum.boards.freeboard.board.service;
 
-import com.example.forum.base.image.dto.ImageResponse;
+import com.example.forum.base.board.dto.BoardSearch;
+import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.image.entity.Image;
 import com.example.forum.base.image.service.ImageService;
-import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
-import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
-import com.example.forum.base.board.dto.BoardSearch;
+import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeboard.board.entity.FreeBoard;
 import com.example.forum.boards.freeboard.board.repository.FreeBoardRepository;
-import com.example.forum.base.board.service.BoardService;
+import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
