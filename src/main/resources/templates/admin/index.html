@@ -52,7 +52,7 @@
                     console.log(res);
                     let usersListHtml = "";
                     res.content.forEach(row => {
-                        let createDate = row.createDate.replace(/[T.-]/g, ' ').slice(2, 16);
+                        let createDate = row.createDate.replace(/[T]/g, ' ').slice(2, 16);
                         usersListHtml += `
                                 <div class="card p-3" id=${row.id}>
                                         <div class="row">
@@ -154,22 +154,22 @@
                     <!--탭1-->
                     <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-tab1" tabindex="0">
                         <div class="row">
-                            <h2 class="col p-0">회원관리</h2>
+                            <h2 class="text-center my-4">회원관리</h2>
                             <!--검색-->
-                            <div class="col-lg-8 d-flex justify-content-end align-items-center">
-                                <div class="row">
-                                    <form class="d-flex p-0" role="search">
-                                        <div class="col-4">
+                            <div class="row p-3 m-0" style="background: #ccc">
+                                <div class="col-md-8 m-auto p-0">
+                                    <form class="d-flex" role="search">
+                                        <div class="col-3">
                                             <select class="form-select" id="option">
                                                 <option value="1">닉네임</option>
                                                 <option value="2">아이디</option>
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control me-2" type="search" id="keyword" aria-label="Search">
+                                            <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
                                         </div>
                                         <div class="col-auto">
-                                            <button class="btn btn-outline-success" type="button" onclick="search()">검색</button>
+                                            <button class="btn btn-primary" type="button" onclick="search()">검색</button>
                                         </div>
                                     </form>
                                 </div>
