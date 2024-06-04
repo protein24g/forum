@@ -18,7 +18,7 @@ public class FreeBoardController {
     private final FreeBoardServiceImpl freeBoardServiceImpl;
 
     // C(Create)
-    @GetMapping("/boards/create")
+    @GetMapping("/createPage")
     public String createP(){
         return "freeboard/board/create";
     }

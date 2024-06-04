@@ -16,6 +16,11 @@ public class AdminController {
         return "admin/index";
     }
 
+    @GetMapping("/admin/userManagement")
+    public String userManagement(){
+        return "admin/userManagement";
+    }
+
     @GetMapping("/admin/users/{userId}")
     public String getUserDetail(@PathVariable("userId") Long userId, Model model){
         model.addAttribute("userId", userId);

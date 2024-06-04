@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/",
                                 "/mobile/font.css",
                                 "/account/logout.js",
-                                "/freeBoardUpload/**",
+                                "/freeBoardUpload/**", "/logo/**",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
                                 "/boards/**", "/api/boards/**", "/api/boards/*/comments",
