@@ -1,20 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="/mobile/font.css" rel="stylesheet">
+    <script src="/account/logout.js"></script>
 </head>
 <body>
+<input type="hidden" id="_csrf" th:value="${_csrf.token}">
 <div class="container-fluid">
     <div class="row vh-100">
         <!--왼쪽 화면-->
         <div class="d-none d-lg-flex flex-column flex-shrink-0 p-3 text-bg-dark text-center" style="width: 280px; height: 100%;">
-            <a href="/admin/users" class="text-white text-decoration-none">
-                <span class="fs-4">관리자 페이지</span>
-            </a>
+            <div class="d-flex">
+                <a href="/admin" class="text-white text-decoration-none">
+                    <span class="fs-4">관리자 페이지</span>
+                </a>
+                <div class="ms-auto">
+                    <a href="/" class="">
+                        <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;" style="background-color: white; border-radius: 5px;">
+                    </a>
+                </div>
+            </div>
             <hr>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
@@ -36,17 +45,15 @@
                         <strong>mdo</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">마이페이지</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li><a class="dropdown-item" id="logoutBtn">로그아웃</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <!--오른쪽 화면-->
-        <div class="col p-0">
+        <div class="col p-0" style="background-color: #eee">
             <!--모바일-->
             <div class="d-lg-none d-sm-block">
                 <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
@@ -69,12 +76,19 @@
                 </nav>
             </div>
 
-
-
-
-
-            <!--내용-->
-            asdasd
+            <div class="row m-0">
+                <div class="col-md-8" style="background-color: violet">
+                    <div class="col-3" style="background-color: darkblue">
+                        <p>asdsa</p>
+                        <p>asdsa</p>
+                        <p>asdsa</p>
+                        <p>asdsa</p>
+                    </div>
+                </div>
+                <div class="col" style="background-color: cadetblue">
+                    asdasd
+                </div>
+            </div>
         </div>
     </div>
 </div>

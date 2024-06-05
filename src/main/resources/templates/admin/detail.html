@@ -171,9 +171,9 @@
             }
         </script>
     </head>
-    <body>
+    <body style="background-color: #eee">
         <input type="hidden" id="userId" th:value="${userId}">
-        <div class="container">
+        <div class="container-md">
             <div class="row" style="background:darkgray">
                 <!-- 사용자 이미지 -->
                 <div class="col-auto text-center">
@@ -188,7 +188,7 @@
                             <h3 id="nickname"></h3>
                         </div>
                         <div class="col-auto d-flex ms-auto">
-                            <a href="/admin">
+                            <a href="/admin/userManagement">
                                 <img src="https://cdn-icons-png.flaticon.com/128/12324/12324997.png" width="35px;" height="35px;">
                             </a>
                         </div>
@@ -198,7 +198,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row bg-body-tertiary">
+            <div class="row" style="background-color: white">
                 <nav class="navbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" onclick="tab1(0)" id="nav-freeBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoard" type="button" role="tab" aria-controls="nav-freeBoard" aria-selected="true">작성글</button>
