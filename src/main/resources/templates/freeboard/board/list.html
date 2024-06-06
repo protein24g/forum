@@ -51,7 +51,7 @@
                     const res = await response.json();
                     console.log(res);
                     let boardHtml = `
-                                    <div class="row p-3 m-0 border fw-bold text-center">
+                                    <div class="row p-3 m-0 fw-bold text-center" style="border-bottom: 1px solid #ccc">
                                         <div class="col d-none d-lg-block">번호</div>
                                         <div class="col-7">제목</div>
                                         <div class="col d-none d-md-block">닉네임</div>
@@ -65,7 +65,7 @@
                         // 이미지 태그를 조건에 따라 동적으로 생성
                         let imageTag = row.hasImage ? '<img src="https://cdn-icons-png.flaticon.com/128/876/876210.png" width="15px;">' : '';
                         boardHtml += `
-                                    <div class="row p-3 m-0 border text-center" id="${row.id}">
+                                    <div class="row p-3 m-0 text-center" id="${row.id}" style="border-bottom: 1px solid #ccc">
                                         <div class="col d-none d-lg-block fw-bold">${row.id}</div>
                                         <div class="col-7 text text-start">${row.title}[${row.commentCount}]${imageTag}</div>
                                         <div class="col d-none d-md-block">${row.nickname}</div>
@@ -118,32 +118,33 @@
         </script>
     </head>
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
-    <body>
+    <body style="background-color: #eee">
         <div class="container">
-            <h2 class="text-center my-4">자유게시판</h2>
+            <h4 class="my-4 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
 
-            <div class="freeBoard-wrap">
-                <!--검색-->
-                <div class="freeBoard-search">
-                    <div class="row p-3 m-0" style="background: #ccc">
-                        <div class="col-md-8 m-auto p-0">
-                            <form class="d-flex" role="search">
-                                <div class="col-3">
-                                    <select class="form-select" id="option">
-                                        <option value="1">제목</option>
-                                        <option value="2">내용</option>
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
-                                </div>
-                                <div class="col-auto">
-                                    <button class="btn btn-primary" type="button" onclick="search()">검색</button>
-                                </div>
-                            </form>
-                        </div>
+            <!--검색-->
+            <div class="freeBoard-search">
+                <div class="row p-3 m-0" style="background: #ccc; border-radius: 15px;">
+                    <div class="col-md-8 m-auto p-0">
+                        <form class="d-flex" role="search">
+                            <div class="col-3">
+                                <select class="form-select" id="option">
+                                    <option value="1">제목</option>
+                                    <option value="2">내용</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary" type="button" onclick="search()">검색</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+            </div>
+
+            <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
                 <!--게시글 Detail-->
                 <div class="freeBoard-list"></div>
                 <!--게시글 페이징-->
