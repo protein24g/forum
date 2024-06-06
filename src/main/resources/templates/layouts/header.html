@@ -22,14 +22,20 @@
             <div class="collapse navbar-collapse" id="navbarScroll">
                 <div class="navbar-nav me-auto navbar-nav-scroll" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="--bs-scroll-height: 100px;">
                     <div>
-                        <a class="nav-link" href="/boards"><str>자유게시판</str></a>
+                        <a class="nav-link" href="/boards">
+                            <span>자유게시판</span>
+                        </a>
                     </div>
                 </div>
                 <hr class="d-md-none mt-0">
 
                 <div sec:authorize="isAnonymous()">
-                    <a class="btn btn-outline-dark" href="/login">로그인</a>
-                    <a class="btn btn-outline-dark" href="/join">회원가입</a>
+                    <a class="btn btn-outline-dark" href="/login">
+                        <span>로그인</span>
+                    </a>
+                    <a class="btn btn-outline-dark" href="/join">
+                        <span>회원가입</span>
+                    </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
@@ -40,10 +46,14 @@
                         </a>
                         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
                             <li>
-                                <a sec:authorize="isAuthenticated()" class="dropdown-item" id="logoutBtn">로그아웃</a>
+                                <a sec:authorize="isAuthenticated()" class="dropdown-item" id="logoutBtn">
+                                    <span>로그아웃</span>
+                                </a>
                             </li>
                             <li>
-                                <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">마이페이지</a>
+                                <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">
+                                    <span>마이페이지</span>
+                                </a>
                             </li>
                             <li sec:authorize="hasRole('ADMIN')">
                                 <hr class="dropdown-divider">

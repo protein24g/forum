@@ -1,10 +1,18 @@
-@media (max-width: 768px) {
-    /* 모바일 화면에서 제목 글꼴 크기 조정 */
-    body{
-        font-size : 18px;
-    }
+/* 일반 CSS 규칙 */
+body {
+    font-size: 13px;
 }
 
-body{
-    font-size: 16px;
+.title {
+    white-space: nowrap; /* 텍스트를 줄바꿈 없이 한 줄로 만들기 */
+    overflow: hidden; /* 초과하는 내용 숨기기 */
+    text-overflow: ellipsis; /* 초과 내용을 '...'로 표시 */
+    font-size: 19px;
+}
+
+/* 미디어 쿼리 적용 */
+@media (max-width: 1100px) {
+    .nav-link {
+        font-size: 26px;
+    }
 }
