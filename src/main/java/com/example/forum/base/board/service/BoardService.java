@@ -1,6 +1,6 @@
 package com.example.forum.base.board.service;
 
-import com.example.forum.boards.freeboard.board.dto.requests.FreeBoardRequest;
+import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
 import com.example.forum.base.board.dto.BoardSearch;
 import org.springframework.data.domain.Page;
 

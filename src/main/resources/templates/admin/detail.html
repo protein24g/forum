@@ -26,7 +26,7 @@
             function addEventToRows() {
                 document.querySelectorAll(".board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
                     row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/boards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                        window.location.href = "/freeBoards/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
             }
@@ -35,7 +35,7 @@
             async function tab1(page){
                 let userId = document.getElementById("userId").value;
                 try{
-                    const response = await fetch(`/api/admin/users/${userId}/boards?page=${page}`, {
+                    const response = await fetch(`/api/admin/users/${userId}/freeBoards?page=${page}`, {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json",

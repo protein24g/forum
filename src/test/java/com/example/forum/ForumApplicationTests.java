@@ -1,9 +1,9 @@
 package com.example.forum;
 
-import com.example.forum.boards.freeboard.comment.entity.FreeBoardComment;
-import com.example.forum.boards.freeboard.comment.repository.FreeBoardCommentRepository;
-import com.example.forum.boards.freeboard.board.entity.FreeBoard;
-import com.example.forum.boards.freeboard.board.repository.FreeBoardRepository;
+import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
+import com.example.forum.boards.freeBoard.comment.repository.FreeBoardCommentRepository;
+import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
+import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;

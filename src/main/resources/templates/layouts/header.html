@@ -11,9 +11,9 @@
 <body>
 <div th:fragment="headerFragment">
     <input type="hidden" id="_csrf" th:value="${_csrf.token}">
-    <nav class="navbar navbar-expand-md bg-body-tertiary">
-        <div class="container-md">
-            <a href="/">
+    <nav class="navbar navbar-expand-xl bg-body-tertiary">
+        <div class="container-xl">
+            <a href="/" class="px-3">
                 <img src="/logo/developersForum.png" width="160px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,8 +22,13 @@
             <div class="collapse navbar-collapse" id="navbarScroll">
                 <div class="navbar-nav me-auto navbar-nav-scroll" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="--bs-scroll-height: 100px;">
                     <div>
-                        <a class="nav-link" href="/boards">
+                        <a class="nav-link" href="/freeBoards">
                             <span>자유게시판</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a class="nav-link" href="/imageBoards">
+                            <span>이미지게시판</span>
                         </a>
                     </div>
                 </div>

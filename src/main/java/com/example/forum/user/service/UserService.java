@@ -1,9 +1,9 @@
 package com.example.forum.user.service;
 
 import com.example.forum.admin.dto.response.AdminResponse;
-import com.example.forum.boards.freeboard.board.service.FreeBoardServiceImpl;
-import com.example.forum.boards.freeboard.comment.service.FreeBoardCommentServiceImpl;
-import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
+import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
+import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;

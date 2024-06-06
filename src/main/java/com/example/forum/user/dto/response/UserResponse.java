@@ -1,7 +1,7 @@
 package com.example.forum.user.dto.response;
 
-import com.example.forum.boards.freeboard.comment.dto.response.FreeBoardCommentResponse;
-import com.example.forum.boards.freeboard.board.dto.response.FreeBoardResponse;
+import com.example.forum.boards.freeBoard.comment.dto.response.FreeBoardCommentResponse;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

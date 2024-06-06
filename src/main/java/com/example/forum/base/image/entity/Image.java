@@ -1,6 +1,6 @@
 package com.example.forum.base.image.entity;
 
-import com.example.forum.boards.freeboard.board.entity.FreeBoard;
+import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

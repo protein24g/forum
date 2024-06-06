@@ -1,6 +1,6 @@
 package com.example.forum.base.comment.service;
 
-import com.example.forum.boards.freeboard.comment.dto.requests.FreeBoardCommentRequest;
+import com.example.forum.boards.freeBoard.comment.dto.requests.FreeBoardCommentRequest;
 import com.example.forum.user.entity.User;
 import org.springframework.data.domain.Page;
 

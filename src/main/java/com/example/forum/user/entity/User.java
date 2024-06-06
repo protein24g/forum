@@ -1,7 +1,7 @@
     package com.example.forum.user.entity;
 
-    import com.example.forum.boards.freeboard.board.entity.FreeBoard;
-    import com.example.forum.boards.freeboard.comment.entity.FreeBoardComment;
+    import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
+    import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
     import jakarta.persistence.*;
     import lombok.*;
 
