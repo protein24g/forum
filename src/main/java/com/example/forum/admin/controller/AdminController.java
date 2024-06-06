@@ -21,6 +21,11 @@ public class AdminController {
         return "admin/userManagement";
     }
 
+    @GetMapping("/admin/blacklist")
+    public String blacklist(){
+        return "admin/blacklist";
+    }
+
     @GetMapping("/admin/users/{userId}")
     public String getUserDetail(@PathVariable("userId") Long userId, Model model){
         model.addAttribute("userId", userId);

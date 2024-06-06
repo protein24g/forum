@@ -8,124 +8,6 @@
     <link href="/mobile/font.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/account/logout.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function (){
-            userManagement("", 0, "");
-        })
-
-        function addEventToRows(){
-            document.querySelectorAll("tbody tr").forEach(function (tr){
-                tr.addEventListener("click", function (){
-                    window.location.href = "/admin/users/" + tr.getAttribute("id");
-                })
-            })
-        }
-
-        // R(Read)
-        function search(){
-            // 옵션 선택 요소의 value 값을 가져옵니다.
-            var option = document.querySelector("#option").value;
-            // 검색어 입력란의 value 값을 가져옵니다.
-            var keyword = document.querySelector("#keyword").value;
-
-            userManagement(keyword, 0, option);
-        }
-
-        async function userManagement(keyword, page, option){
-            let _csrf = document.getElementById("_csrf").value;
-
-            try{
-                const response = await fetch("/api/admin/users", {
-                    method : "POST",
-                    headers : {
-                        "Content-Type" : "application/json",
-                        "X-CSRF-TOKEN" : _csrf
-                    },
-                    body : JSON.stringify({
-                        keyword : keyword,
-                        page : page,
-                        option : option
-                    })
-                });
-
-                const res = await response.json();
-                console.log(res);
-                let usersListHtml = "";
-                res.content.forEach(row => {
-                    let createDate = row.createDate.replace(/[T]/g, ' ').slice(2, 16);
-                    usersListHtml += `
-                                <tr id="${row.id}">
-                                    <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span class="col-auto p-0">${row.role}</span>
-                                    </td>
-                                    <td class="col-auto">
-                                        <span>${row.userId}</span>
-                                    </td>
-                                    <td class="col-auto">
-                                        <span>${row.nickname}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span>${row.age}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span>${row.gender}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-md-table-cell">
-                                        <span>${row.address}</span>
-                                    </td>
-                                    <td class="col">
-                                        <span>${createDate}</span>
-                                    </td>
-                                    <td class="col d-flex">
-                                        <div class="dropdown">
-                                          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            ${row.active}
-                                          </button>
-                                          <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">활동</a></li>
-                                            <li><a class="dropdown-item" href="#">정지</a></li>
-                                            <li><a class="dropdown-item" href="#">탈퇴</a></li>
-                                          </ul>
-                                        </div>
-                                        <button>변경</button>
-                                    </td>
-                                </tr>
-                            `;
-                })
-                document.querySelector(".users-list").innerHTML = usersListHtml;
-
-                let usersPageHtml = "";
-                usersPageHtml += `
-                                        <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                            <a class="page-link" onclick="userManagement(${res.number - 1})">Previous</a>
-                                        </li>
-                                        `;
-
-                let startPage = (Math.floor((res.number) / 5)) * 5;
-                let endPage = Math.min(startPage + 5, res.totalPages);
-                for(let page = startPage; page < endPage ; page++){
-                    usersPageHtml += `
-                                            <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                                <a class="page-link" onclick="userManagement(${page})">${page + 1}</a>
-                                            </li>
-                                        `;
-                }
-
-                usersPageHtml += `
-                                        <li class="page-item ${(res.last) ? "disabled" : ""}">
-                                            <a class="page-link" onclick="userManagement(${res.number + 1})">Next</a>
-                                        </li>
-                                        `;
-                document.querySelector(".users-page-list").innerHTML = usersPageHtml;
-
-                addEventToRows(); // row 클릭 이벤트 추가
-            }catch (error){
-                alert(error);
-                window.location.href = "/";
-            }
-        }
-    </script>
 </head>
 <body>
 <input type="hidden" id="_csrf" th:value="${_csrf.token}">
@@ -151,12 +33,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link active">
+                    <a href="/admin/userManagement" class="nav-link text-white">
                         회원 관리
                     </a>
                 </li>
                 <li>
-                    <a href="/admin/blacklist" class="nav-link text-white">
+                    <a href="#" class="nav-link active">
                         블랙리스트 관리
                     </a>
                 </li>
@@ -199,7 +81,7 @@
             </div>
 
             <div class="p-3 m-4" style="background-color: white">
-                <h3>회원 목록</h3>
+                <h3>블랙리스트 목록</h3>
                 <div>
                     <!--검색-->
                     <div class="col-md-6 ms-auto p-0">
@@ -224,11 +106,8 @@
                             <thead>
                             <tr>
                                 <th class="col-auto d-none d-lg-table-cell">번호</th>
-                                <th class="col-auto d-none d-lg-table-cell">권한</th>
                                 <th class="col">아이디</th>
                                 <th class="col">닉네임</th>
-                                <th class="col-auto d-none d-lg-table-cell">나이</th>
-                                <th class="col-auto d-none d-lg-table-cell">성별</th>
                                 <th class="col-auto d-none d-md-table-cell">주소</th>
                                 <th class="col">가입 날짜</th>
                                 <th class="col">계정상태</th>
