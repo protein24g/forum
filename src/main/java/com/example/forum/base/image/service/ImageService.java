@@ -32,6 +32,10 @@ public class ImageService {
         List<Image> savedImages = new ArrayList<>();
 
         for(MultipartFile file : files){
+            if (files == null || files.isEmpty()){
+                return new ArrayList<>();
+            }
+
             // 파일 크기 확인
             if (file.getSize() > MAX_FILE_SIZE) {
                 throw new IllegalArgumentException("파일 크기는 5MB를 넘을 수 없습니다");

@@ -52,8 +52,8 @@
                     console.log(res);
                     let boardHtml = `
                                     <div class="row p-3 m-0 fw-bold text-center" style="border-bottom: 1px solid #ccc">
-                                        <div class="col d-none d-lg-block">번호</div>
-                                        <div class="col-7">제목</div>
+                                        <div class="col-1 d-none d-lg-block">번호</div>
+                                        <div class="col-6">제목</div>
                                         <div class="col d-none d-md-block">닉네임</div>
                                         <div class="col">작성날짜</div>
                                         <div class="col d-none d-lg-block">조회수</span></div>
@@ -65,9 +65,9 @@
                         // 이미지 태그를 조건에 따라 동적으로 생성
                         let imageTag = row.hasImage ? '<img src="https://cdn-icons-png.flaticon.com/128/876/876210.png" width="15px;">' : '';
                         boardHtml += `
-                                    <div class="row p-3 m-0 text-center" id="${row.id}" style="border-bottom: 1px solid #ccc">
-                                        <div class="col d-none d-lg-block fw-bold">${row.id}</div>
-                                        <div class="col-7 text text-start">${row.title}[${row.commentCount}]${imageTag}</div>
+                                    <div class="board-item row p-3 m-0 text-center" id="${row.id}" style="border-bottom: 1px solid #ccc">
+                                        <div class="col-1 d-none d-lg-block">${row.id}</div>
+                                        <div class="title col-6 text text-start">${row.title}[${row.commentCount}]${imageTag}</div>
                                         <div class="col d-none d-md-block">${row.nickname}</div>
                                         <div class="col">${createDate}</div>
                                         <div class="col d-none d-lg-block">${row.view}</div>
@@ -109,31 +109,43 @@
             }
 
             function addEventToRows() {
-                document.querySelectorAll(".freeBoard-list div").forEach(function (div) {
-                    div.addEventListener("click", function (){
+                document.querySelectorAll(".board-item").forEach(function (div) {
+                    let title = div.querySelector(".title");
+
+                    title.addEventListener("click", function (){
                         window.location.href = "/boards/" + div.getAttribute("id");
-                    })
-                })
+                    });
+
+                    title.addEventListener("mouseenter", function () {
+                        title.style.fontWeight = "bold";
+                    });
+
+                    title.addEventListener("mouseleave", function () {
+                        title.style.fontWeight = "normal";
+                    });
+                });
+
+
+
             }
         </script>
     </head>
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body style="background-color: #eee">
-        <div class="container">
-            <h4 class="my-4 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
-
-            <!--검색-->
-            <div class="freeBoard-search">
-                <div class="row p-3 m-0" style="background: #ccc; border-radius: 15px;">
-                    <div class="col-md-8 m-auto p-0">
+        <div class="container px-lg-5">
+            <div class="px-lg-5">
+                <h4 class="my-4 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
+                <!--검색-->
+                <div class="freeBoard-search">
+                    <div class="d-flex justify-content-end">
                         <form class="d-flex" role="search">
-                            <div class="col-3">
+                            <div class="col-auto">
                                 <select class="form-select" id="option">
                                     <option value="1">제목</option>
                                     <option value="2">내용</option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col-auto">
                                 <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
                             </div>
                             <div class="col-auto">
@@ -142,21 +154,25 @@
                         </form>
                     </div>
                 </div>
-            </div>
 
-            <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
-                <!--게시글 Detail-->
-                <div class="freeBoard-list"></div>
-                <!--게시글 페이징-->
-                <nav>
-                    <ul class="pagination justify-content-center freeBoard-page">
-                    </ul>
-                </nav>
-                <!--글쓰기-->
-                <div sec:authorize="isAuthenticated()">
-                    <a class="btn btn-primary" href="/createPage">글쓰기</a>
+                <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
+                    <!--게시글 Detail-->
+                    <div class="freeBoard-list"></div>
+                    <!--게시글 페이징-->
+                    <nav>
+                        <ul class="pagination justify-content-center freeBoard-page">
+                        </ul>
+                    </nav>
+                    <!--글쓰기-->
+                    <div sec:authorize="isAuthenticated()">
+                        <a class="btn btn-primary" href="/createPage">글쓰기</a>
+                    </div>
                 </div>
             </div>
+
+
+
+
         </div>
 
         <div th:insert="~{layouts/footer.html :: footerFragment}"></div>

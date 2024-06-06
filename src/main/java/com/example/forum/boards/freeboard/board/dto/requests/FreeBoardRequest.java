@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,5 +16,5 @@ public class FreeBoardRequest {
 
     private String content;
 
-    private List<MultipartFile> images;
+    private List<MultipartFile> images = new ArrayList<>();
 }

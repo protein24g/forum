@@ -212,7 +212,7 @@
                     <a class="page-link btn-sm" onclick="getAllComment(${res.number + 1})">Next</a>
                 </li>
             `;
-                document.querySelector(".page-list").innerHTML = pageHtml;
+                document.querySelector(".comment-page-list").innerHTML = pageHtml;
             }catch (error){
                 alert(error);
                 window.location.href = "/";
@@ -327,44 +327,89 @@
     </script>
 </head>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
-<body>
+<body style="background-color: #eee">
 <input type="hidden" id="currentPage" value="0">
 <input type="hidden" id="boardId" th:value="${boardId}">
 
-<div class="container-md">
+<div class="container-md" style="background-color: white; border-radius: 15px;">
+    <br><a class="text-black px-3 py-2" href="/boards" style="text-decoration: none; background-color: #eee; border-radius: 15px;">< 목록으로</a>
+
     <!-- 게시글 Detail -->
-    <div class="row">
+    <div class="m-0 mt-4">
         <div class="row">
-            <strong class="py-3" id="title" style="word-wrap: break-word;"></strong>
+            <h3 class="py-3" id="title" style="word-wrap: break-word;"></h3>
         </div>
         <div class="row">
             <div class="col-auto">
                 <span id="nickname"></span>
             </div>
-
-            <div class="col-auto p-0">
+            <div class="col-auto">
                 <span id="createDate"></span>
-                <span class="p-1">|</span>
+            </div>
+            <div class="col-auto">
                 <span id="view"></span>
-                <span class="p-1">|</span>
+            </div>
+            <div class="col-auto">
                 <span id="commentCount"></span>
+            </div>
+            <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
+            <div class="col-auto ms-auto" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}">
+                <div class="col-auto px-2">
+                    <div class="dropdown">
+                        <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
+                        </button>
+                        <ul class="dropdown-menu text-center">
+                            <li>
+                                <button>수정</button>
+                            </li>
+                            <li>
+                                <button>삭제</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <hr class="my-2">
+        <!--내용-->
         <span id="freeBoard-content"></span>
-        <!--이미지 영역-->
-        <div id="freeBoard-images">
-        </div>
+        <!--이미지-->
+        <div id="freeBoard-images"></div>
     </div>
 
-    <div sec:authorize="isAnonymous()" class="p-0">
-        <br>
+    <br>
+    <a class="text-black px-3 py-2" href="/boards" style="background-color: #eee; border-radius: 15px; text-decoration: none;">목록으로</a>
+
+    <h4 class="mt-5">댓글</h4>
+    <div class="comments">
+        <!-- 댓글 작성-->
+        <div class="newComment p-3" style="background-color: #eee; border-radius: 15px;">
+            <textarea class="form-control" id="comment_content" rows="3" style="border: none; background: none;"></textarea>
+            <input class="px-3 py-2 d-flex ms-auto" type="button" onclick="createUserComment()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
+        </div>
         <hr>
+        <!--댓글 리스트-->
+        <div class="freeBoardComment-list p-0" style="background-color: white"></div>
+        <!--댓글 페이징-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center comment-page-list">
+            </ul>
+        </nav>
     </div>
-    <!-- 로그인 한 사용자만 보이는 댓글 작성, 수정, 삭제 -->
-    <div sec:authorize="isAuthenticated()" class="p-0">
+
+
+
+
+
+
+
+
+
+
+    <div class="p-0">
         <!-- 댓글 수정, 삭제 -->
-        <div class="d-flex justify-content-end" th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
+        <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
             <!-- Button trigger modal -->
             <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#freeBoard-modalView">
                 수정
@@ -395,17 +440,8 @@
         <br>
         <hr>
 
-        <!-- 댓글 작성-->
-        <div class="d-flex">
-            <textarea class="col col-lg-11" id="comment_content" rows="3"></textarea>
-            <input class="col-lg-1 btn btn-sm btn-primary" type="button" onclick="createUserComment()" value="작성">
-        </div>
+
         <br>
-    </div>
-
-    <!--/* 댓글 렌더링 영역 */-->
-    <div class="freeBoardComment-list p-0">
-
     </div>
 
     <!-- 댓글 수정 Modal -->
@@ -418,7 +454,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea type="text" class="form-control" id="edit-content"></textarea>
+                        <textarea type="text" class="form-control" id="edit-content" rows="10"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
@@ -429,14 +465,7 @@
         </div>
     </div>
 
-    <!--페이징-->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center page-list">
-        </ul>
-    </nav>
 
-    <br>
-    <a class="btn btn-sm btn-primary" href="/boards">목록</a>
 
 
 </div>

@@ -26,6 +26,7 @@ public class FreeBoardController {
     @PostMapping("/boards/create")
     public String createBoard(FreeBoardRequest dto, Model model){
         try {
+            System.out.println("컨트롤러" + dto.toString());
             FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.createBoard(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/boards/" + freeBoardResponse.getId());
