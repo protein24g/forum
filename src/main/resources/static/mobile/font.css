@@ -1,21 +1,16 @@
 /* 일반 CSS 규칙 */
 body {
-    font-size: 15px;
+    font-size: 16px;
 }
 
-.title {
-    max-width: 95%;
+.text-dot {
     white-space: nowrap; /* 텍스트를 줄바꿈 없이 한 줄로 만들기 */
     overflow: hidden; /* 초과하는 내용 숨기기 */
     text-overflow: ellipsis; /* 초과 내용을 '...'로 표시 */
-    font-size: 19px;
 }
 
 /* 미디어 쿼리 적용 */
 @media (max-width: 768px) {
-    .title {
-        max-width: 90%;
-    }
     .nav-link {
         font-size: 26px;
     }
