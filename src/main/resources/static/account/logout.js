@@ -1,5 +1,5 @@
 async function logoutFunc() {
-    let _csrf = document.querySelector("#_csrf").value;
+    let _csrf = document.querySelector("._csrf").value;
     try {
         await fetch("/logout", {
             method: "POST",
@@ -17,8 +17,7 @@ async function logoutFunc() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    let logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
+    document.querySelectorAll(".logoutBtn").forEach(function (logoutBtn) {
         logoutBtn.addEventListener("click", logoutFunc);
-    }
+    });
 });

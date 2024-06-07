@@ -25,7 +25,7 @@
                 <form action="/loginProc" method="post">
                     <p><input type="text" name="username" placeholder="아이디" class="col-8"></p>
                     <p><input type="password" name="password" placeholder="비밀번호" class="col-8"></p>
-                    <input type="hidden" name="_csrf" id="_csrf" th:value="${_csrf.token}">
+                    <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
                     <button type="submit" class="btn btn-primary col-8" style="height: 50px;">로그인</button>
                 </form>
                 <div class="login-menu">

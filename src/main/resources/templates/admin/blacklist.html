@@ -10,7 +10,7 @@
     <script src="/account/logout.js"></script>
 </head>
 <body>
-<input type="hidden" id="_csrf" th:value="${_csrf.token}">
+<input type="hidden" class="_csrf" th:value="${_csrf.token}">
 <div class="container-fluid">
     <div class="row vh-100">
         <!--왼쪽 화면-->
@@ -51,7 +51,7 @@
                         <strong>mdo</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" id="logoutBtn">로그아웃</a></li>
+                        <li><a class="dropdown-item logoutBtn">로그아웃</a></li>
                     </ul>
                 </div>
             </div>

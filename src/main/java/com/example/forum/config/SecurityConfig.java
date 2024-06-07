@@ -22,7 +22,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/",
                                 "/mobile/font.css",
-                                "/account/logout.js",
+                                "/account/logout.js", "/navbar/active.js",
                                 "/freeBoardUpload/**", "/logo/**",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",

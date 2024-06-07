@@ -43,7 +43,7 @@
             async function createUserComment(){
                 let boardId = document.getElementById("boardId").value;
                 let comment_content = document.getElementById("comment_content").value;
-                let _csrf = document.getElementById("_csrf").value;
+                let _csrf = document.querySelector("._csrf").value;
 
                 try{
                     const response = await fetch(`/api/c/freeBoards/${boardId}/comments`, {
@@ -222,7 +222,7 @@
             // U(Update)
             async function updateBoard() {
                 let boardId = document.getElementById("boardId").value;
-                let _csrf = document.getElementById("_csrf").value;
+                let _csrf = document.querySelector("._csrf").value;
 
                 // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
                 let myModal = document.getElementById("freeBoard-modalView");
@@ -262,7 +262,7 @@
                 let commentId = id;
                 let currentPage = document.getElementById("currentPage").value;
                 let content = document.getElementById("edit-content").value;
-                let _csrf = document.getElementById("_csrf").value;
+                let _csrf = document.querySelector("._csrf").value;
 
                 let myModal = document.getElementById("freeBoardComment-modalView");
                 let modalInstance = bootstrap.Modal.getInstance(myModal);
@@ -300,7 +300,7 @@
                 if (!confirm("삭제하시겠습니까?")){ return; }
                 let boardId = document.getElementById("boardId").value;
                 let commentId = id;
-                let _csrf = document.getElementById("_csrf").value;
+                let _csrf = document.querySelector("._csrf").value;
 
                 try{
                     const response = await fetch(`/api/comments/${commentId}`, {

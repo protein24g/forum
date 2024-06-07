@@ -2,6 +2,7 @@ package com.example.forum.user.controller;
 
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.JoinRequest;
+import com.example.forum.user.dto.response.UserResponse;
 import com.example.forum.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
