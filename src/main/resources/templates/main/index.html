@@ -9,14 +9,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="/account/logout.js"></script>
         <link href="/mobile/font.css" rel="stylesheet">
-        <style>
-            .freeBoard-item span {
-                display: block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-        </style>
         <script>
             document.addEventListener("DOMContentLoaded", function (){
                 getBoardList("", 0, "");
@@ -45,7 +37,7 @@
                         let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
                         boardHtml += `
                                     <div class="freeBoard-item d-flex text-start p-1" id=${row.id}>
-                                        <span class="col me-auto pe-3">
+                                        <span class="col me-auto text-dot pe-3">
                                             ${row.title}[${row.commentCount}]
                                         </span>
                                         <span class="col-auto">
