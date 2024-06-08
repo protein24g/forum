@@ -14,10 +14,11 @@
         })
 
         function addEventToRows(){
-            document.querySelectorAll("tbody tr").forEach(function (tr){
+            document.querySelectorAll(".user-item").forEach(function (tr){
                 tr.addEventListener("click", function (){
                     window.location.href = "/admin/users/" + tr.getAttribute("id");
-                })
+                });
+
             })
         }
 
@@ -50,34 +51,18 @@
 
                 const res = await response.json();
                 console.log(res);
-                let usersListHtml = "";
+                let usersListHtml = ``;
                 res.content.forEach(row => {
                     let createDate = row.createDate.replace(/[T]/g, ' ').slice(2, 16);
                     usersListHtml += `
-                                <tr id="${row.id}">
-                                    <th class="col-auto d-none d-lg-table-cell">${row.id}</th>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span class="col-auto p-0">${row.role}</span>
-                                    </td>
-                                    <td class="col-auto">
-                                        <span>${row.userId}</span>
-                                    </td>
-                                    <td class="col-auto">
-                                        <span>${row.nickname}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span>${row.age}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-lg-table-cell">
-                                        <span>${row.gender}</span>
-                                    </td>
-                                    <td class="col-auto d-none d-md-table-cell">
-                                        <span>${row.address}</span>
-                                    </td>
-                                    <td class="col">
-                                        <span>${createDate}</span>
-                                    </td>
-                                    <td class="col d-flex">
+                                <tr class="user-item d-flex" id="${row.id}">
+                                    <td class="col-1 mx-3 mx-md-0">${row.id}</td>
+                                    <td class="col-3 col-md-2 mx-3 mx-md-0">${row.nickname}(${row.userId})</td>
+                                    <td class="col-1 mx-3 mx-md-0">${row.age}</td>
+                                    <td class="col-1 mx-3 mx-md-0">${row.gender}</td>
+                                    <td class="col-4 col-md-3 mx-3 mx-md-0">${row.address}</td>
+                                    <td class="col-2 mx-3 mx-md-0">${createDate}</td>
+                                    <td class="col-2 mx-3  mx-md-0 d-flex">
                                         <div class="dropdown">
                                           <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             ${row.active}
@@ -132,7 +117,7 @@
 <div class="container-fluid">
     <div class="row vh-100">
         <!--왼쪽 화면-->
-        <div class="d-none d-lg-flex flex-column flex-shrink-0 p-3 text-bg-dark text-center" style="width: 280px; height: 100%;">
+        <div class="d-none d-xxl-flex flex-column flex-shrink-0 p-3 text-bg-dark text-center" style="width: 280px; height: 100%;">
             <div class="d-flex">
                 <a href="/admin" class="text-white text-decoration-none">
                     <span class="fs-4">관리자 페이지</span>
@@ -165,8 +150,8 @@
                 <hr>
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong>mdo</strong>
+                        <img src="https://github.com/lgo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                        <strong>lgo</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                         <li><a class="dropdown-item logoutBtn">로그아웃</a></li>
@@ -177,15 +162,15 @@
         <!--오른쪽 화면-->
         <div class="col p-0" style="background-color: #eee">
             <!--모바일-->
-            <div class="d-lg-none d-sm-block">
-                <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div class="d-xxl-none">
+                <nav class="navbar navbar-expand-xxl bg-dark border-bottom border-body" data-bs-theme="dark">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="#">Navbar</a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarColor01">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
                                 <li class="nav-item">
                                     <a class="nav-link" aria-current="page" href="/admin">관리자 홈</a>
                                 </li>
@@ -198,50 +183,50 @@
                 </nav>
             </div>
 
-            <div class="p-3 m-4" style="background-color: white">
-                <h3>회원 목록</h3>
-                <div>
-                    <!--검색-->
-                    <div class="col-md-6 ms-auto p-0">
-                        <form class="d-flex" role="search">
-                            <div class="col-3">
-                                <select class="form-select" id="option">
-                                    <option value="1">닉네임</option>
-                                    <option value="2">아이디</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-primary" type="button" onclick="search()">검색</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div style="background-color: white">
-                        <!--게시글 Detail-->
-                        <table class="table text-center">
-                            <thead>
-                            <tr>
-                                <th class="col-auto d-none d-lg-table-cell">번호</th>
-                                <th class="col-auto d-none d-lg-table-cell">권한</th>
-                                <th class="col">아이디</th>
-                                <th class="col">닉네임</th>
-                                <th class="col-auto d-none d-lg-table-cell">나이</th>
-                                <th class="col-auto d-none d-lg-table-cell">성별</th>
-                                <th class="col-auto d-none d-md-table-cell">주소</th>
-                                <th class="col">가입 날짜</th>
-                                <th class="col">계정상태</th>
-                            </tr>
-                            </thead>
-                            <tbody class="users-list"></tbody>
-                        </table>
+            <div class="p-xxl-3 m-4" style="background-color: white;">
+                <div class="p-3">
+                    <h3>회원 목록</h3>
+                    <div>
+                        <!--검색-->
+                        <div class="col-lg-6 ms-auto p-0">
+                            <form class="d-flex" role="search">
+                                <div class="col-3">
+                                    <select class="form-select" id="option">
+                                        <option value="1">닉네임</option>
+                                        <option value="2">아이디</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <input class="form-control me-2" type="search" id="keyword" aria-label="Search" placeholder="검색어를 입력하세요.">
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-primary" type="button" onclick="search()">검색</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div style="background-color: white; overflow-x: auto;">
+                            <table style="width: 100%;">
+                                <thead>
+                                <tr class="d-flex text-center">
+                                    <th class="col-1 mx-3 mx-md-0">번호</th>
+                                    <th class="col-3 col-md-2 mx-3 mx-md-0">닉네임</th>
+                                    <th class="col-1 mx-3 mx-md-0">나이</th>
+                                    <th class="col-1 mx-3 mx-md-0">성별</th>
+                                    <th class="col-4 col-md-3 mx-3 mx-md-0">주소</th>
+                                    <th class="col-2 mx-3 mx-md-0">가입 날짜</th>
+                                    <th class="col-2 mx-3 mx-md-0">계정상태</th>
+                                </tr>
+                                </thead>
+                                <!--게시글 Detail-->
+                                <tbody class="users-list text-center"></tbody>
+                            </table>
 
-                        <!--게시글 페이징-->
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center users-page-list">
-                            </ul>
-                        </nav>
+                            <!--게시글 페이징-->
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center users-page-list">
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
