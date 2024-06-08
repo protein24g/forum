@@ -80,11 +80,11 @@ public class UserController {
     public String myPageBoards(Model model, @RequestParam(name = "id") String id,
                                @RequestParam(name = "page", defaultValue = "0") int page){
 
-        if(id.equals("myboards")){
-            model.addAttribute("id", "myboards");
+        if(id.equals("myBoards")){
+            model.addAttribute("id", "myBoards");
             model.addAttribute("title", "내가 쓴 글");
-        } else if (id.equals("mycommentboards")) {
-            model.addAttribute("id", "mycommentboards");
+        } else if (id.equals("myCommentBoards")) {
+            model.addAttribute("id", "myCommentBoards");
             model.addAttribute("title", "댓글 단 글");
         }
         return "user/mypage/boards";

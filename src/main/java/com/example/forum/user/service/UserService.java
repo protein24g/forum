@@ -142,7 +142,7 @@ public class UserService {
             User user = userRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
-            if(id.equals("myboards")){
+            if(id.equals("myBoards")){
                 boardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
             }else{
                 boardResponses = freeBoardCommentServiceImpl.getBoardsByUserComments(user, page);
