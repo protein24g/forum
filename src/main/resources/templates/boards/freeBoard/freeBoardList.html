@@ -137,19 +137,23 @@
                             <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
                             <strong th:text="${#authentication.getPrincipal().username} + '님'"></strong>
                         </div>
+                        <div class="text-start px-1 pt-2">
+                            <div>작성글 1개</div>
+                            <div>댓글 15개</div>
+                        </div>
                         <div class="row p-2">
                             <div class="col-6 p-1">
-                                <div style="background-color: #434B57; border-radius: 5px;">
+                                <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
                                     <a href="/mypage" style="text-decoration: none; color: white">나의 활동</a>
                                 </div>
                             </div>
                             <div class="col-6 p-1">
-                                <div style="background-color: #434B57; border-radius: 5px;">
+                                <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
                                     <a href="/mypage" style="text-decoration: none; color: white">정보수정</a>
                                 </div>
                             </div>
                             <div class="col p-1">
-                                <div class="logoutBtn" style="background-color: #434B57; border-radius: 5px; color: white;">
+                                <div class="logoutBtn py-1" style="background-color: #434B57; border-radius: 5px; color: white;">
                                     <a href="#" style="text-decoration: none; color: white">로그아웃</a>
                                 </div>
                             </div>

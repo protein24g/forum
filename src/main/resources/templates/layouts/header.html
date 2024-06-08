@@ -13,8 +13,8 @@
     <input type="hidden" class="_csrf" th:value="${_csrf.token}">
     <nav class="navbar navbar-expand-xl bg-body-tertiary">
         <div class="container-xl">
-            <a href="/" class="px-xl-5">
-                <img src="/logo/developersForum.png" width="160px;">
+            <a href="/" class="pe-5">
+                <img src="/logo/developersForum.png" width="200px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -32,9 +32,8 @@
                         </a>
                     </div>
                 </div>
-                <hr class="d-md-none mt-0">
 
-                <div sec:authorize="isAnonymous()" class="d-xl-none d-block">
+                <div class="d-xl-none d-block" sec:authorize="isAnonymous()">
                     <a class="btn btn-outline-dark" href="/login">
                         <span>로그인</span>
                     </a>
@@ -43,7 +42,7 @@
                     </a>
                 </div>
 
-                <div sec:authorize="isAuthenticated()" class="d-xl-none d-block">
+                <div class="d-xl-none d-block" sec:authorize="isAuthenticated()">
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" alt="" width="32" height="32" class="rounded-circle me-2">
@@ -57,7 +56,7 @@
                             </li>
                             <li>
                                 <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">
-                                    <span>마이페이지</span>
+                                    <span>나의 활동</span>
                                 </a>
                             </li>
                             <li sec:authorize="hasRole('ADMIN')">

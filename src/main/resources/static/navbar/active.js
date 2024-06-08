@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     const pathname = window.location.pathname;
-    console.log(pathname);
-
     if (pathname === "/freeBoards") {
         document.querySelector(".freeBoards").classList.add("fw-bold");
     } else if (pathname === "/imageBoards") {
