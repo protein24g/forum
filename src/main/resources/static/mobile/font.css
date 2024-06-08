@@ -11,7 +11,5 @@ body {
 
 /* 미디어 쿼리 적용 */
 @media (max-width: 768px) {
-    .nav-link {
-        font-size: 26px;
-    }
+
 }

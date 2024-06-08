@@ -16,7 +16,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String login(){
+    public String login(Model model, @RequestParam(name = "error", defaultValue = "none") String error){
+        if(error.equals("true")){
+            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다");
+            model.addAttribute("url", "/login");
+            return "message/index";
+        }
         return "user/login";
     }
 

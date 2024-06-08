@@ -38,7 +38,7 @@
                             keyword : keyword,
                             page : page,
                             option : option,
-                            pageSize: 10
+                            pageSize: 9
                         })
                     });
 
@@ -119,16 +119,19 @@
 
         <div class="container-xl">
             <div class="row text-center">
-                <div class="d-none d-xl-block col-md-3 mt-3">
-                    <div sec:authorize="isAnonymous()" class="my-info p-3" style="background-color: white; border-radius: 15px;">
+                <div class="order-xl-1 order-2 col-xl-3 mt-3">
+                    <div sec:authorize="isAnonymous()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
                         <form action="/loginProc" method="post">
                             <input type="text" name="username" class="form-control mb-2" placeholder="아이디">
                             <input type="password" name="password" class="form-control mb-2" placeholder="비밀번호">
-                            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                            <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
                             <button type="submit" class="form-control text-white" style="background-color: #434B57">로그인</button>
                         </form>
+                        <div class="text-end">
+                            <a href="/join" style="text-decoration: none; color: black">회원가입</a>
+                        </div>
                     </div>
-                    <div sec:authorize="isAuthenticated()" class="my-info p-3" style="background-color: white; border-radius: 15px;">
+                    <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
                         <div class="d-flex align-items-center text-black px-1">
                             <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
                             <strong th:text="${#authentication.getPrincipal().username} + '님'"></strong>
@@ -155,8 +158,39 @@
                             </div>
                         </div>
                     </div>
+                    <div class="py-3">
+                        <div class="p-3" style="background-color: white; border-radius: 15px;">
+                            <div class="d-flex">
+                                <div>
+                                    <h5 class="fw-bold">인기게시글</h5>
+                                </div>
+                                <div class="ms-auto">
+                                    <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                                </div>
+                            </div>
+                            <hr class="m-1">
+                            <div class="hotBoard-list">
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        z
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        z
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xl-9">
+                <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">이미지게시판</h4>
                     <!--검색-->
                     <div class="imageBoard-search mb-1">
@@ -177,21 +211,21 @@
                             </form>
                         </div>
                     </div>
-
                     <div class="p-2 imageBoard-wrap">
                         <!--게시글 Detail-->
                         <div class="imageBoard-list row row-cols-2 row-cols-lg-3"></div>
+
                         <!--게시글 페이징-->
                         <nav>
                             <ul class="pagination justify-content-center imageBoard-page">
                             </ul>
                         </nav>
+
                         <!--글쓰기-->
-                        <div sec:authorize="isAuthenticated()">
+                        <div class="text-start">
                             <a class="btn btn-primary" href="/createPage">글쓰기</a>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

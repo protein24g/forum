@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Setter
 public class JoinRequest {
     @NotBlank(message = "닉네임은 필수 항목입니다.")
-    @Size(min = 2, max = 9, message = "닉네임은 2자 이상 16자")
-    @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,9}$", message = "한글 초성 및 모음 사용 불가능합니다")
+    @Size(min = 2, max = 8, message = "닉네임은 2자 이상 8자")
+    @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,8}$", message = "한글 초성 및 모음 사용 불가능합니다")
     private String nickname;
 
     @NotBlank(message = "아이디는 필수 항목입니다.")

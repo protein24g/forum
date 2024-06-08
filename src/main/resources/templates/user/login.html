@@ -12,28 +12,24 @@
             }
         </style>
     </head>
-    <body>
+    <body style="background-color: #eee">
         <div class="container-md vh-100 d-flex justify-content-center align-items-center">
-            <div class="col col-md-6 border text-center">
-                <div>
+            <div class="col col-lg-5 border text-center" style="background-color: white; border-radius: 15px;">
+                <div class="py-3">
                     <a href="/"><img src="/logo/developersForum.png" width="160px;"></a>
-                </div>
-                <br>
-                <div style="font-size: 14px;">
-                    <p>ㅁㅁ커뮤니티 계정 또는 SNS계정을 통하여 로그인이 가능합니다.</p>
                 </div>
                 <form action="/loginProc" method="post">
                     <p><input type="text" name="username" placeholder="아이디" class="col-8"></p>
                     <p><input type="password" name="password" placeholder="비밀번호" class="col-8"></p>
                     <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
-                    <button type="submit" class="btn btn-primary col-8" style="height: 50px;">로그인</button>
+                    <button type="submit" class="btn col-8 p-2" style="background-color: #434B57; color: white;">로그인</button>
                 </form>
                 <div class="login-menu">
-                    <a href="/join">간편회원가입</a>
+                    <a href="/join" style="text-decoration: none; color: black;">회원가입</a>
                     <span class="">|</span>
-                    <a href="/find_email">이메일주소찾기</a>
+                    <a href="/find_email" style="text-decoration: none; color: black;">이메일주소찾기</a>
                     <span class="">|</span>
-                    <a href="/find_password">비밀번호재설정</a>
+                    <a href="/find_password" style="text-decoration: none; color: black;">비밀번호재설정</a>
                 </div>
             </div>
 
