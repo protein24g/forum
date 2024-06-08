@@ -93,8 +93,13 @@
                     </div>
                     <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
                         <div class="d-flex align-items-center text-black px-1">
-                            <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
-                            <strong th:text="${#authentication.getPrincipal().username} + '님'"></strong>
+                            <div class="me-auto">
+                                <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                                <strong th:text="${#authentication.getPrincipal().username} + '님'"></strong>
+                            </div>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin" class="p-2 text-white" style="border-radius: 5px; text-decoration: none; background-color: #434B57">관리자 페이지</a>
+                            </div>
                         </div>
                         <div class="text-start px-1 pt-2">
                             <div>작성글 1개</div>
