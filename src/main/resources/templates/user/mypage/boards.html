@@ -74,7 +74,7 @@
                         let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                         boardPageHtml += `
                                                 <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                                    <a class="page-link" onclick="myPageBoards(${res.number - 1})">Previous</a>
+                                                    <a class="page-link" onclick="myPageBoards(${res.number - 1})"><</a>
                                                 </li>
                                                 `;
 
@@ -90,7 +90,7 @@
 
                         boardPageHtml += `
                                                 <li class="page-item ${(res.last) ? "disabled" : ""}">
-                                                    <a class="page-link" onclick="myPageBoards(${res.number + 1})">Next</a>
+                                                    <a class="page-link" onclick="myPageBoards(${res.number + 1})">></a>
                                                 </li>
                                             `;
                         document.querySelector(".board-page-list").innerHTML = boardPageHtml;
@@ -103,29 +103,127 @@
             }
         </script>
     </head>
-    <body>
+    <body style="background-color: #eee">
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
         <input type="hidden" id="id" th:value="${id}">
-        <div class="container">
-            <h2 class="text-center my-4" th:text="${title}"></h2>
-            <!--게시글 Detail-->
-            <table class="table text-center">
-                <thead>
-                <tr>
-                    <th class="col-auto d-none d-lg-table-cell">번호</th>
-                    <th class="col">제목</th>
-                    <th class="col-auto d-none d-md-table-cell">작성자</th>
-                    <th class="col-auto d-md-table-cell">등록일</th>
-                    <th class="col-auto d-none d-lg-table-cell">조회</th>
-                </tr>
-                </thead>
-                <tbody class="myBoard-list board-list"></tbody>
-            </table>
-            <!--게시글 페이징-->
-            <nav aria-label="">
-                <ul class="pagination justify-content-center board-page-list">
-                </ul>
-            </nav>
+        <div class="container-xl">
+            <div class="row text-center">
+                <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
+                    <div sec:authorize="isAnonymous()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
+                        <form action="/loginProc" method="post">
+                            <input type="text" name="username" class="form-control mb-2" placeholder="아이디">
+                            <input type="password" name="password" class="form-control mb-2" placeholder="비밀번호">
+                            <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
+                            <button type="submit" class="form-control text-white" style="background-color: #434B57">로그인</button>
+                        </form>
+                        <div class="text-end">
+                            <a href="/join" style="text-decoration: none; color: black">회원가입</a>
+                        </div>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
+                        <div class="d-flex align-items-center text-black px-1">
+                            <div class="me-auto">
+                                <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                                <strong th:text="${#authentication.getPrincipal().username}"></strong>
+                            </div>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin" class="p-2 text-white">
+                                    <img src="https://cdn-icons-png.flaticon.com/128/3524/3524752.png" width="25px;" height="25px;">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="text-start px-1 pt-2">
+                            <div>작성글 1개</div>
+                            <div>댓글 15개</div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-6 p-1">
+                                <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
+                                    <a href="/mypage" style="text-decoration: none; color: white">마이페이지</a>
+                                </div>
+                            </div>
+                            <div class="col-6 p-1">
+                                <div class="logoutBtn py-1" style="background-color: #434B57; border-radius: 5px; color: white;">
+                                    <a href="#" style="text-decoration: none; color: white">로그아웃</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3">
+                        <div class="p-3" style="background-color: white; border-radius: 15px;">
+                            <div class="d-flex">
+                                <div>
+                                    <h5 class="fw-bold">인기게시글</h5>
+                                </div>
+                                <div class="ms-auto">
+                                    <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                                </div>
+                            </div>
+                            <hr class="m-1">
+                            <div class="hotBoard-list">
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        z
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        z
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-xl-2 order-1 col-xl-9">
+                    <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">마이페이지</h4>
+                    <div class="my-3 d-flex">
+                        <div class="me-3">
+                            <a href="/mypage" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center; color: white; background-color: #434B57">회원정보</a>
+                        </div>
+                        <div class="me-3">
+                            <form action="/mypage/boards" method="get">
+                                <input type="hidden" name="id" value="myboards">
+                                <a href="#" class="form-control px-3" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">내가 쓴 글</a>
+                            </form>
+                        </div>
+                        <div class="me-3">
+                            <form action="/mypage/boards" method="get">
+                                <input type="hidden" name="id" value="mycommentboards">
+                                <a href="#" class="form-control px-3" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">댓글 단 글</a>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
+                        <h4 class="fw-bold" th:text="${title}"></h4>
+                        <hr>
+                        <!--게시글 Detail-->
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th class="col-auto d-none d-lg-table-cell">번호</th>
+                                <th class="col">제목</th>
+                                <th class="col-auto d-none d-md-table-cell">작성자</th>
+                                <th class="col-auto d-md-table-cell">등록일</th>
+                                <th class="col-auto d-none d-lg-table-cell">조회</th>
+                            </tr>
+                            </thead>
+                            <tbody class="myBoard-list board-list"></tbody>
+                        </table>
+                        <!--게시글 페이징-->
+                        <nav aria-label="">
+                            <ul class="pagination justify-content-center board-page-list">
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
         </div>
         <div th:insert="~{layouts/footer.html :: footerFragment}"></div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

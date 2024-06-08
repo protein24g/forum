@@ -76,7 +76,6 @@
 
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body style="background-color: #eee">
-
         <div class="container-xl">
             <div class="row text-center">
                 <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -110,15 +109,10 @@
                         <div class="row p-2">
                             <div class="col-6 p-1">
                                 <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
-                                    <a href="/mypage" style="text-decoration: none; color: white">나의 활동</a>
+                                    <a href="/mypage" style="text-decoration: none; color: white">마이페이지</a>
                                 </div>
                             </div>
                             <div class="col-6 p-1">
-                                <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
-                                    <a href="/mypage" style="text-decoration: none; color: white">정보수정</a>
-                                </div>
-                            </div>
-                            <div class="col p-1">
                                 <div class="logoutBtn py-1" style="background-color: #434B57; border-radius: 5px; color: white;">
                                     <a href="#" style="text-decoration: none; color: white">로그아웃</a>
                                 </div>
@@ -160,39 +154,37 @@
                 <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">커뮤니티</h4>
 
-                    <div class="row">
-                        <div id="carouselExampleIndicators" class="carousel slide">
-                            <div class="carousel-indicators">
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                            </div>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <a href="https://metree.co.kr/index/shop.php?r=view&cat=00270001&uid=7754">
-                                        <img src="https://metree.co.kr/index/_upload/banner/2024/03/20/main_1_867.jpg" class="d-block w-100">
-                                    </a>
-                                </div>
-                                <div class="carousel-item">
-                                    <a href="https://metree.co.kr/index/shop.php?cat=0031&r=view&uid=7632">
-                                        <img src="https://metree.co.kr/index/_upload/banner/2024/01/26/main_1_844.jpg" class="d-block w-100">
-                                    </a>
-                                </div>
-                                <div class="carousel-item">
-                                    <a href="https://metree.co.kr/index/shop.php?cat=0054">
-                                        <img src="https://metree.co.kr/index/_upload/banner/2023/12/20/main_1_812.jpg" class="d-block w-100">
-                                    </a>
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                    <div id="carouselExampleIndicators" class="carousel slide">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                         </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <a href="https://metree.co.kr/index/shop.php?r=view&cat=00270001&uid=7754">
+                                    <img src="https://metree.co.kr/index/_upload/banner/2024/03/20/main_1_867.jpg" class="d-block w-100">
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="https://metree.co.kr/index/shop.php?cat=0031&r=view&uid=7632">
+                                    <img src="https://metree.co.kr/index/_upload/banner/2024/01/26/main_1_844.jpg" class="d-block w-100">
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="https://metree.co.kr/index/shop.php?cat=0054">
+                                    <img src="https://metree.co.kr/index/_upload/banner/2023/12/20/main_1_812.jpg" class="d-block w-100">
+                                </a>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                     <div class="row row-cols-xl-2">
                         <div class="col p-3">
