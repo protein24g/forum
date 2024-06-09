@@ -16,7 +16,7 @@ public class FreeBoardCommentApiController {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
 
     // C(Create)
-    @PostMapping("/api/c/freeBoards/{boardId}/comments")
+    @PostMapping("/api/c/freeBoard/{boardId}/comments")
     public ResponseEntity<?> createCommentForBoard(@PathVariable("boardId") Long boardId, @RequestBody FreeBoardCommentRequest dto){
         try{
             freeBoardCommentServiceImpl.createCommentForBoard(boardId, dto);
@@ -27,7 +27,7 @@ public class FreeBoardCommentApiController {
     }
 
     // R(Read)
-    @GetMapping("/api/freeBoards/{boardId}/comments")
+    @GetMapping("/api/freeBoard/{boardId}/comments")
     public Page<FreeBoardCommentResponse> getCommentsForBoard(@PathVariable("boardId") Long boardId,
                                                               @RequestParam(name = "page", defaultValue = "0") int page){
         Page<FreeBoardCommentResponse> commentResponses = freeBoardCommentServiceImpl.getCommentsForBoard(boardId, page);

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class ImageBoardController {
     // R(Read)
-    @GetMapping("/imageBoards")
-    public String freeBoardsP(){
+    @GetMapping("/imageBoard")
+    public String freeBoardP(){
         return "boards/imageBoard/imageBoardList";
     }
 }

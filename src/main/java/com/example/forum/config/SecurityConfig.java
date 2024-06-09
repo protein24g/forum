@@ -26,8 +26,8 @@ public class SecurityConfig {
                                 "/freeBoardUpload/**", "/logo/**",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
-                                "/freeBoards/**", "/api/freeBoards/**", "/api/freeBoards/*/comments",
-                                "imageBoards/**",
+                                "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
+                                "imageBoard/**",
                                 "/checkLoginId", "/checkNickname").permitAll()
                         .anyRequest().authenticated());
 

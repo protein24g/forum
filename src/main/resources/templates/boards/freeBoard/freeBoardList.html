@@ -50,7 +50,7 @@
             async function getBoardList(keyword, page, option){ // 게시글 리스트
                 let _csrf = document.querySelector("._csrf").value;
                 try{
-                    const response = await fetch("/api/freeBoards", {
+                    const response = await fetch("/api/freeBoard", {
                         method : "POST",
                         headers : {
                             "Content-Type" : "application/json",
@@ -122,14 +122,14 @@
                     addEventToRows();
                 }catch (error){
                     alert("알 수 없는 오류가 발생했습니다");
-                    window.location.href = "/freeBoards";
+                    window.location.href = "/freeBoard";
                 }
             }
 
             function addEventToRows() {
                 document.querySelectorAll(".board-item").forEach(function (div) {
                     div.addEventListener("click", function (){
-                        window.location.href = "/freeBoards/" + div.getAttribute("id");
+                        window.location.href = "/freeBoard/" + div.getAttribute("id");
                     });
                 });
 
@@ -195,7 +195,7 @@
                                     <h5 class="fw-bold">인기게시글</h5>
                                 </div>
                                 <div class="ms-auto">
-                                    <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                                    <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
                                 </div>
                             </div>
                             <hr class="m-1">
@@ -253,7 +253,7 @@
 
                         <!--글쓰기-->
                         <div class="text-start">
-                            <a class="btn btn-primary" href="/createPage">글쓰기</a>
+                            <a class="btn btn-primary" href="/create">글쓰기</a>
                         </div>
                     </div>
                 </div>

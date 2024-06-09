@@ -103,7 +103,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     @Override
     public Page<FreeBoardResponse> getBoardsByUserComments(User user, int page){
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards = freeBoardCommentRepository.getFreeBoardsByUserComments(user, pageable);
+        Page<FreeBoard> boards = freeBoardCommentRepository.getfreeBoardByUserComments(user, pageable);
         return boards
                 .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())

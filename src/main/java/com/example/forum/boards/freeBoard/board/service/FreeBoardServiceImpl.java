@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class FreeBoardServiceImpl implements BoardService {
+public class freeBoarderviceImpl implements BoardService {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;

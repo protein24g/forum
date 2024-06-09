@@ -46,7 +46,7 @@
         // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
         // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<FreeBoard> freeBoards = new ArrayList<>();
+        private List<FreeBoard> freeBoard = new ArrayList<>();
 
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
@@ -65,7 +65,7 @@
         }
 
         public void addBoard(FreeBoard freeBoard){
-            this.freeBoards.add(freeBoard);
+            this.freeBoard.add(freeBoard);
             freeBoard.setUser(this);
         }
 

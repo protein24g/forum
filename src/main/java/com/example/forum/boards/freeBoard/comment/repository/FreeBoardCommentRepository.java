@@ -13,5 +13,5 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
     Page<FreeBoardComment> findByFreeBoardId(Long boardId, Pageable pageable);
     Page<FreeBoardComment> findByUserId(Long userId, Pageable pageable);
     @Query("SELECT DISTINCT b.freeBoard FROM FreeBoardComment b WHERE b.user = :user ORDER BY b.freeBoard.id DESC")
-    Page<FreeBoard> getFreeBoardsByUserComments(User user, Pageable pageable);
+    Page<FreeBoard> getfreeBoardByUserComments(User user, Pageable pageable);
 }

@@ -48,7 +48,7 @@
             let _csrf = document.querySelector("._csrf").value;
 
             try{
-                const response = await fetch(`/api/c/freeBoards/${boardId}/comments`, {
+                const response = await fetch(`/api/c/freeBoard/${boardId}/comments`, {
                     method : "POST",
                     headers : {
                         "Content-Type" : "application/json",
@@ -70,7 +70,7 @@
                 }
             }catch (error){
                 alert(error);
-                window.location.href = "/freeBoards/" + boardId;
+                window.location.href = "/freeBoard/" + boardId;
             }
         }
 
@@ -100,7 +100,7 @@
             let boardId = document.getElementById("boardId").value;
 
             try {
-                const response = await fetch(`/api/freeBoards/${boardId}`, {
+                const response = await fetch(`/api/freeBoard/${boardId}`, {
                     method: "GET"
                 });
 
@@ -134,7 +134,7 @@
                 } else {
                     alert(error);
                 }
-                window.location.href = "/freeBoards/" + boardId;
+                window.location.href = "/freeBoard/" + boardId;
             }
         }
 
@@ -143,7 +143,7 @@
             document.getElementById("currentPage").value = page;
 
             try{
-                const response = await fetch(`/api/freeBoards/${boardId}/comments?page=${page}`, {
+                const response = await fetch(`/api/freeBoard/${boardId}/comments?page=${page}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
@@ -250,7 +250,7 @@
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             try{
-                const response = await fetch(`/api/freeBoards/${boardId}`, {
+                const response = await fetch(`/api/freeBoard/${boardId}`, {
                     method : "PUT",
                     headers : {
                         "Content-Type" : "application/json",
@@ -272,7 +272,7 @@
                     window.location.href = "/login";
                 }else{
                     alert(error);
-                    window.location.href = "/freeBoards/" + boardId;
+                    window.location.href = "/freeBoard/" + boardId;
                 }
             }
         }
@@ -309,7 +309,7 @@
                     window.location.href = "/login";
                 } else {
                     alert(error);
-                    window.location.href = "/freeBoards/" + boardId;
+                    window.location.href = "/freeBoard/" + boardId;
                 }
             }
         }
@@ -340,7 +340,7 @@
                     window.location.href = "/login";
                 }else{
                     alert(error);
-                    window.location.href = "/freeBoards/" + boardId;
+                    window.location.href = "/freeBoard/" + boardId;
                 }
             }
         }
@@ -407,7 +407,7 @@
                             <h5 class="fw-bold">인기게시글</h5>
                         </div>
                         <div class="ms-auto">
-                            <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                            <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
                         </div>
                     </div>
                     <hr class="m-1">
@@ -433,7 +433,7 @@
             </div>
         </div>
         <div class="order-xl-2 order-1 col-xl-9 text-start">
-            <br><a class="text-black px-3 py-2 fw-bold" href="/freeBoards" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
+            <br><a class="text-black px-3 py-2 fw-bold" href="/freeBoard" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
 
             <div class="board-info px-3" style="background-color: white; border-radius: 15px;">
                 <!-- 게시글 Detail -->
@@ -478,7 +478,7 @@
                     <div id="freeBoard-images"></div>
                 </div>
                 <br>
-                <a class="text-black px-3 py-2" href="/freeBoards" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
+                <a class="text-black px-3 py-2" href="/freeBoard" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
 
                 <h4 class="mt-5">댓글</h4>
                 <div class="comments">

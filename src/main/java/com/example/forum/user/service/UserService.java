@@ -1,7 +1,7 @@
 package com.example.forum.user.service;
 
 import com.example.forum.admin.dto.response.AdminResponse;
-import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
+import com.example.forum.boards.freeBoard.board.service.freeBoarderviceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.CustomUserDetails;
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final FreeBoardServiceImpl freeBoardServiceImpl;
+    private final freeBoarderviceImpl freeBoarderviceImpl;
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
 
     public void join(JoinRequest joinRequest) {
@@ -81,7 +81,7 @@ public class UserService {
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
-                    .boards_size(user.getFreeBoards().size())
+                    .boards_size(user.getfreeBoard().size())
                     .comments_size(user.getFreeBoardComments().size())
                     .build();
         }else{
@@ -97,7 +97,7 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .boards(freeBoardServiceImpl.getBoardsForUser(userId, page))
+                    .boards(freeBoarderviceImpl.getBoardsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();
         }else{
@@ -158,7 +158,7 @@ public class UserService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
             if(id.equals("myBoards")){
-                boardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
+                boardResponses = freeBoarderviceImpl.getBoardsForUser(user.getId(), page);
             }else{
                 boardResponses = freeBoardCommentServiceImpl.getBoardsByUserComments(user, page);
             }

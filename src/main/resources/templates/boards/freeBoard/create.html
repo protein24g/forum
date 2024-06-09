@@ -30,7 +30,9 @@
                             let ext_index = name.lastIndexOf(".");
                             let extension = name.slice(ext_index); // 확장자 추출
                             if(!image_extension.includes(extension.toLowerCase())){
-                                alert("이미지 파일만 첨부 가능합니다");
+                                //alert("이미지 파일만 첨부 가능합니다");
+                                console.log("이미지만 첨부가능");
+                                console.log(images.files);
                                 return;
                             }
                         }
@@ -120,7 +122,7 @@
                                     <h5 class="fw-bold">인기게시글</h5>
                                 </div>
                                 <div class="ms-auto">
-                                    <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                                    <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
                                 </div>
                             </div>
                             <hr class="m-1">
@@ -147,7 +149,7 @@
                 </div>
                 <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 작성</h4>
-                    <form class="p-3 text-start" action="/freeBoards/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
+                    <form class="p-3 text-start" action="/freeBoard/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
                         <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
                         <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
                         <p><input type="file" accept="image/*" id="images" name="images" multiple><br></p>

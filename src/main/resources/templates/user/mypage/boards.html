@@ -21,7 +21,7 @@
             function addEventToRows() {
                 document.querySelectorAll(".board-item").forEach(function (div) { // tbody 내에 모든 tr 태그를 찾아서 for
                     div.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/freeBoards/" + div.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                        window.location.href = "/freeBoard/" + div.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
             }
@@ -169,7 +169,7 @@
                                     <h5 class="fw-bold">인기게시글</h5>
                                 </div>
                                 <div class="ms-auto">
-                                    <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                                    <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
                                 </div>
                             </div>
                             <hr class="m-1">
