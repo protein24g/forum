@@ -72,6 +72,23 @@ public class UserService {
     // C(Create)
 
     // R(Read)
+    public UserResponse getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() instanceof CustomUserDetails){
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+            return UserResponse.builder()
+                    .nickname(user.getNickname())
+                    .boards_size(user.getFreeBoards().size())
+                    .comments_size(user.getFreeBoardComments().size())
+                    .build();
+        }else{
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+    }
+
     public UserResponse getUserBoards(Long userId, int page){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));

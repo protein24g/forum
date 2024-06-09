@@ -12,9 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
-
-    @GetMapping("/image/{member_id}")
-    public ResponseEntity<byte[]> returnImage(@PathVariable("member_id") Long id) {
-        return null;
-    }
 }

@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <script th:inline="javascript">
-        var msg = [[${msg}]];
-        var url = [[${url}]];
+        let msg = [[${msg}]];
+        let url = [[${url}]];
 
         document.addEventListener("DOMContentLoaded", function (){
             if(msg) alert(msg);

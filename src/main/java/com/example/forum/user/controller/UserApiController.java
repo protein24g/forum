@@ -27,6 +27,16 @@ public class UserApiController {
     }
 
     // R(Read)
+    @GetMapping("/api/userInfo")
+    public ResponseEntity<?> getUserInfo(){
+        try{
+            UserResponse userResponse = userService.getUserInfo();
+            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/api/mypage/boards")
     public ResponseEntity<?> myPageBoards(@RequestParam(name = "id") String id,
                                @RequestParam(name = "page", defaultValue = "0") int page){

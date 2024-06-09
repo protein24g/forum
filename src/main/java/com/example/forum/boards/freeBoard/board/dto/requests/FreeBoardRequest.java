@@ -16,5 +16,5 @@ public class FreeBoardRequest {
 
     private String content;
 
-    private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images;
 }

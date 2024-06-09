@@ -33,7 +33,7 @@ public class ImageService {
 
         for(MultipartFile file : files){
             if (files == null || files.isEmpty()){
-                return new ArrayList<>();
+                continue; // 파일이 없는 경우 스킵
             }
 
             // 파일 크기 확인

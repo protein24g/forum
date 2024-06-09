@@ -38,7 +38,6 @@ public class FreeBoardServiceImpl implements BoardService {
     // C(Create)
     @Override
     public FreeBoardResponse createBoard(FreeBoardRequest dto) {
-        System.out.println("서비스 함수 : " + dto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -54,22 +53,17 @@ public class FreeBoardServiceImpl implements BoardService {
                     .build();
             System.out.println("엔티티 생성완료");
             try {
-                System.out.println("이미지" + dto.getImages());
-                System.out.println("이미지 사이즈" + dto.getImages().size());
-                List<Image> images = imageService.saveImage(dto.getImages());
-                for(Image image : images){
-                    freeBoardEntity.addImage(image);
-                    System.out.println(image.toString());
+                if(dto.getImages() != null){
+                    List<Image> images = imageService.saveImage(dto.getImages());
+                    for(Image image : images){
+                        freeBoardEntity.addImage(image);
+                    }
                 }
             } catch (Exception e) {
-                System.out.println("예외발생");
-                System.out.println(e.getMessage());
                 throw new IllegalArgumentException(e.getMessage());
             }
             user.addBoard(freeBoardEntity);
-            System.out.println("추가완료.");
             freeBoardRepository.save(freeBoardEntity);
-            System.out.println("저장완료.");
 
             return FreeBoardResponse.builder()
                     .id(freeBoardEntity.getId())

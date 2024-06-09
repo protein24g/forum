@@ -26,12 +26,10 @@ public class FreeBoardController {
     @PostMapping("/freeBoards/create")
     public String createBoard(FreeBoardRequest dto, Model model){
         try {
-            System.out.println("컨트롤러" + dto.toString());
             FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.createBoard(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/freeBoards/" + freeBoardResponse.getId());
             return "message/index";
-
         } catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/login");
@@ -51,11 +49,11 @@ public class FreeBoardController {
             String writer = freeBoardServiceImpl.getWriter(boardId);
             model.addAttribute("writer", writer);
             model.addAttribute("boardId", boardId);
+            return "boards/freeBoard/detail";
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
             model.addAttribute("url", "/boards");
             return "message/index";
         }
-        return "boards/freeBoard/detail";
     }
 }

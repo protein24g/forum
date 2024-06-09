@@ -25,6 +25,27 @@
                 getBoardList(keyword, 0, option);
             }
 
+            async function getUserInfo(){
+                try{
+                    const response = await fetch("/api/userInfo", {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        }
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+                    document.querySelector(".nickname").innerText = `${res.nickname}`;
+                    document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                    document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
+
+                }catch (error){
+                    alert(error);
+                    window.location.href = "/";
+                }
+            }
+
             async function getBoardList(keyword, page, option){ // 게시글 리스트
                 let _csrf = document.querySelector("._csrf").value;
                 try{
@@ -132,10 +153,15 @@
                         </div>
                     </div>
                     <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
+                        <script th:inline="javascript">
+                            document.addEventListener("DOMContentLoaded", function() {
+                                getUserInfo();
+                            });
+                        </script>
                         <div class="d-flex align-items-center text-black px-1">
                             <div class="me-auto">
                                 <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
-                                <strong th:text="${#authentication.getPrincipal().username}"></strong>
+                                <strong class="nickname"></strong>
                             </div>
                             <div sec:authorize="hasRole('ADMIN')">
                                 <a href="/admin" class="p-2 text-white">
@@ -144,8 +170,8 @@
                             </div>
                         </div>
                         <div class="text-start px-1 pt-2">
-                            <div>작성글 1개</div>
-                            <div>댓글 15개</div>
+                            <div class="boardsSize"></div>
+                            <div class="commentsSize"></div>
                         </div>
                         <div class="row p-2">
                             <div class="col-6 p-1">
