@@ -10,22 +10,35 @@
         <script>
             document.addEventListener("DOMContentLoaded", function (){
                 document.getElementById("write").addEventListener("click", function (){
-                    // confirm 함수를 사용해 확인 창 띄우기
-                    let isConfirmed = confirm("저장하시겠습니까?");
-
-                    // 사용자가 '확인'을 눌렀을 경우
-                    if (isConfirmed) {
-                        let images = document.getElementById('images');
-                        if (images.files.length === 0) {
-                            // 이미지를 선택하지 않았을 때 images 필드를 제거
-                            document.getElementById('createForm').removeChild(images.parentNode);
-                        }
-
-                        // 폼 제출
-                        document.getElementById("createForm").submit();
-                    }
+                    extensionCheck();
                 })
             })
+
+            function extensionCheck(){
+                // confirm 함수를 사용해 확인 창 띄우기
+                let isConfirmed = confirm("저장하시겠습니까?");
+
+                // 사용자가 '확인'을 눌렀을 경우
+                if (isConfirmed) {
+                    let images = document.getElementById('images');
+                    if (images.files.length === 0) { // 이미지를 선택하지 않았을 때 images 필드를 제거
+                        document.getElementById('createForm').removeChild(images.parentNode);
+                    } else {
+                        let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
+                        for(let i = 0; i < images.files.length; i++){
+                            let name = images.files[i].name;
+                            let ext_index = name.lastIndexOf(".");
+                            let extension = name.slice(ext_index); // 확장자 추출
+                            if(!image_extension.includes(extension.toLowerCase())){
+                                alert("이미지 파일만 첨부 가능합니다");
+                                return;
+                            }
+                        }
+                    }
+                    // 폼 제출
+                    document.getElementById("createForm").submit();
+                }
+            }
 
             // R(Read)
             async function getUserInfo(){

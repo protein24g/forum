@@ -51,7 +51,6 @@ public class FreeBoardServiceImpl implements BoardService {
                     .createDate(LocalDateTime.now())
                     .view(0)
                     .build();
-            System.out.println("엔티티 생성완료");
             try {
                 if(dto.getImages() != null){
                     List<Image> images = imageService.saveImage(dto.getImages());
