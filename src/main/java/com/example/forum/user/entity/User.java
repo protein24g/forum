@@ -36,9 +36,6 @@
         @Enumerated(EnumType.STRING) // 성별을 문자열로 db에 저장
         private Gender gender;
 
-        @Column(name = "address", nullable = false)
-        private String address;
-
         public enum Role{ADMIN, USER}
         @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
         private Role role;
@@ -56,14 +53,13 @@
 
         @Builder
         public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
-                    int age, User.Gender gender, String address, User.Role role, boolean isActive){
+                    int age, User.Gender gender, User.Role role, boolean isActive){
             this.nickname = nickname;
             this.loginId = loginId;
             this.loginPw = loginPw;
             this.createDate = createDate;
             this.age = age;
             this.gender = gender;
-            this.address = address;
             this.role = role;
             this.isActive = isActive;
         }

@@ -52,7 +52,6 @@ public class UserService {
                                             .createDate(LocalDateTime.now())
                                             .age(joinRequest.getAge())
                                             .gender(joinRequest.getGender())
-                                            .address(joinRequest.getAddress())
                                             .role(User.Role.USER)
                                             .isActive(true)
                                             .build());
@@ -128,7 +127,6 @@ public class UserService {
                 .age(user.getAge())
                 .gender(String.valueOf(user.getGender()))
                 .createDate(user.getCreateDate())
-                .address(user.getAddress())
                 .isActive(user.getActive())
                 .build());
     }

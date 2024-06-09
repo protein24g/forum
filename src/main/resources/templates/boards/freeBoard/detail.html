@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -64,6 +65,8 @@
                     window.location.href = "/login";
                 }else{
                     alert("댓글 작성 완료");
+                    document.getElementById("comment_content").value = "";
+                    await getAllComment(0);
                 }
             }catch (error){
                 alert(error);
@@ -278,7 +281,7 @@
                 const res = await response.text();
                 alert(res);
                 modalInstance.hide();
-                getAllComment(currentPage);
+                await getAllComment(currentPage);
             } catch (error) {
                 if (error instanceof TypeError) {
                     alert("로그인 후 이용하세요");
@@ -320,146 +323,214 @@
                 }
             }
         }
-        </script>
-        </head>
-        <div th:insert="~{layouts/header.html :: headerFragment}"></div>
-        <body style="background-color: #eee">
-        <input type="hidden" id="currentPage" value="0">
-            <input type="hidden" id="boardId" th:value="${boardId}">
-            <input type="hidden" class="_csrf" th:value="${_csrf.token}">
+    </script>
+</head>
+<div th:insert="~{layouts/header.html :: headerFragment}"></div>
+<body style="background-color: #eee">
+<input type="hidden" id="currentPage" value="0">
+<input type="hidden" id="boardId" th:value="${boardId}">
+<input type="hidden" class="_csrf" th:value="${_csrf.token}">
 
-
-                <div class="container-xl px-xxl-5">
-                    <div class="px-xxl-5 mx-xxl-5">
-                        <div class="px-xxl-5 mx-xxl-5">
-
-                            <br><a class="text-black px-3 py-2 fw-bold" href="/freeBoards" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
-
-                                <div class="board-info px-3" style="background-color: white; border-radius: 15px;">
-                                    <!-- 게시글 Detail -->
-                                    <div class="m-0 mt-4">
-                                        <div class="row">
-                                            <h3 class="py-1" id="title" style="word-wrap: break-word;"></h3>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <span id="nickname"></span>
-                                            </div>
-                                            <div class="col-auto">
-                                                <span id="createDate"></span>
-                                            </div>
-                                            <div class="col-auto">
-                                                <span id="view"></span>
-                                            </div>
-                                            <div class="col-auto">
-                                                <span id="commentCount"></span>
-                                            </div>
-                                            <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
-                                            <div class="col-auto ms-auto" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}">
-                                                <div class="col-auto px-2">
-                                                    <div class="dropdown">
-                                                        <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
-                                                        </button>
-                                                        <ul class="dropdown-menu text-center">
-                                                            <li>
-                                                                <button>수정</button>
-                                                            </li>
-                                                            <li>
-                                                                <button>삭제</button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr class="my-2">
-                                            <!--내용-->
-                                            <span id="freeBoard-content"></span>
-                                            <!--이미지-->
-                                            <div id="freeBoard-images"></div>
-                                    </div>
-                                    <br>
-                                        <a class="text-black px-3 py-2" href="/freeBoards" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
-
-                                        <h4 class="mt-5">댓글</h4>
-                                        <div class="comments">
-                                            <!-- 댓글 작성-->
-                                            <div class="newComment p-3" style="background-color: #eee; border-radius: 10px;">
-                                                <textarea class="form-control" id="comment_content" rows="3" style="border: none; background: none;"></textarea>
-                                                <input class="px-3 py-2 d-flex ms-auto" type="button" onclick="createUserComment()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
-                                            </div>
-                                            <!--댓글 리스트-->
-                                            <div class="freeBoardComment-list p-0" style="background-color: white"></div>
-                                            <!--댓글 페이징-->
-                                            <nav aria-label="Page navigation example">
-                                                <ul class="pagination justify-content-center comment-page-list">
-                                                </ul>
-                                            </nav>
-                                        </div>
-
-                                        <div class="p-0">
-                                            <!-- 댓글 수정, 삭제 -->
-                                            <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
-                                                <!-- Button trigger modal -->
-                                                <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#freeBoard-modalView">
-                                                    수정
-                                                </button>
-
-                                                <!-- 게시글 수정 Modal -->
-                                                <div class="modal fade" id="freeBoard-modalView" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">수정</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <label>제목</label>
-                                                                <textarea type="text" class="form-control" id="edit-title"></textarea>
-                                                                <label>내용</label>
-                                                                <textarea type="text" class="form-control" id="edit-freeBoard-content"></textarea>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                                                <button type="button" class="btn btn-sm btn-primary" id="editBoardButton">작성</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
-
-                                        <!-- 댓글 수정 Modal -->
-                                        <div>
-                                            <div class="modal fade" id="freeBoardComment-modalView" tabindex="-1" aria-labelledby="freeBoardComment-modal" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h2 class="modal-title fs-5" id="freeBoardComment-modal">수정</h2>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <textarea type="text" class="form-control" id="edit-content" rows="10"></textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                                            <button type="button" class="btn btn-sm btn-primary" id="editCommentButton">작성</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </div>
+<div class="container-xl">
+    <div class="row text-center">
+        <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
+            <div sec:authorize="isAnonymous()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
+                <form action="/loginProc" method="post">
+                    <input type="text" name="username" class="form-control mb-2" placeholder="아이디">
+                    <input type="password" name="password" class="form-control mb-2" placeholder="비밀번호">
+                    <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
+                    <button type="submit" class="form-control text-white" style="background-color: #434B57">로그인</button>
+                </form>
+                <div class="text-end">
+                    <a href="/join" style="text-decoration: none; color: black">회원가입</a>
+                </div>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
+                <div class="d-flex align-items-center text-black px-1">
+                    <div class="me-auto">
+                        <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                        <strong th:text="${#authentication.getPrincipal().username}"></strong>
+                    </div>
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <a href="/admin" class="p-2 text-white">
+                            <img src="https://cdn-icons-png.flaticon.com/128/3524/3524752.png" width="25px;" height="25px;">
+                        </a>
+                    </div>
+                </div>
+                <div class="text-start px-1 pt-2">
+                    <div>작성글 1개</div>
+                    <div>댓글 15개</div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-6 p-1">
+                        <div class="py-1" style="background-color: #434B57; border-radius: 5px;">
+                            <a href="/mypage" style="text-decoration: none; color: white">마이페이지</a>
+                        </div>
+                    </div>
+                    <div class="col-6 p-1">
+                        <div class="logoutBtn py-1" style="background-color: #434B57; border-radius: 5px; color: white;">
+                            <a href="#" style="text-decoration: none; color: white">로그아웃</a>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="py-3">
+                <div class="p-3" style="background-color: white; border-radius: 15px;">
+                    <div class="d-flex">
+                        <div>
+                            <h5 class="fw-bold">인기게시글</h5>
+                        </div>
+                        <div class="ms-auto">
+                            <a href="/freeBoards" class="text-black" style="text-decoration: none;">더보기</a>
+                        </div>
+                    </div>
+                    <hr class="m-1">
+                    <div class="hotBoard-list">
+                        <div class="hotBoard-item d-flex text-start p-1">
+                            <span class="col me-auto pe-3">
+                                z
+                            </span>
+                            <span class="col-auto">
+                                2024-05-12
+                            </span>
+                        </div>
+                        <div class="hotBoard-item d-flex text-start p-1">
+                            <span class="col me-auto pe-3">
+                                z
+                            </span>
+                            <span class="col-auto">
+                                2024-05-12
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="order-xl-2 order-1 col-xl-9 text-start">
+            <br><a class="text-black px-3 py-2 fw-bold" href="/freeBoards" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
 
-                <div th:insert="~{layouts/footer.html :: footerFragment}"></div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </body>
+            <div class="board-info px-3" style="background-color: white; border-radius: 15px;">
+                <!-- 게시글 Detail -->
+                <div class="m-0 mt-4">
+                    <div class="row">
+                        <h3 class="py-1" id="title" style="word-wrap: break-word;"></h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <span id="nickname"></span>
+                        </div>
+                        <div class="col-auto">
+                            <span id="createDate"></span>
+                        </div>
+                        <div class="col-auto">
+                            <span id="view"></span>
+                        </div>
+                        <div class="col-auto">
+                            <span id="commentCount"></span>
+                        </div>
+                        <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
+                        <div class="col-auto ms-auto" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}">
+                            <div class="col-auto px-2">
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
+                                    </button>
+                                    <ul class="dropdown-menu text-center">
+                                        <li>
+                                            <button>수정</button>
+                                        </li>
+                                        <li>
+                                            <button>삭제</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <!--내용-->
+                    <span id="freeBoard-content"></span>
+                    <!--이미지-->
+                    <div id="freeBoard-images"></div>
+                </div>
+                <br>
+                <a class="text-black px-3 py-2" href="/freeBoards" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
+
+                <h4 class="mt-5">댓글</h4>
+                <div class="comments">
+                    <!-- 댓글 작성-->
+                    <div class="newComment p-3" style="background-color: #eee; border-radius: 10px;">
+                        <textarea class="form-control" id="comment_content" rows="3" style="border: none; background: none;"></textarea>
+                        <input class="px-3 py-2 d-flex ms-auto" type="button" onclick="createUserComment()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
+                    </div>
+                    <!--댓글 리스트-->
+                    <div class="freeBoardComment-list p-0" style="background-color: white"></div>
+                    <!--댓글 페이징-->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center comment-page-list">
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="p-0">
+                    <!-- 댓글 수정, 삭제 -->
+                    <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
+                        <!-- Button trigger modal -->
+                        <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#freeBoard-modalView">
+                            수정
+                        </button>
+
+                        <!-- 게시글 수정 Modal -->
+                        <div class="modal fade" id="freeBoard-modalView" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">수정</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label>제목</label>
+                                        <textarea type="text" class="form-control" id="edit-title"></textarea>
+                                        <label>내용</label>
+                                        <textarea type="text" class="form-control" id="edit-freeBoard-content"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                        <button type="button" class="btn btn-sm btn-primary" id="editBoardButton">작성</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+
+                <!-- 댓글 수정 Modal -->
+                <div>
+                    <div class="modal fade" id="freeBoardComment-modalView" tabindex="-1" aria-labelledby="freeBoardComment-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title fs-5" id="freeBoardComment-modal">수정</h2>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea type="text" class="form-control" id="edit-content" rows="10"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                    <button type="button" class="btn btn-sm btn-primary" id="editCommentButton">작성</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="~{layouts/footer.html :: footerFragment}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
 </html>
-
-
-

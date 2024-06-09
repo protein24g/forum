@@ -18,12 +18,11 @@ public class AdminResponse {
     private int age;
     private String gender;
     private LocalDateTime createDate;
-    private String address;
     private boolean isActive;
 
     @Builder
     public AdminResponse(Long id, String role, String nickname, String userId,
-                  int age, String gender, LocalDateTime createDate, String address, boolean isActive){
+                  int age, String gender, LocalDateTime createDate, boolean isActive){
         this.id = id;
         this.role = role;
         this.nickname = nickname;
@@ -31,7 +30,6 @@ public class AdminResponse {
         this.age = age;
         this.gender = gender;
         this.createDate = createDate;
-        this.address = address;
         this.isActive = isActive;
     }
 }
