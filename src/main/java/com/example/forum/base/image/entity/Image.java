@@ -14,6 +14,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String originalName;
+
     private String fileName;
 
     private String filePath;
@@ -22,7 +24,8 @@ public class Image {
     private FreeBoard freeBoard = null;
 
     @Builder
-    public Image(String fileName, String filePath){
+    public Image(String originalName, String fileName, String filePath){
+        this.originalName = originalName;
         this.fileName = fileName;
         this.filePath = filePath;
     }

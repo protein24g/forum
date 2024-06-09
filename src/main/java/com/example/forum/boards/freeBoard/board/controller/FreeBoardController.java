@@ -2,7 +2,7 @@ package com.example.forum.boards.freeBoard.board.controller;
 
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
-import com.example.forum.boards.freeBoard.board.service.freeBoarderviceImpl;
+import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 @Transactional
 public class FreeBoardController {
-    private final freeBoarderviceImpl freeBoarderviceImpl;
+    private final FreeBoardServiceImpl freeBoardServiceImpl;
 
     // C(Create)
     @GetMapping("/create")
@@ -26,7 +26,7 @@ public class FreeBoardController {
     @PostMapping("/freeBoard/create")
     public String createBoard(FreeBoardRequest dto, Model model){
         try {
-            FreeBoardResponse freeBoardResponse = freeBoarderviceImpl.createBoard(dto);
+            FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.createBoard(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/freeBoard/" + freeBoardResponse.getId());
             return "message/index";
@@ -46,7 +46,7 @@ public class FreeBoardController {
     @GetMapping("/freeBoard/{boardId}")
     public String freeBoardDetail(@PathVariable("boardId") Long boardId, Model model){
         try {
-            String writer = freeBoarderviceImpl.getWriter(boardId);
+            String writer = freeBoardServiceImpl.getWriter(boardId);
             model.addAttribute("writer", writer);
             model.addAttribute("boardId", boardId);
             return "boards/freeBoard/detail";

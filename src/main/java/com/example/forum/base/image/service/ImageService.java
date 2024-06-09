@@ -36,6 +36,8 @@ public class ImageService {
                 continue; // 파일이 없는 경우 스킵
             }
 
+            System.out.println("파일명 : " + file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf('.')));
+
             // 파일 크기 확인
             if (file.getSize() > MAX_FILE_SIZE) {
                 throw new IllegalArgumentException("파일 크기는 5MB를 넘을 수 없습니다");
@@ -50,12 +52,12 @@ public class ImageService {
             // 파일 저장
             String fileName = UUID.randomUUID() + fileExtension;
             Path filePath = Paths.get(uploadDir, fileName); // 파일 저장 위치
-            System.out.println(filePath);
             Files.copy(file.getInputStream(), filePath);
 
             // 이미지 정보 저장
             Image savedImage = imageRepository.save(
                     Image.builder()
+                            .originalName(file.getOriginalFilename())
                             .fileName(fileName)
                             .filePath(filePath.toString())
                             .build()
