@@ -337,7 +337,7 @@
 
                 const res = await response.text();
                 alert(res);
-                getAllComment(currentPage);
+                await getAllComment(currentPage);
             }catch (error){
                 if(error instanceof TypeError){
                     alert("로그인 후 이용하세요");
@@ -465,7 +465,7 @@
                                     </button>
                                     <ul class="dropdown-menu text-center">
                                         <li>
-                                            <button>수정</button>
+                                            <a th:href="'/updateP?boardId=' + ${boardId}">수정</a>
                                         </li>
                                         <li>
                                             <button>삭제</button>

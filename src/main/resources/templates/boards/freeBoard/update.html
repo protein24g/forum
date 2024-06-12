@@ -6,37 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="/account/logout.js"></script>
-    <link href="/mobile/font.css" rel="stylesheet">
+    <link href="/mobile/font.css" rel="stylesheet"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function (){
             FileInput();
-            document.getElementById("write").addEventListener("click", function (event) {
-                extensionCheck(event);
-            });
-        });
+            getBoardUpdateData();
+            document.getElementById("write").addEventListener("click", function (){
+                extensionCheck();
+            })
+        })
 
-        function extensionCheck(event) {
+        function extensionCheck(){
+            // confirm 함수를 사용해 확인 창 띄우기
             let isConfirmed = confirm("저장하시겠습니까?");
-            if (isConfirmed) {
-                let images = document.querySelectorAll('.image');
 
-                if (images.length !== 0) {
-                    for(let i = 0; i < images.length ; i++){
-                        let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
-                        let name = images[i].files[0].name;
+            // 사용자가 '확인'을 눌렀을 경우
+            if (isConfirmed) {
+                let images = document.getElementById('images');
+                console.log(images);
+                if (images != null) { // 이미지를 선택하지 않았을 때 images 필드를 제거
+                    let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
+                    for(let i = 0; i < images.files.length; i++){
+                        let name = images.files[i].name;
                         let ext_index = name.lastIndexOf(".");
                         let extension = name.slice(ext_index); // 확장자 추출
-
-                        if (!image_extension.includes(extension.toLowerCase())) {
+                        if(!image_extension.includes(extension.toLowerCase())){
                             alert("이미지 파일만 첨부 가능합니다");
-                            event.preventDefault(); // 폼 제출 방지
-                            return false;
+                            return;
                         }
                     }
                 }
-                document.getElementById("createForm").submit();
-            } else {
-                event.preventDefault(); // 폼 제출 방지
+                // 업데이트
+                updateBoard();
             }
         }
 
@@ -53,48 +54,149 @@
                 `;
                 container.appendChild(div);
 
+                div.querySelector(".file-remove").addEventListener("click", function (event) {
+                    event.target.closest(".image-item").remove();
+                });
+
                 div.querySelector("input").addEventListener("change", function (event) {
                     const selectedFileName = event.target.files[0].name;
-                    const existingFiles = document.querySelectorAll('.image-item input');
-                    existingFiles.forEach(function(file) {
+                    const originalFiles = document.querySelectorAll('.original-image div'); // 기존 이미지 중복 체크
+                    originalFiles.forEach(function (div) {
+                        if(div.textContent === selectedFileName){
+                            alert("중복된 이미지가 있습니다");
+                            event.target.value = ""; // 선택된 파일 초기화
+                            return;
+                        }
+                    });
+
+                    const newFiles = document.querySelectorAll('.image-item input'); // 새로운 이미지 중복 체크
+                    newFiles.forEach(function(file) {
                         if (file !== event.target && file.files.length > 0 && file.files[0].name === selectedFileName) {
-                            alert("중복된 이미지가 있습니다.");
+                            alert("중복된 이미지가 있습니다");
                             event.target.value = ""; // 선택된 파일 초기화
                             return;
                         }
                     });
                 });
+            });
+        }
+
+        function addOriginalFileInput(images){
+            const container = document.querySelector(".image-list");
+
+            for(let i = 0; i < images.length; i++){
+                let div = document.createElement("div");
+                div.classList.add("original-image", "col-5", "d-flex", "my-3");
+                div.innerHTML += `
+                            <div class="p-2 col-11 me-auto text-dot border" style=" border-radius: 5px;" name="originalImages">${images[i]}</div>
+                            <span class="col-auto p-2 file-remove" style="background-color: #F78181; border-radius: 5px; color: white; cursor: pointer;">삭제</span>
+                `;
+                container.appendChild(div);
 
                 div.querySelector(".file-remove").addEventListener("click", function (event) {
-                    event.target.closest(".image-item").remove();
+                    event.target.closest(".original-image").remove();
                 });
-            })
+            }
         }
 
         // R(Read)
-        async function getUserInfo() {
-            try {
+        async function getUserInfo(){
+            try{
                 const response = await fetch("/api/userInfo", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
                     }
                 });
 
                 const res = await response.json();
+                console.log(res);
                 document.querySelector(".nickname").innerText = `${res.nickname}`;
                 document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
-            } catch (error) {
+            }catch (error){
                 alert(error);
                 window.location.href = "/";
+            }
+        }
+
+        async function getBoardUpdateData(){
+            try{
+                const url = new URL(window.location.href);
+                const params = new URLSearchParams(url.search);
+                const boardId = params.get("boardId");
+                const response = await fetch(`/api/update?boardId=${boardId}`, {
+                    method : "GET",
+                    headers : {
+                        "ContentType" : "application/json"
+                    }
+                });
+
+                const res = await response.json();
+                console.log(res);
+                document.querySelector(".title").value = res.title;
+                document.querySelector(".content").value = res.content;
+                addOriginalFileInput(res.images);
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
+        }
+
+        // U(Update)
+        async function updateBoard() {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            const boardId = params.get("boardId");
+            let _csrf = document.getElementById("_csrf").value;
+
+            let originalImageList = [];
+            let originalImagesTag = document.querySelectorAll("[name='originalImages']");
+            for (let i = 0; i < originalImagesTag.length; i++) {
+                originalImageList.push(originalImagesTag[i].innerText)
+            }
+            console.log(originalImageList);
+
+            let formData = new FormData();
+            formData.append("title", document.getElementById("edit-title").value);
+            formData.append("content", document.getElementById("edit-freeBoard-content").value);
+            formData.append("originalImages", JSON.stringify(originalImageList));
+
+            let newImageTag = document.querySelectorAll("[name='images']");
+            for (let i = 0; i < newImageTag.length; i++) {
+                if (newImageTag[i].files.length > 0) {
+                    formData.append("images", newImageTag[i].files[0]);
+                }
+            }
+            console.log(formData);
+
+            try {
+                const response = await fetch(`/api/freeBoard?boardId=${boardId}`, {
+                    method: "PUT",
+                    headers: {
+                        "X-CSRF-TOKEN": _csrf
+                    },
+                    body: formData
+                });
+
+                const res = await response;
+                alert(res);
+            } catch (error) {
+                if (error instanceof TypeError) {
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
+                } else {
+                    alert("ㅋㅋ" + error + "ㅋㅋ");
+                    window.location.href = "/freeBoard/" + boardId;
+                }
             }
         }
     </script>
 </head>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <body style="background-color: #eee">
+<input type="hidden" id="_csrf" th:value="${_csrf.token}">
 <div class="container-xl">
     <div class="row text-center">
         <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -156,36 +258,35 @@
                     <hr class="m-1">
                     <div class="hotBoard-list">
                         <div class="hotBoard-item d-flex text-start p-1">
-                            <span class="col me-auto pe-3">
-                                z
-                            </span>
+                                        <span class="col me-auto pe-3">
+                                            z
+                                        </span>
                             <span class="col-auto">
-                                2024-05-12
-                            </span>
+                                            2024-05-12
+                                        </span>
                         </div>
                         <div class="hotBoard-item d-flex text-start p-1">
-                            <span class="col me-auto pe-3">
-                                z
-                            </span>
+                                        <span class="col me-auto pe-3">
+                                            z
+                                        </span>
                             <span class="col-auto">
-                                2024-05-12
-                            </span>
+                                            2024-05-12
+                                        </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="order-xl-2 order-1 col-xl-9">
-            <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 작성</h4>
-            <form class="p-3 text-start" action="/freeBoard/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
-                <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
-                <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
+            <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 수정</h4>
+            <div class="p-3 text-start" style="background-color: white; border-radius: 15px;">
+                <p><input class="form-control title" id="edit-title" type="text"></p>
+                <p><textarea class="form-control content" id="edit-freeBoard-content" rows="10"></textarea></p>
                 <div class="image-list my-3">
                     <span class="p-2 file-append" style="background-color: #819FF7; border-radius: 5px; color: white;">이미지 추가</span>
                 </div>
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <button class="btn btn-primary" type="button" id="write">작성</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -193,3 +294,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
+
+
+

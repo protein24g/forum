@@ -2,6 +2,7 @@ package com.example.forum.base.image.service;
 
 import com.example.forum.base.image.entity.Image;
 import com.example.forum.base.image.repository.ImageRepository;
+import com.sun.nio.sctp.IllegalReceiveException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,17 @@ public class ImageService {
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     // C(Create)
+    // C(Create)
     public List<Image> saveImage(List<MultipartFile> files) throws Exception {
         List<Image> savedImages = new ArrayList<>();
 
-        for(MultipartFile file : files){
-            if (files == null || files.isEmpty()){
-                continue; // 파일이 없는 경우 스킵
+        if (files == null || files.isEmpty()) {
+            throw new IllegalReceiveException("파일이 존재하지 않습니다");
+        }
+
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                continue; // 빈 파일은 무시
             }
 
             System.out.println("파일명 : " + file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf('.')));
@@ -67,6 +73,7 @@ public class ImageService {
 
         return savedImages;
     }
+
 
     // 파일 확장자 추출
     private String getFileExtension(String fileName) {

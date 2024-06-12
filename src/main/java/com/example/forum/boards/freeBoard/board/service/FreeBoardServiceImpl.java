@@ -3,6 +3,7 @@ package com.example.forum.boards.freeBoard.board.service;
 import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.image.entity.Image;
+import com.example.forum.base.image.service.AuthenticationService;
 import com.example.forum.base.image.service.ImageService;
 import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
@@ -26,21 +27,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 자유 게시판 서비스 구현 클래스
+ */
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class FreeBoardServiceImpl implements BoardService {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final ImageService imageService;
+    private final AuthenticationService authenticationService;
 
-    // C(Create)
+    /**
+     * 게시글 생성
+     *
+     * @param dto 게시글 요청 DTO
+     * @return 생성된 게시글 응답 DTO
+     */
     @Override
-    public FreeBoardResponse createBoard(FreeBoardRequest dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+    public FreeBoardResponse create(FreeBoardRequest dto) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+
+        if(customUserDetails != null){
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
@@ -52,15 +61,16 @@ public class FreeBoardServiceImpl implements BoardService {
                     .view(0)
                     .build();
             try {
-                if(dto.getImages() != null){
+                if (dto.getImages() != null && !dto.getImages().isEmpty()) {
                     List<Image> images = imageService.saveImage(dto.getImages());
-                    for(Image image : images){
+                    for (Image image : images) {
                         freeBoardEntity.addImage(image);
                     }
                 }
             } catch (Exception e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
             }
+
             user.addBoard(freeBoardEntity);
             freeBoardRepository.save(freeBoardEntity);
 
@@ -71,57 +81,68 @@ public class FreeBoardServiceImpl implements BoardService {
                     .content(freeBoardEntity.getContent())
                     .createDate(freeBoardEntity.getCreateDate())
                     .build();
-        }else{
+        } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
     }
 
-    // R(Read)
+    /**
+     * 게시글 목록 조회
+     *
+     * @param dto 검색 조건 DTO
+     * @return 게시글 페이지 응답 DTO
+     */
     @Override
-    public Page<FreeBoardResponse> pageBoards(BoardSearch dto) { // 게시글 리스트
+    @Transactional
+    public Page<FreeBoardResponse> pageBoards(BoardSearch dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards = null;
+        Page<FreeBoard> boards;
 
         if (dto.getKeyword().length() != 0) {
-            // 검색어가 있는 경우
-            switch (dto.getOption()){
+            switch (dto.getOption()) {
                 case "1":
                     boards = freeBoardRepository.findByTitleContaining(dto.getKeyword(), pageable);
                     break;
                 case "2":
                     boards = freeBoardRepository.findByContentContaining(dto.getKeyword(), pageable);
                     break;
+                default:
+                    boards = freeBoardRepository.findAll(pageable);
             }
         } else {
-            // 검색어가 없는 경우
             boards = freeBoardRepository.findAll(pageable);
         }
 
         return boards
                 .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())
-                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
-                        .hasImage((board.getImages().size() >= 1) ? true : false)
+                        .hasImage(!board.getImages().isEmpty())
                         .build());
     }
 
+    /**
+     * 게시글 상세 조회
+     *
+     * @param boardId 게시글 ID
+     * @return 게시글 응답 DTO
+     */
     @Override
-    public FreeBoardResponse getDetail(Long boardNum) {
-        FreeBoard freeBoard = freeBoardRepository.findById(boardNum)
+    @Transactional
+    public FreeBoardResponse getDetail(Long boardId) {
+        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         List<String> imagesName = freeBoard.getImages().stream()
-                .map(Image::getFileName)  // 이미지에서 파일 이름 추출
-                .collect(Collectors.toList());  // 문자열 리스트로 변환
+                .map(Image::getFileName)
+                .collect(Collectors.toList());
 
         return FreeBoardResponse.builder()
                 .id(freeBoard.getId())
-                // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                 .nickname(freeBoard.getUser().getActive() ? freeBoard.getUser().getNickname() : "탈퇴한 사용자")
                 .title(freeBoard.getTitle())
                 .content(freeBoard.getContent())
@@ -133,44 +154,111 @@ public class FreeBoardServiceImpl implements BoardService {
                 .build();
     }
 
+    /**
+     * 특정 사용자의 게시글 목록 조회
+     *
+     * @param userId 사용자 ID
+     * @param page   페이지 번호
+     * @return 게시글 페이지 응답 DTO
+     */
     @Override
-    public Page<FreeBoardResponse> getBoardsForUser(Long userId, int page) { // 특정 유저 게시글 리스트
+    public Page<FreeBoardResponse> getBoardsForUser(Long userId, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<FreeBoard> boards = freeBoardRepository.findByUserId(userId, pageable);
 
         return boards
                 .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())
-                        // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
-                        .hasImage((board.getImages().size() >= 1 ? true : false))
+                        .hasImage(!board.getImages().isEmpty())
                         .build());
     }
 
+    /**
+     * 게시글 작성자 조회
+     *
+     * @param boardId 게시글 ID
+     * @return 작성자 닉네임
+     */
     @Override
-    public String getWriter(Long boardNum) {
-        FreeBoard freeBoard = freeBoardRepository.findById(boardNum)
+    public String getWriter(Long boardId) {
+        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         return freeBoard.getUser().getNickname();
     }
 
-    // U(Update)
-    @Override
-    public FreeBoardResponse edit(Long boardNum, FreeBoardRequest dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
-            FreeBoard freeBoard = freeBoardRepository.findById(boardNum)
+    /**
+     * 게시글 작성자 확인
+     *
+     * @param boardId 게시글 ID
+     */
+    public void writerCheck(Long boardId) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-            if(freeBoard.getUser().getId().equals(customUserDetails.getId())){
+            if (!customUserDetails.getId().equals(freeBoard.getUser().getId())) {
+                throw new IllegalArgumentException("글 작성자만 수정 가능합니다");
+            }
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 게시글 수정 데이터 가져오기
+     *
+     * @param boardId 게시글 ID
+     * @return 수정할 게시글 응답 DTO
+     */
+    public FreeBoardResponse getBoardUpdateData(Long boardId) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            if (user.getLoginId().equals(freeBoard.getUser().getLoginId())) {
+                List<String> imagesName = freeBoard.getImages().stream()
+                        .map(Image::getOriginalName)
+                        .collect(Collectors.toList());
+                return FreeBoardResponse.builder()
+                        .title(freeBoard.getTitle())
+                        .content(freeBoard.getContent())
+                        .images(imagesName)
+                        .build();
+            } else {
+                throw new IllegalArgumentException("작성자만 수정 가능합니다");
+            }
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 게시글 수정
+     *
+     * @param boardId 게시글 ID
+     * @param dto     게시글 요청 DTO
+     * @return 수정된 게시글 응답 DTO
+     */
+    @Override
+    public FreeBoardResponse update(Long boardId, FreeBoardRequest dto) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            if (freeBoard.getUser().getId().equals(customUserDetails.getId())) {
                 freeBoard.setTitle(dto.getTitle());
                 freeBoard.setContent(dto.getContent());
                 freeBoardRepository.save(freeBoard);
@@ -181,13 +269,13 @@ public class FreeBoardServiceImpl implements BoardService {
                         .content(freeBoard.getContent())
                         .createDate(freeBoard.getCreateDate())
                         .build();
-            }else{
+            } else {
                 throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다");
             }
-        }else {
+        } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
     }
 
-    // D(Delete)
+    // D(Delete) - 삭제 메서드 추가 필요
 }

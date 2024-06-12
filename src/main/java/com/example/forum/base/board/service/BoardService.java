@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 // 클래스가 클래스를 상속 받을 때 : extends
 public interface BoardService<T> {
     // C(Create)
-    T createBoard(FreeBoardRequest dto); // 게시글 생성
+    T create(FreeBoardRequest dto); // 게시글 생성
 
     // R(Read)
     Page<T> pageBoards(BoardSearch dto); // 페이지별 게시글 목록 조회
@@ -20,7 +20,7 @@ public interface BoardService<T> {
     String getWriter(Long boardNum); // 게시글 작성자 정보 조회
 
     // U(Update)
-    T edit(Long boardNum, FreeBoardRequest dto); // 게시글 수정
+    T update(Long boardNum, FreeBoardRequest dto); // 게시글 수정
 
     // D(Delete)
 }

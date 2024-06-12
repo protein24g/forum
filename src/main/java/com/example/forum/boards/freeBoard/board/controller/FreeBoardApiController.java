@@ -34,11 +34,24 @@ public class FreeBoardApiController {
     }
 
     // U(Update)
-    @PutMapping("/api/freeBoard/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, @RequestBody FreeBoardRequest dto){
+    @GetMapping("/api/update")
+    public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @RequestParam(name = "boardId") Long boardId){
         try{
-            freeBoardServiceImpl.edit(boardId, dto);
-            return ResponseEntity.status(HttpStatus.OK).body("리뷰 수정완료");
+            System.out.println(dto);
+            System.out.println(dto.getOriginalImages());
+            FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.getBoardUpdateData(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponse);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/api/freeBoard")
+    public ResponseEntity<?> updateBoard(@RequestParam("boardId") Long boardId, @ModelAttribute FreeBoardRequest dto){
+        try{
+            System.out.println("updateBoard 들어옴");
+            freeBoardServiceImpl.update(boardId, dto);
+            return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
         }catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
