@@ -150,15 +150,16 @@
                 const response = await fetch(`/api/freeBoard/${boardId}/comments?page=${page}`, {
                     method : "GET",
                     headers : {
-                        "Content-Type" : "application/json",
+                        "Content-Type" : "application/json"
                     }
                 });
 
                 const res = await response.json();
-                console.log(res)
-                if(res.content == false){
-                    return false;
-                }else {
+                console.log("댓글 목록이다 : " + res.content);
+                if(res.content.length === 0) {
+                    document.querySelector(".freeBoardComment-list").innerHTML = '';
+                    document.querySelector(".comment-page-list").innerHTML = '';
+                } else {
                     // 렌더링 할 HTML을 저장할 변수
                     let commentHtml = `<br><hr>`;
 
@@ -212,31 +213,31 @@
                                         `;
                     });
                     document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
-                }
 
-                let pageHtml = "";
-                pageHtml += `
+                    let pageHtml = "";
+                    pageHtml += `
                     <li class="page-item ${res.first ? "disabled" : ""}">
                         <a class="page-link btn-sm" onclick="getAllComment(${res.number - 1})"><</a>
                     </li>
                     `;
 
-                let startPage = (Math.floor((res.number) / 5)) * 5;
-                let endPage = Math.min(startPage + 5, res.totalPages);
-                for(let page = startPage; page < endPage ; page++){
-                    pageHtml += `
+                    let startPage = (Math.floor((res.number) / 5)) * 5;
+                    let endPage = Math.min(startPage + 5, res.totalPages);
+                    for(let page = startPage; page < endPage ; page++){
+                        pageHtml += `
                         <li class="page-item ${page == res.number ? 'active' : ''}">
                             <a class="page-link btn-sm" onclick="getAllComment(${page})">${page + 1}</a>
                         </li>
                     `;
-                }
+                    }
 
-                pageHtml += `
+                    pageHtml += `
                     <li class="page-item ${res.last ? "disabled" : ""}">
                         <a class="page-link btn-sm" onclick="getAllComment(${res.number + 1})">></a>
                     </li>
                 `;
-                document.querySelector(".comment-page-list").innerHTML = pageHtml;
+                    document.querySelector(".comment-page-list").innerHTML = pageHtml;
+                }
             }catch (error){
                 alert(error);
                 window.location.href = "/";
@@ -337,7 +338,7 @@
 
                 const res = await response.text();
                 alert(res);
-                await getAllComment(currentPage);
+                await getAllComment(currentPage); // 댓글 삭제 후 새로운 댓글 목록을 가져와 화면을 업데이트
             }catch (error){
                 if(error instanceof TypeError){
                     alert("로그인 후 이용하세요");
