@@ -48,7 +48,7 @@
             let _csrf = document.querySelector("._csrf").value;
 
             try{
-                const response = await fetch(`/api/c/freeBoard/${boardId}/comments`, {
+                const response = await fetch(`/api/freeBoard/${boardId}/comments`, {
                     method : "POST",
                     headers : {
                         "Content-Type" : "application/json",
@@ -465,7 +465,10 @@
                                     </button>
                                     <ul class="dropdown-menu text-center">
                                         <li>
-                                            <a th:href="'/updateP?boardId=' + ${boardId}">수정</a>
+                                            <form th:action="@{'/freeBoard/' + ${boardId}}" method="post">
+                                                <input type="hidden" name="_method" value="PUT"/>
+                                                <button type="submit">수정</button>
+                                            </form>
                                         </li>
                                         <li>
                                             <button>삭제</button>

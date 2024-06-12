@@ -11,18 +11,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * 자유 게시판 API 컨트롤러
+ */
 @RestController
 @RequiredArgsConstructor
 public class FreeBoardApiController {
     private final FreeBoardServiceImpl freeBoardServiceImpl;
 
-    // R(Read)
+    /**
+     * 게시글 목록을 검색하여 반환
+     *
+     * @param dto 검색 조건을 포함한 DTO
+     * @return 검색된 게시글 목록 페이지
+     */
     @PostMapping("/api/freeBoard")
-    public ResponseEntity<?> boardP(@RequestBody BoardSearch dto) {
-        Page<FreeBoardResponse> boardResponses = freeBoardServiceImpl.pageBoards(dto); // 검색 페이징
+    public ResponseEntity<?> boardPage(@RequestBody BoardSearch dto) {
+        Page<FreeBoardResponse> boardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
     }
 
+    /**
+     * 특정 게시글의 상세 정보 반환
+     *
+     * @param boardId 게시글 ID
+     * @return 게시글 상세 정보
+     */
     @GetMapping("/api/freeBoard/{boardId}")
     public ResponseEntity<?> getBoardDetail(@PathVariable("boardId") Long boardId){
         try {
@@ -33,7 +47,13 @@ public class FreeBoardApiController {
         }
     }
 
-    // U(Update)
+    /**
+     * 게시글 수정을 위한 데이터 반환
+     *
+     * @param dto     수정할 게시글 내용을 담은 DTO
+     * @param boardId 게시글 ID
+     * @return 게시글 수정을 위한 데이터
+     */
     @GetMapping("/api/update")
     public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @RequestParam(name = "boardId") Long boardId){
         try{
@@ -46,6 +66,13 @@ public class FreeBoardApiController {
         }
     }
 
+    /**
+     * 게시글 수정
+     *
+     * @param boardId 게시글 ID
+     * @param dto     수정할 게시글 내용을 담은 DTO
+     * @return 수정 결과 메시지
+     */
     @PutMapping("/api/freeBoard")
     public ResponseEntity<?> updateBoard(@RequestParam("boardId") Long boardId, @ModelAttribute FreeBoardRequest dto){
         try{

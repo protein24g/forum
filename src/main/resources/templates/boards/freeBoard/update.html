@@ -123,9 +123,7 @@
 
         async function getBoardUpdateData(){
             try{
-                const url = new URL(window.location.href);
-                const params = new URLSearchParams(url.search);
-                const boardId = params.get("boardId");
+                const boardId = document.querySelector("#boardId").value;
                 const response = await fetch(`/api/update?boardId=${boardId}`, {
                     method : "GET",
                     headers : {
@@ -197,6 +195,7 @@
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <body style="background-color: #eee">
 <input type="hidden" id="_csrf" th:value="${_csrf.token}">
+<input type="hidden" id="boardId" th:value="${boardId}">
 <div class="container-xl">
     <div class="row text-center">
         <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">

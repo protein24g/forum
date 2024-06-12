@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 이미지 서비스 클래스
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,8 +31,13 @@ public class ImageService {
     // 파일 업로드 최대 크기 설정 (예: 5MB)
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-    // C(Create)
-    // C(Create)
+    /**
+     * 이미지를 저장하고 저장된 이미지 목록을 반환
+     *
+     * @param files 이미지 파일 목록
+     * @return 저장된 이미지 목록
+     * @throws Exception 파일 처리 중 예외가 발생할 경우
+     */
     public List<Image> saveImage(List<MultipartFile> files) throws Exception {
         List<Image> savedImages = new ArrayList<>();
 
@@ -74,8 +82,12 @@ public class ImageService {
         return savedImages;
     }
 
-
-    // 파일 확장자 추출
+    /**
+     * 파일의 확장자를 추출하여 반환
+     *
+     * @param fileName 파일 이름
+     * @return 파일 확장자
+     */
     private String getFileExtension(String fileName) {
         // 파일 이름이 null인지, 비어 있는지, 또는 점('.')을 포함하고 있는지 확인
         if (fileName == null || fileName.isEmpty() || !fileName.contains(".")) {
@@ -86,7 +98,12 @@ public class ImageService {
         return fileName.substring(fileName.lastIndexOf('.')); // "."의 인덱스부터 끝까지 문자열을 반환
     }
 
-    // 파일 확장자 확인
+    /**
+     * 파일 확장자가 유효성 검사
+     *
+     * @param extension 파일 확장자
+     * @return 유효한 확장자인 경우 true, 그렇지 않으면 false
+     */
     private boolean isValidExtension(String extension) {
         // 유효한 파일 확장자들
         String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};

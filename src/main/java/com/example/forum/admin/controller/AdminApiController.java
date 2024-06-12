@@ -12,13 +12,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * 관리자 API 컨트롤러
+ */
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminApiController {
     private final UserService userService;
 
-    // R(Read)
+    /**
+     * 모든 사용자 정보를 반환
+     *
+     * @param dto AdminSearch DTO 객체
+     * @return 모든 사용자 정보 페이지
+     */
     @PostMapping("/api/admin/users")
     public ResponseEntity<?> getAllUsers(@RequestBody AdminSearch dto){
         try{
@@ -29,7 +37,14 @@ public class AdminApiController {
         }
     }
 
-    @GetMapping("/api/admin/users/{userId}/boards") // 작성글 댓글 따로 만드는중
+    /**
+     * 특정 사용자가 작성한 게시글 정보 반환
+     *
+     * @param userId 사용자 ID
+     * @param page   페이지 번호
+     * @return 특정 사용자가 작성한 게시글 정보
+     */
+    @GetMapping("/api/admin/users/{userId}/boards")
     public ResponseEntity<?> getUserBoards(@PathVariable("userId") Long userId,
                                            @RequestParam(name = "page", defaultValue = "0") int page){
         try{
@@ -40,7 +55,14 @@ public class AdminApiController {
         }
     }
 
-    @GetMapping("/api/admin/users/{userId}/comments") // 작성글 댓글 따로 만드는중
+    /**
+     * 특정 사용자가 작성한 댓글 정보를 번환
+     *
+     * @param userId 사용자 ID
+     * @param page   페이지 번호
+     * @return 특정 사용자가 작성한 댓글 정보
+     */
+    @GetMapping("/api/admin/users/{userId}/comments")
     public ResponseEntity<?> getUserComments(@PathVariable("userId") Long userId,
                                              @RequestParam(name = "page", defaultValue = "0") int page){
         try{

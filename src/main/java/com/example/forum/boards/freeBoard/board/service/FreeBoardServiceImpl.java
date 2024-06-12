@@ -18,8 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +92,7 @@ public class FreeBoardServiceImpl implements BoardService {
      */
     @Override
     @Transactional
-    public Page<FreeBoardResponse> pageBoards(BoardSearch dto) {
+    public Page<FreeBoardResponse> boardPage(BoardSearch dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         Page<FreeBoard> boards;
 

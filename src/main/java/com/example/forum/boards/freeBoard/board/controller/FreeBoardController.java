@@ -3,32 +3,41 @@ package com.example.forum.boards.freeBoard.board.controller;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
-import com.example.forum.user.dto.requests.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
-
+/**
+ * 자유 게시판 컨트롤러
+ */
 @Controller
 @RequiredArgsConstructor
 @Transactional
 public class FreeBoardController {
     private final FreeBoardServiceImpl freeBoardServiceImpl;
 
-    // C(Create)
-    @GetMapping("/createP")
-    public String createP(){
+    /**
+     * 게시글 작성 페이지로 이동
+     *
+     * @return 게시글 작성 페이지 URL
+     */
+    @GetMapping("/freeBoard/create")
+    public String createPage(){
         return "boards/freeBoard/create";
     }
 
+    /**
+     * 게시글 작성
+     *
+     * @param dto   작성할 게시글 정보를 담은 DTO
+     * @param model Model 객체
+     * @return 메시지 페이지 URL
+     */
     @PostMapping("/freeBoard/create")
-    public String create(FreeBoardRequest dto, Model model) {
+    public String createProc(FreeBoardRequest dto, Model model) {
         try {
             System.out.println("컨트롤러 내");
             if (dto.getImages() == null || dto.getImages().isEmpty()) {
@@ -49,15 +58,25 @@ public class FreeBoardController {
         }
     }
 
-
-    // R(Read)
+    /**
+     * 자유 게시판 목록 페이지로 이동
+     *
+     * @return 자유 게시판 목록 페이지 URL
+     */
     @GetMapping("/freeBoard")
-    public String freeBoardP() {
+    public String freeBoardPage() {
         return "boards/freeBoard/freeBoardList";
     }
 
+    /**
+     * 특정 게시글의 상세 페이지로 이동
+     *
+     * @param boardId 게시글 ID
+     * @param model   Model 객체
+     * @return 상세 페이지 URL
+     */
     @GetMapping("/freeBoard/{boardId}")
-    public String freeBoardDetail(@PathVariable("boardId") Long boardId, Model model){
+    public String freeBoardDetailPage(@PathVariable("boardId") Long boardId, Model model){
         try {
             String writer = freeBoardServiceImpl.getWriter(boardId);
             model.addAttribute("writer", writer);
@@ -70,11 +89,18 @@ public class FreeBoardController {
         }
     }
 
-    // U(Update)
-    @GetMapping("/updateP")
-    public String updateP(Model model, @RequestParam(name = "boardId") Long boardId){
+    /**
+     * 게시글 수정 페이지로 이동
+     *
+     * @param model   Model 객체
+     * @param boardId 게시글 ID
+     * @return 게시글 수정 페이지 URL
+     */
+    @PutMapping("/freeBoard/{boardId}")
+    public String updatePage(Model model, @PathVariable(name = "boardId") Long boardId){
         try{
             freeBoardServiceImpl.writerCheck(boardId);
+            model.addAttribute("boardId", boardId);
             return "boards/freeBoard/update";
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
