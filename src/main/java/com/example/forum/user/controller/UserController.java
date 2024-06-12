@@ -10,11 +10,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 유저 컨트롤러
+ */
 @Controller
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    /**
+     * 로그인 페이지
+     * @param model Model 객체
+     * @param error 에러 메시지
+     * @return 로그인 페이지 뷰
+     */
     @GetMapping("/login")
     public String login(Model model, @RequestParam(name = "error", defaultValue = "none") String error){
         if(error.equals("true")){
@@ -25,11 +34,22 @@ public class UserController {
         return "user/login";
     }
 
+    /**
+     * 회원가입 페이지
+     * @return 회원가입 페이지 뷰
+     */
     @GetMapping("/join")
     public String joinP(){
         return "user/join";
     }
 
+    /**
+     * 회원가입 처리
+     * @param joinRequest 회원가입 정보
+     * @param result 유효성 검사 결과
+     * @param model Model 객체
+     * @return 회원가입 결과 메시지 페이지 뷰
+     */
     @PostMapping("/joinProc")
     public String joinProc( @Valid JoinRequest joinRequest, // 클라이언트로부터 받은 JoinRequest 객체에 대해 @Valid 애너테이션을 통해 유효성 검증을 진행합니다.
                             BindingResult result, // 유효성 검사 과정에서 발생한 오류들을 담는 BindingResult 객체. 유효성 검사를 통과하지 못한 필드와 관련된 구체적인 오류 정보들을 가지고 있습니다.
@@ -60,22 +80,42 @@ public class UserController {
         return "message/index";
     }
 
+    /**
+     * 로그인 아이디 중복 확인
+     * @param loginId 로그인 아이디
+     * @return 중복 여부 응답
+     */
     @GetMapping("/checkLoginId")
     public ResponseEntity<Boolean> checkLoginId(@RequestParam(name = "loginId") String loginId) {
         boolean isAvailable = userService.isLoginIdAvailable(loginId);
         return ResponseEntity.ok(isAvailable);
     }
 
+    /**
+     * 닉네임 중복 확인
+     * @param nickname 닉네임
+     * @return 중복 여부 응답
+     */
     @GetMapping("/checkNickname")
     public ResponseEntity<Boolean> checkNickname(@RequestParam(name = "nickname") String nickname) {
         boolean isAvailable = userService.isNicknameAvailable(nickname);
         return ResponseEntity.ok(isAvailable);
     }
 
-    // R(Read)
+    /**
+     * 마이페이지
+     * @return 마이페이지 뷰
+     */
     @GetMapping("/mypage")
     public String myPage(){ return "user/mypage/index"; }
 
+    /**
+     * 마이페이지 게시글 조회
+     * @param model Model 객체
+     * @param id 사용자 아이디
+     * @param page 페이지 번호
+     * @return 마이페이지 게시글 뷰
+     */
     @GetMapping("/mypage/boards")
     public String myPageBoards(Model model, @RequestParam(name = "id") String id,
                                @RequestParam(name = "page", defaultValue = "0") int page){

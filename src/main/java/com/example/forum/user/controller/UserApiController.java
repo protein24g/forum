@@ -10,14 +10,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 유저 API 컨트롤러
+ */
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {
     private final UserService userService;
 
     // C(Create)
+
+    /**
+     * 회원가입 처리
+     *
+     * @param dto JoinRequest 객체
+     * @return HTTP 상태 및 메시지 반환
+     */
     @PostMapping("/api/joinProc")
-    public ResponseEntity<?> joinProc(@RequestBody JoinRequest dto) { // 뷰로 데이터를 전달하기 위한 Model 객체.
+    public ResponseEntity<?> joinProc(@RequestBody JoinRequest dto) {
         try {
             userService.join(dto);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -27,6 +37,12 @@ public class UserApiController {
     }
 
     // R(Read)
+
+    /**
+     * 사용자 정보 조회
+     *
+     * @return 사용자 정보 반환
+     */
     @GetMapping("/api/userInfo")
     public ResponseEntity<?> getUserInfo(){
         try{
@@ -37,9 +53,16 @@ public class UserApiController {
         }
     }
 
+    /**
+     * 마이페이지 게시글 조회
+     *
+     * @param id   사용자 ID
+     * @param page 페이지 번호
+     * @return 게시글 목록 반환
+     */
     @GetMapping("/api/mypage/boards")
     public ResponseEntity<?> myPageBoards(@RequestParam(name = "id") String id,
-                               @RequestParam(name = "page", defaultValue = "0") int page){
+                                          @RequestParam(name = "page", defaultValue = "0") int page){
         try{
             Page<FreeBoardResponse> boardResponses = userService.myPageBoards(id, page);
             return ResponseEntity.status(HttpStatus.OK).body(boardResponses);

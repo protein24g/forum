@@ -1,7 +1,7 @@
 package com.example.forum.boards.freeBoard.comment.service;
 
 import com.example.forum.base.comment.service.CommentService;
-import com.example.forum.base.image.service.AuthenticationService;
+import com.example.forum.base.board.auth.AuthenticationService;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;

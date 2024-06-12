@@ -3,7 +3,7 @@ package com.example.forum.boards.freeBoard.board.service;
 import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.image.entity.Image;
-import com.example.forum.base.image.service.AuthenticationService;
+import com.example.forum.base.board.auth.AuthenticationService;
 import com.example.forum.base.image.service.ImageService;
 import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
