@@ -39,7 +39,6 @@ public class FreeBoardController {
     @PostMapping("/freeBoard/create")
     public String createProc(FreeBoardRequest dto, Model model) {
         try {
-            System.out.println("컨트롤러 내");
             if (dto.getImages() == null || dto.getImages().isEmpty()) {
                 System.out.println("이미지 파일이 전송되지 않았습니다.");
             } else {
