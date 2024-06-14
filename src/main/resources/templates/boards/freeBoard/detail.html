@@ -8,7 +8,6 @@
     <script src="/account/logout.js"></script>
     <link href="/mobile/font.css" rel="stylesheet">
 
-
     <script>
         // 페이지 로드시 호출되는 함수
         document.addEventListener("DOMContentLoaded", function (){
@@ -155,7 +154,6 @@
                 });
 
                 const res = await response.json();
-                console.log("댓글 목록이다 : " + res.content);
                 if(res.content.length === 0) {
                     document.querySelector(".freeBoardComment-list").innerHTML = '';
                     document.querySelector(".comment-page-list").innerHTML = '';

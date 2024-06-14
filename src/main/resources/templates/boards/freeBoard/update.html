@@ -137,7 +137,6 @@
             for (let i = 0; i < originalImageTag.length; i++) {
                 originalImageList.push(originalImageTag[i].innerText)
             }
-            console.log(originalImageList);
 
             let formData = new FormData();
             formData.append("title", document.getElementById("edit-title").value);
@@ -152,7 +151,6 @@
                     formData.append("images", newImageTag.files[i]);
                 }
             }
-            console.log(formData);
 
             try {
                 const response = await fetch(`/api/freeBoard/${boardId}`, {
@@ -163,16 +161,12 @@
                     body: formData
                 });
 
-                const res = await response.text;
+                const res = await response.text();
                 alert(res);
                 window.location.href = `/freeBoard/${boardId}`;
             } catch (error) {
-                if (error instanceof TypeError) {
-                    alert("로그인 후 이용하세요");
-                    window.location.href = "/login";
-                } else {
-                    window.location.href = "/freeBoard/" + boardId;
-                }
+                alert(error);
+                window.location.href = "/";
             }
         }
     </script>
