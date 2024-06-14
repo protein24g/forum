@@ -1,6 +1,6 @@
 package com.example.forum.base.board.service;
 
-import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
+import com.example.forum.base.board.dto.BoardRequest;
 import com.example.forum.base.board.dto.BoardSearch;
 import org.springframework.data.domain.Page;
 
@@ -19,7 +19,7 @@ public interface BoardService<T> {
      * @param dto 새로운 게시글의 정보가 담긴 DTO
      * @return 생성된 게시글 엔터티
      */
-    T create(FreeBoardRequest dto);
+    T create(BoardRequest dto);
 
     /**
      * 게시글 목록을 페이지 단위로 반환
@@ -61,5 +61,5 @@ public interface BoardService<T> {
      * @param dto      업데이트할 게시글의 정보가 담긴 DTO
      * @return 업데이트된 게시글 엔터티
      */
-    T update(Long boardNum, FreeBoardRequest dto);
+    T update(Long boardNum, BoardRequest dto);
 }

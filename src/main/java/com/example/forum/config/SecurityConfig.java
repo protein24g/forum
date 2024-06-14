@@ -20,15 +20,23 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/",
-                                "/mobile/font.css",
+
+                        .requestMatchers("/", "/mobile/font.css", "/logo/**",
                                 "/account/logout.js", "/navbar/active.js",
-                                "/freeBoardUpload/**", "/logo/**",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
-                                "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
-                                "imageBoard/**",
                                 "/checkLoginId", "/checkNickname").permitAll()
+
+                        .requestMatchers( // 자유 게시판
+                                "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
+                                "/freeBoardUpload/**"
+                        ).permitAll()
+
+                        .requestMatchers( // 질문과 토론 게시판
+                                "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
+                                "/questionBoardUpload/**"
+                        ).permitAll()
+
                         .anyRequest().authenticated());
 
         http

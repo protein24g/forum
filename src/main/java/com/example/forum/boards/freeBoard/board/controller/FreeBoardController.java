@@ -1,15 +1,13 @@
 package com.example.forum.boards.freeBoard.board.controller;
 
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
-import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
+import com.example.forum.base.board.dto.BoardRequest;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +38,7 @@ public class FreeBoardController {
      * @return 메시지 페이지 URL
      */
     @PostMapping("/freeBoard/create")
-    public String createProc(@Valid FreeBoardRequest dto, Model model) {
+    public String createProc(@Valid BoardRequest dto, Model model) {
         try {
             if (dto.getImages() == null || dto.getImages().isEmpty()) {
                 System.out.println("이미지 파일이 전송되지 않았습니다.");
@@ -68,7 +66,7 @@ public class FreeBoardController {
      */
     @GetMapping("/freeBoard")
     public String freeBoardPage() {
-        return "boards/freeBoard/freeBoardList";
+        return "boards/freeBoard/list";
     }
 
     /**

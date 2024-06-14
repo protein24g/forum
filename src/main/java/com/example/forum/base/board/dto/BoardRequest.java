@@ -1,7 +1,6 @@
-package com.example.forum.boards.freeBoard.board.dto.requests;
+package com.example.forum.base.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class FreeBoardRequest {
+public class BoardRequest {
     @NotBlank(message = "제목을 입력하세요")
     private String title;
 

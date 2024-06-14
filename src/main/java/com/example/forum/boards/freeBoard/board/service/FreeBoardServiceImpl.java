@@ -6,7 +6,7 @@ import com.example.forum.base.image.entity.Image;
 import com.example.forum.base.board.auth.AuthenticationService;
 import com.example.forum.base.image.repository.ImageRepository;
 import com.example.forum.base.image.service.ImageService;
-import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
+import com.example.forum.base.board.dto.BoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
@@ -46,7 +46,7 @@ public class FreeBoardServiceImpl implements BoardService {
      * @return 생성된 게시글 응답 DTO
      */
     @Override
-    public FreeBoardResponse create(FreeBoardRequest dto) {
+    public FreeBoardResponse create(BoardRequest dto) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
 
         if(customUserDetails != null){
@@ -252,7 +252,7 @@ public class FreeBoardServiceImpl implements BoardService {
      * @return 수정된 게시글 응답 DTO
      */
     @Override
-    public FreeBoardResponse update(Long boardId, FreeBoardRequest dto) {
+    public FreeBoardResponse update(Long boardId, BoardRequest dto) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             FreeBoard freeBoard = freeBoardRepository.findById(boardId)

@@ -1,7 +1,7 @@
 package com.example.forum.boards.freeBoard.board.controller;
 
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
-import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
+import com.example.forum.base.board.dto.BoardRequest;
 import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,6 @@ public class FreeBoardApiController {
      */
     @PostMapping("/api/freeBoard")
     public ResponseEntity<?> boardPage(@RequestBody BoardSearch dto) {
-        System.out.println("들어왔다");
         Page<FreeBoardResponse> boardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
         System.out.println(boardResponses);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
@@ -57,7 +56,7 @@ public class FreeBoardApiController {
      * @return 게시글 수정을 위한 데이터
      */
     @GetMapping("/api/freeBoard/{boardId}/update")
-    public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardUpdateData(BoardRequest dto, @PathVariable(name = "boardId") Long boardId){
         try{
             System.out.println(dto);
             System.out.println(dto.getOriginalImages());
@@ -76,7 +75,7 @@ public class FreeBoardApiController {
      * @return 수정 결과 메시지
      */
     @PutMapping("/api/freeBoard/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, FreeBoardRequest dto){
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, BoardRequest dto){
         try{
             freeBoardServiceImpl.update(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
