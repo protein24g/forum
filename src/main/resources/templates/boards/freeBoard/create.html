@@ -147,7 +147,7 @@
             <form class="p-3 text-start" action="/freeBoard/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
                 <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
                 <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
-                <div class="image-list my-3">
+                <div class="image-list col-md-6 my-3">
                     <input type="file" class="form-control" name="images" accept="image/*" multiple>
                 </div>
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}">

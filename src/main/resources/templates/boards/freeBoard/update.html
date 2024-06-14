@@ -9,10 +9,28 @@
     <link href="/mobile/font.css" rel="stylesheet"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function (){
-            FileInput();
             getBoardUpdateData();
             document.getElementById("write").addEventListener("click", function (){
                 extensionCheck();
+            })
+            document.querySelector("input[name='images']").addEventListener("change", function() {
+                console.log("파일 바뀜");
+                let originalImagesList = [];
+                const originalImagesTag = document.querySelectorAll("div[name='originalImages']");
+                if(originalImagesTag.length !== 0){
+                    for(let i = 0; i < originalImagesTag.length; i++){
+                        originalImagesList.push(originalImagesTag[i].innerText);
+                    }
+                }
+                console.log(originalImagesList);
+
+                let images = document.querySelector("input[name='images']");
+                console.log(images.files);
+                if(images.files.length !== 0){
+                    for(let i = 0; i < images.files.length; i++){
+                        console.log(images.files[i].name);
+                    }
+                }
             })
         })
 
@@ -32,61 +50,22 @@
                         let extension = name.slice(ext_index); // 확장자 추출
                         if(!image_extension.includes(extension.toLowerCase())){
                             alert("이미지 파일만 첨부 가능합니다");
-                            return;
+                            return false;
                         }
                     }
+                    return true;
                 }
-                // 업데이트
-                updateBoard();
             }
-        }
-
-        function FileInput(){
-            document.querySelector(".file-append").addEventListener("click", function (){
-                console.log("추가 클릭햇다");
-                const container = document.querySelector(".image-list");
-                const div = document.createElement("div");
-                div.classList.add("image-item", "col-md-6", "my-3", "d-flex", "file-remove");
-
-                div.innerHTML = `
-                            <input type="file" class="form-control" name="images" accept="image/*">
-                            <span class="col-auto p-2 file-remove" style="background-color: #F78181; border-radius: 5px; color: white; cursor: pointer;">삭제</span>
-                `;
-                container.appendChild(div);
-
-                div.querySelector(".file-remove").addEventListener("click", function (event) {
-                    event.target.closest(".image-item").remove();
-                });
-
-                div.querySelector("input").addEventListener("change", function (event) {
-                    const selectedFileName = event.target.files[0].name;
-                    const originalFiles = document.querySelectorAll('.original-image div'); // 기존 이미지 중복 체크
-                    originalFiles.forEach(function (div) {
-                        if(div.textContent === selectedFileName){
-                            alert("중복된 이미지가 있습니다");
-                            event.target.value = ""; // 선택된 파일 초기화
-                            return;
-                        }
-                    });
-
-                    const newFiles = document.querySelectorAll('.image-item input'); // 새로운 이미지 중복 체크
-                    newFiles.forEach(function(file) {
-                        if (file !== event.target && file.files.length > 0 && file.files[0].name === selectedFileName) {
-                            alert("중복된 이미지가 있습니다");
-                            event.target.value = ""; // 선택된 파일 초기화
-                            return;
-                        }
-                    });
-                });
-            });
         }
 
         function addOriginalFileInput(images){
             const container = document.querySelector(".image-list");
 
+            container.insertAdjacentHTML("beforeend", "<div class='my-3'>기존 이미지</div>")
+
             for(let i = 0; i < images.length; i++){
                 let div = document.createElement("div");
-                div.classList.add("original-image", "col-5", "d-flex", "my-3");
+                div.classList.add("original-image", "col-md-6", "d-flex", "my-3");
                 div.innerHTML += `
                             <div class="p-2 col-11 me-auto text-dot border" style=" border-radius: 5px;" name="originalImages">${images[i]}</div>
                             <span class="col-auto p-2 file-remove" style="background-color: #F78181; border-radius: 5px; color: white; cursor: pointer;">삭제</span>
@@ -282,7 +261,10 @@
                 <p><input class="form-control title" id="edit-title" type="text"></p>
                 <p><textarea class="form-control content" id="edit-freeBoard-content" rows="10"></textarea></p>
                 <div class="image-list my-3">
-                    <span class="p-2 file-append" style="background-color: #819FF7; border-radius: 5px; color: white;">이미지 추가</span>
+                    <div class="col-md-6">
+                        <div class="my-3">새로운 이미지</div>
+                        <input type="file" class="form-control" name="images" accept="image/*" multiple>
+                    </div>
                 </div>
                 <button class="btn btn-primary" type="button" id="write">작성</button>
             </div>
