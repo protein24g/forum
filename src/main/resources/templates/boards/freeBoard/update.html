@@ -14,7 +14,6 @@
                 extensionCheck();
             })
             document.querySelector("input[name='images']").addEventListener("change", function() {
-                console.log("파일 바뀜");
                 let originalImagesList = [];
                 const originalImagesTag = document.querySelectorAll("div[name='originalImages']");
                 if(originalImagesTag.length !== 0){
@@ -22,13 +21,17 @@
                         originalImagesList.push(originalImagesTag[i].innerText);
                     }
                 }
-                console.log(originalImagesList);
 
                 let images = document.querySelector("input[name='images']");
                 console.log(images.files);
                 if(images.files.length !== 0){
                     for(let i = 0; i < images.files.length; i++){
-                        console.log(images.files[i].name);
+                        let imageName = images.files[i].name;
+                        if(originalImagesList.includes(imageName)){
+                            alert(imageName + " 파일이 중복됩니다");
+                            images.value = ""; // 선택한 파일 초기화
+                            return;
+                        }
                     }
                 }
             })
