@@ -23,7 +23,7 @@ public class FreeBoardComment {
 
     @ManyToOne
     @JoinColumn(name = "free_Board_id")
-    private FreeBoard freeBoard = null;
+    private FreeBoard freeBoard;
 
     private String content;
 

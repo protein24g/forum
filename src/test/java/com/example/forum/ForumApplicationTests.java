@@ -36,7 +36,6 @@ class ForumApplicationTests {
 			freeBoardRepository.save(FreeBoard.builder()
 					.title("작성글 테스트" + Integer.toString(i + 1))
 					.content("bbbbbbbbdbbb")
-					.createDate(LocalDateTime.now())
 					.user(user)
 					.view(0)
 					.build());
@@ -52,7 +51,6 @@ class ForumApplicationTests {
 			.user(user)
 			.freeBoard(freeBoard)
 			.content("테스트 댓글")
-			.createDate(LocalDateTime.now())
 			.build()
 		);
 	}

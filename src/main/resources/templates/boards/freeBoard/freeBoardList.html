@@ -121,7 +121,7 @@
                     document.querySelector(".freeBoard-page").innerHTML = pageHtml;
                     addEventToRows();
                 }catch (error){
-                    alert("알 수 없는 오류가 발생했습니다");
+                    alert(error);
                     window.location.href = "/freeBoard";
                 }
             }
