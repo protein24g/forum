@@ -4,6 +4,7 @@ import com.example.forum.base.board.dto.BoardSearch;
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.image.entity.Image;
 import com.example.forum.base.board.auth.AuthenticationService;
+import com.example.forum.base.image.repository.ImageRepository;
 import com.example.forum.base.image.service.ImageService;
 import com.example.forum.boards.freeBoard.board.dto.requests.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
@@ -35,6 +36,7 @@ public class FreeBoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final ImageService imageService;
+    private final ImageRepository imageRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -51,7 +53,7 @@ public class FreeBoardServiceImpl implements BoardService {
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
-            FreeBoard freeBoardEntity = FreeBoard.builder()
+            FreeBoard freeBoard = FreeBoard.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .user(user)
@@ -62,22 +64,22 @@ public class FreeBoardServiceImpl implements BoardService {
                 if (dto.getImages() != null && !dto.getImages().isEmpty()) {
                     List<Image> images = imageService.saveImage(dto.getImages());
                     for (Image image : images) {
-                        freeBoardEntity.addImage(image);
+                        freeBoard.addImage(image);
                     }
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
             }
 
-            user.addBoard(freeBoardEntity);
-            freeBoardRepository.save(freeBoardEntity);
+            user.addBoard(freeBoard);
+            freeBoardRepository.save(freeBoard);
 
             return FreeBoardResponse.builder()
-                    .id(freeBoardEntity.getId())
-                    .nickname(freeBoardEntity.getUser().getNickname())
-                    .title(freeBoardEntity.getTitle())
-                    .content(freeBoardEntity.getContent())
-                    .createDate(freeBoardEntity.getCreateDate())
+                    .id(freeBoard.getId())
+                    .nickname(freeBoard.getUser().getNickname())
+                    .title(freeBoard.getTitle())
+                    .content(freeBoard.getContent())
+                    .createDate(freeBoard.getCreateDate())
                     .build();
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
@@ -259,7 +261,30 @@ public class FreeBoardServiceImpl implements BoardService {
             if (freeBoard.getUser().getId().equals(customUserDetails.getId())) {
                 freeBoard.setTitle(dto.getTitle());
                 freeBoard.setContent(dto.getContent());
+                List<String> originalImageNames = dto.getOriginalImages();
+                List<Image> dbImages = imageRepository.findByFreeBoardId(boardId);
+
+                // 기존 이미지 처리 로직
+                for (Image image : dbImages) {
+                    if(originalImageNames == null || !originalImageNames.contains(image.getOriginalName())){
+                        imageRepository.delete(image);
+                    }
+                }
+
+                // 새로운 이미지 저장 로직
+                try {
+                    if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+                        List<Image> images = imageService.saveImage(dto.getImages());
+                        for (Image image : images) {
+                            freeBoard.addImage(image);
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
+                }
+
                 freeBoardRepository.save(freeBoard);
+
                 return FreeBoardResponse.builder()
                         .id(freeBoard.getId())
                         .nickname(freeBoard.getUser().getNickname())

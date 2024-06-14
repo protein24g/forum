@@ -320,31 +320,39 @@
         }
 
         // D(Delete)
-        async function deleteComment(commentId){
-            let currentPage = document.getElementById("currentPage").value;
-            if (!confirm("삭제하시겠습니까?")){ return; }
+        async function deleteBoard(){
             let boardId = document.getElementById("boardId").value;
             let _csrf = document.querySelector("._csrf").value;
+        }
 
-            try{
-                const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
-                    method : "DELETE",
-                    headers : {
-                        "Content-Type" : "application/json",
-                        "X-CSRF-TOKEN" : _csrf
+        async function deleteComment(commentId){
+            if (!confirm("삭제하시겠습니까?")){
+                return;
+            } else {
+                let currentPage = document.getElementById("currentPage").value;
+                let boardId = document.getElementById("boardId").value;
+                let _csrf = document.querySelector("._csrf").value;
+
+                try{
+                    const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
+                        method : "DELETE",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        }
+                    });
+
+                    const res = await response.text();
+                    alert(res);
+                    await getAllComment(currentPage); // 댓글 삭제 후 새로운 댓글 목록을 가져와 화면을 업데이트
+                }catch (error){
+                    if(error instanceof TypeError){
+                        alert("로그인 후 이용하세요");
+                        window.location.href = "/login";
+                    }else{
+                        alert(error);
+                        window.location.href = "/freeBoard/" + boardId;
                     }
-                });
-
-                const res = await response.text();
-                alert(res);
-                await getAllComment(currentPage); // 댓글 삭제 후 새로운 댓글 목록을 가져와 화면을 업데이트
-            }catch (error){
-                if(error instanceof TypeError){
-                    alert("로그인 후 이용하세요");
-                    window.location.href = "/login";
-                }else{
-                    alert(error);
-                    window.location.href = "/freeBoard/" + boardId;
                 }
             }
         }

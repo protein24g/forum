@@ -50,8 +50,6 @@ public class ImageService {
                 continue; // 빈 파일은 무시
             }
 
-            System.out.println("파일명 : " + file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf('.')));
-
             // 파일 크기 확인
             if (file.getSize() > MAX_FILE_SIZE) {
                 throw new IllegalArgumentException("파일 크기는 5MB를 넘을 수 없습니다");

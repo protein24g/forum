@@ -74,13 +74,13 @@ public class FreeBoardApiController {
      * @return 수정 결과 메시지
      */
     @PutMapping("/api/freeBoard/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, @ModelAttribute FreeBoardRequest dto){
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, FreeBoardRequest dto){
         try{
-            System.out.println("updateBoard 들어옴");
             freeBoardServiceImpl.update(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
 }
