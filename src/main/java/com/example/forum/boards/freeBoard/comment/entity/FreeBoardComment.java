@@ -18,9 +18,11 @@ public class FreeBoardComment {
     private Long id;
 
     @ManyToOne
-    private User user = null;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
+    @JoinColumn(name = "free_Board_id")
     private FreeBoard freeBoard = null;
 
     private String content;

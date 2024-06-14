@@ -124,7 +124,7 @@
         async function getBoardUpdateData(){
             try{
                 const boardId = document.querySelector("#boardId").value;
-                const response = await fetch(`/api/update?boardId=${boardId}`, {
+                const response = await fetch(`/api/freeBoard/${boardId}/update`, {
                     method : "GET",
                     headers : {
                         "ContentType" : "application/json"
@@ -170,7 +170,7 @@
             console.log(formData);
 
             try {
-                const response = await fetch(`/api/freeBoard?boardId=${boardId}`, {
+                const response = await fetch(`/api/freeBoard/${boardId}`, {
                     method: "PUT",
                     headers: {
                         "X-CSRF-TOKEN": _csrf

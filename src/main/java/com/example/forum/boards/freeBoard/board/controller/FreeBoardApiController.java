@@ -54,8 +54,8 @@ public class FreeBoardApiController {
      * @param boardId 게시글 ID
      * @return 게시글 수정을 위한 데이터
      */
-    @GetMapping("/api/update")
-    public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @RequestParam(name = "boardId") Long boardId){
+    @GetMapping("/api/freeBoard/{boardId}/update")
+    public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @PathVariable(name = "boardId") Long boardId){
         try{
             System.out.println(dto);
             System.out.println(dto.getOriginalImages());
@@ -73,8 +73,8 @@ public class FreeBoardApiController {
      * @param dto     수정할 게시글 내용을 담은 DTO
      * @return 수정 결과 메시지
      */
-    @PutMapping("/api/freeBoard")
-    public ResponseEntity<?> updateBoard(@RequestParam("boardId") Long boardId, @ModelAttribute FreeBoardRequest dto){
+    @PutMapping("/api/freeBoard/{boardId}")
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, @ModelAttribute FreeBoardRequest dto){
         try{
             System.out.println("updateBoard 들어옴");
             freeBoardServiceImpl.update(boardId, dto);

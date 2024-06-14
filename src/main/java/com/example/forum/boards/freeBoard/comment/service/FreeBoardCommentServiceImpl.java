@@ -59,6 +59,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .createDate(LocalDateTime.now())
                     .build();
             freeBoardCommentRepository.save(freeBoardComment);
+            user.addComment(freeBoardComment);
             freeBoard.addComment(freeBoardComment);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");

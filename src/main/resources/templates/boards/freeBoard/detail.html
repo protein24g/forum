@@ -293,7 +293,7 @@
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
             try {
-                const response = await fetch(`/api/freeBoardComments/${commentId}`, {
+                const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -320,15 +320,14 @@
         }
 
         // D(Delete)
-        async function deleteComment(id){
+        async function deleteComment(commentId){
             let currentPage = document.getElementById("currentPage").value;
             if (!confirm("삭제하시겠습니까?")){ return; }
             let boardId = document.getElementById("boardId").value;
-            let commentId = id;
             let _csrf = document.querySelector("._csrf").value;
 
             try{
-                const response = await fetch(`/api/freeBoardComments/${commentId}`, {
+                const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
                     method : "DELETE",
                     headers : {
                         "Content-Type" : "application/json",

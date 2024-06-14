@@ -16,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -97,9 +95,8 @@ public class UserService {
      * @return 사용자 정보 응답 DTO
      */
     public UserResponse getUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
             User user = userRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
@@ -108,7 +105,7 @@ public class UserService {
                     .boards_size(user.getFreeBoards().size())
                     .comments_size(user.getFreeBoardComments().size())
                     .build();
-        }else{
+        } else {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }
@@ -206,11 +203,9 @@ public class UserService {
      * @return 게시글 또는 댓글 목록 응답 페이지 DTO
      */
     public Page<FreeBoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
-        Page<FreeBoardResponse> boardResponses = null;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof CustomUserDetails){
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            Page<FreeBoardResponse> boardResponses;
             User user = userRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
@@ -219,9 +214,15 @@ public class UserService {
             }else{
                 boardResponses = freeBoardCommentServiceImpl.getBoardsByUserComments(user, page);
             }
-        }else{
+            return boardResponses;
+        } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
-        return boardResponses;
+
+
+
+
+
+
     }
 }

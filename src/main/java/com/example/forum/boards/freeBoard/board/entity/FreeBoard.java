@@ -29,6 +29,7 @@ public class FreeBoard {
     private LocalDateTime createDate;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     private int view;

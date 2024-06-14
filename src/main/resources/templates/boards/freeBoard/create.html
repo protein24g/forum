@@ -9,7 +9,6 @@
     <link href="/mobile/font.css" rel="stylesheet">
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            FileInput();
             document.getElementById("write").addEventListener("click", function (event) {
                 extensionCheck(event);
             });
@@ -18,15 +17,15 @@
         function extensionCheck(event) {
             let isConfirmed = confirm("저장하시겠습니까?");
             if (isConfirmed) {
-                let images = document.querySelectorAll('.image');
-                if (images.length !== 0) {
-                    for(let i = 0; i < images.length ; i++){
-                        let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
-                        let name = images[i].files[0].name;
+                let images = document.querySelector('input[name="images"]');
+                if (images.files.length !== 0) {
+                    let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
+                    for(let i = 0; i < images.files.length; i++) {
+                        let name = images.files[i].name;
                         let ext_index = name.lastIndexOf(".");
-                        let extension = name.slice(ext_index); // 확장자 추출
+                        let extension = name.slice(ext_index).toLowerCase(); // 확장자 추출
 
-                        if (!image_extension.includes(extension.toLowerCase())) {
+                        if (!image_extension.includes(extension)) {
                             alert("이미지 파일만 첨부 가능합니다");
                             event.preventDefault(); // 폼 제출 방지
                             return false;
@@ -37,37 +36,6 @@
             } else {
                 event.preventDefault(); // 폼 제출 방지
             }
-        }
-
-        function FileInput(){
-            document.querySelector(".file-append").addEventListener("click", function (){
-                console.log("추가 클릭햇다");
-                const container = document.querySelector(".image-list");
-                const div = document.createElement("div");
-                div.classList.add("image-item", "col-md-6", "my-3", "d-flex", "file-remove");
-
-                div.innerHTML = `
-                            <input type="file" class="form-control" name="images" accept="image/*">
-                            <span class="col-auto p-2 file-remove" style="background-color: #F78181; border-radius: 5px; color: white; cursor: pointer;">삭제</span>
-                `;
-                container.appendChild(div);
-
-                div.querySelector("input").addEventListener("change", function (event) {
-                    const selectedFileName = event.target.files[0].name;
-                    const existingFiles = document.querySelectorAll('.image-item input');
-                    existingFiles.forEach(function(file) {
-                        if (file !== event.target && file.files.length > 0 && file.files[0].name === selectedFileName) {
-                            alert("중복된 이미지가 있습니다.");
-                            event.target.value = ""; // 선택된 파일 초기화
-                            return;
-                        }
-                    });
-                });
-
-                div.querySelector(".file-remove").addEventListener("click", function (event) {
-                    event.target.closest(".image-item").remove();
-                });
-            })
         }
 
         // R(Read)
@@ -180,7 +148,7 @@
                 <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
                 <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
                 <div class="image-list my-3">
-                    <span class="p-2 file-append" style="background-color: #819FF7; border-radius: 5px; color: white;">이미지 추가</span>
+                    <input type="file" class="form-control" name="images" accept="image/*" multiple>
                 </div>
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <button class="btn btn-primary" type="button" id="write">작성</button>

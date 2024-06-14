@@ -21,7 +21,8 @@ public class Image {
     private String filePath;
 
     @ManyToOne
-    private FreeBoard freeBoard = null;
+    @JoinColumn(name = "free_board_id")
+    private FreeBoard freeBoard;
 
     @Builder
     public Image(String originalName, String fileName, String filePath){

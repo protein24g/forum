@@ -53,7 +53,7 @@ public class FreeBoardCommentApiController {
      * @param dto       업데이트할 댓글 정보가 담긴 DTO
      * @return          HTTP 응답(ResponseEntity) 객체
      */
-    @PutMapping("/api/freeBoardComments/{commentId}")
+    @PutMapping("/api/freeBoard/{commentId}/comments")
     public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody FreeBoardCommentRequest dto){
         try{
             freeBoardCommentServiceImpl.updateComment(commentId, dto);
@@ -69,7 +69,7 @@ public class FreeBoardCommentApiController {
      * @param commentId 삭제할 댓글의 고유 식별자
      * @return          HTTP 응답(ResponseEntity) 객체
      */
-    @DeleteMapping("/api/freeBoardComments/{commentId}")
+    @DeleteMapping("/api/freeBoard/{commentId}/comments")
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId){
         try{
             freeBoardCommentServiceImpl.deleteComment(commentId);
