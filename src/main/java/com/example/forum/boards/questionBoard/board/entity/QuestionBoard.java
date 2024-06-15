@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -44,7 +46,8 @@ public class QuestionBoard {
     private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
 
     @Builder
-    public QuestionBoard(String title, String content, LocalDateTime createDate, User user, int view){
+    public QuestionBoard(Category category, String title, String content, LocalDateTime createDate, User user, int view){
+        this.category = category;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
@@ -52,8 +55,8 @@ public class QuestionBoard {
         this.view = view;
     }
 
-    public void setUser(User user) { 
-        this.user = user; 
+    public void setUser(User user) {
+        this.user = user;
     }
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
@@ -73,17 +76,7 @@ public class QuestionBoard {
     }
 
     public enum Category {
-        QUESTION("질문"),
-        TALK("토론");
-
-        private final String value;
-
-        Category(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
+        QUESTION,
+        TALK;
     }
 }

@@ -145,6 +145,11 @@
         <div class="order-xl-2 order-1 col-xl-9">
             <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 작성</h4>
             <form class="p-3 text-start" action="/questionBoard/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
+                <label for="category">카테고리 : </label>
+                <select id="category" name="category">
+                    <option value="QUESTION">질문</option>
+                    <option value="TALK">토론</option>
+                </select>
                 <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
                 <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
                 <div class="image-list col-md-6 my-3">

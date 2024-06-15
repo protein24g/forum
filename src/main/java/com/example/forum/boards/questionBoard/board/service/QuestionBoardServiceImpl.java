@@ -53,7 +53,18 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
+            // 카테고리 값 매핑
+            QuestionBoard.Category category = null;
+            if ("QUESTION".equals(dto.getCategory())) {
+                category = QuestionBoard.Category.QUESTION;
+            } else if ("TALK".equals(dto.getCategory())) {
+                category = QuestionBoard.Category.TALK;
+            } else {
+                throw new IllegalArgumentException("올바른 카테고리 값을 선택해주세요");
+            }
+
             QuestionBoard questionBoard = QuestionBoard.builder()
+                    .category(category)
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .user(user)

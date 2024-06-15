@@ -1,6 +1,5 @@
 package com.example.forum.boards.questionBoard.board.dto.request;
 
-import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,7 @@ public class QuestionBoardRequest {
     @NotBlank(message = "내용을 입력하세요")
     private String content;
 
-    private QuestionBoard.Category category;
+    private String category;
 
     private List<String> originalImages; // 업데이트 기존 이미지
 
