@@ -1,7 +1,7 @@
 package com.example.forum.base.board.service;
 
-import com.example.forum.base.board.dto.BoardRequest;
-import com.example.forum.base.board.dto.BoardSearch;
+import com.example.forum.base.board.dto.request.BoardRequest;
+import com.example.forum.base.board.dto.request.BoardSearch;
 import org.springframework.data.domain.Page;
 
 // interface : 추상 메소드의 집합

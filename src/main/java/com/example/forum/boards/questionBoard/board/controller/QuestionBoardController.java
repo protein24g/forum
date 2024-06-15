@@ -1,8 +1,8 @@
-package com.example.forum.boards.questionBoard.controller;
+package com.example.forum.boards.questionBoard.board.controller;
 
-import com.example.forum.base.board.dto.BoardRequest;
-import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
-import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
+import com.example.forum.base.board.dto.request.BoardRequest;
+import com.example.forum.base.board.dto.response.BoardResponse;
+import com.example.forum.boards.questionBoard.board.service.QuestionBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequiredArgsConstructor
 @Transactional
-public class QuestionController {
-    private final FreeBoardServiceImpl questionBoardServiceImpl;
+public class QuestionBoardController {
+    private final QuestionBoardServiceImpl questionBoardServiceImpl;
 
     /**
      * 게시글 작성 페이지로 이동
@@ -27,7 +27,7 @@ public class QuestionController {
      */
     @GetMapping("/questionBoard/create")
     public String createPage(){
-        return null;
+        return "boards/questionBoard/create";
     }
 
     /**
@@ -47,9 +47,9 @@ public class QuestionController {
                     System.out.println("이미지 파일 이름: " + image.getOriginalFilename());
                 }
             }
-            FreeBoardResponse questionBoardResponse = questionBoardServiceImpl.create(dto);
+            BoardResponse BoardResponse = questionBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/questionBoard/" + questionBoardResponse.getId());
+            model.addAttribute("url", "/questionBoard/" + BoardResponse.getId());
             return "message/index";
         } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());

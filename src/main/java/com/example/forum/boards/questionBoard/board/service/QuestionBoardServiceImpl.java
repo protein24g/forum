@@ -1,4 +1,4 @@
-package com.example.forum.boards.freeBoard.board.service;
+package com.example.forum.boards.questionBoard.board.service;
 
 import com.example.forum.base.board.dto.request.BoardSearch;
 import com.example.forum.base.board.dto.response.BoardResponse;
@@ -8,9 +8,9 @@ import com.example.forum.base.board.auth.AuthenticationService;
 import com.example.forum.base.image.repository.ImageRepository;
 import com.example.forum.base.image.service.ImageService;
 import com.example.forum.base.board.dto.request.BoardRequest;
-import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
-import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
-import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
+import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
+import com.example.forum.boards.questionBoard.board.repository.QuestionBoardRepository;
+import com.example.forum.boards.questionBoard.comment.service.QuestionBoardCommentServiceImpl;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class FreeBoardServiceImpl implements BoardService {
-    private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
+public class QuestionBoardServiceImpl implements BoardService {
+    private final QuestionBoardCommentServiceImpl questionBoardCommentServiceImpl;
     private final UserRepository userRepository;
-    private final FreeBoardRepository freeBoardRepository;
+    private final QuestionBoardRepository questionBoardRepository;
     private final ImageService imageService;
     private final ImageRepository imageRepository;
     private final AuthenticationService authenticationService;
@@ -53,7 +53,7 @@ public class FreeBoardServiceImpl implements BoardService {
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
-            FreeBoard freeBoard = FreeBoard.builder()
+            QuestionBoard questionBoard = QuestionBoard.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .user(user)
@@ -64,22 +64,22 @@ public class FreeBoardServiceImpl implements BoardService {
                 if (dto.getImages() != null && !dto.getImages().isEmpty()) {
                     List<Image> images = imageService.saveImage(dto.getImages());
                     for (Image image : images) {
-                        freeBoard.addImage(image);
+                        questionBoard.addImage(image);
                     }
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
             }
 
-            user.addBoard(freeBoard);
-            freeBoardRepository.save(freeBoard);
+            user.addBoard(questionBoard);
+            questionBoardRepository.save(questionBoard);
 
             return BoardResponse.builder()
-                    .id(freeBoard.getId())
-                    .nickname(freeBoard.getUser().getNickname())
-                    .title(freeBoard.getTitle())
-                    .content(freeBoard.getContent())
-                    .createDate(freeBoard.getCreateDate())
+                    .id(questionBoard.getId())
+                    .nickname(questionBoard.getUser().getNickname())
+                    .title(questionBoard.getTitle())
+                    .content(questionBoard.getContent())
+                    .createDate(questionBoard.getCreateDate())
                     .build();
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
@@ -96,21 +96,21 @@ public class FreeBoardServiceImpl implements BoardService {
     @Transactional
     public Page<BoardResponse> boardPage(BoardSearch dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards;
+        Page<QuestionBoard> boards;
 
         if (dto.getKeyword().length() != 0) {
             switch (dto.getOption()) {
                 case "1":
-                    boards = freeBoardRepository.findByTitleContaining(dto.getKeyword(), pageable);
+                    boards = questionBoardRepository.findByTitleContaining(dto.getKeyword(), pageable);
                     break;
                 case "2":
-                    boards = freeBoardRepository.findByContentContaining(dto.getKeyword(), pageable);
+                    boards = questionBoardRepository.findByContentContaining(dto.getKeyword(), pageable);
                     break;
                 default:
-                    boards = freeBoardRepository.findAll(pageable);
+                    boards = questionBoardRepository.findAll(pageable);
             }
         } else {
-            boards = freeBoardRepository.findAll(pageable);
+            boards = questionBoardRepository.findAll(pageable);
         }
 
         return boards
@@ -119,7 +119,7 @@ public class FreeBoardServiceImpl implements BoardService {
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(board.getQuestionBoardComments().size())
                         .view(board.getView())
                         .hasImage(!board.getImages().isEmpty())
                         .build());
@@ -134,22 +134,22 @@ public class FreeBoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponse getDetail(Long boardId) {
-        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+        QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-        List<String> imagesName = freeBoard.getImages().stream()
+        List<String> imagesName = questionBoard.getImages().stream()
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
 
         return BoardResponse.builder()
-                .id(freeBoard.getId())
-                .nickname(freeBoard.getUser().getActive() ? freeBoard.getUser().getNickname() : "탈퇴한 사용자")
-                .title(freeBoard.getTitle())
-                .content(freeBoard.getContent())
-                .createDate(freeBoard.getCreateDate())
-                .commentResponses(freeBoardCommentServiceImpl.getCommentsForBoard(freeBoard.getId(), 0))
-                .commentCount(freeBoard.getFreeBoardComments().size())
-                .view(freeBoard.incView())
+                .id(questionBoard.getId())
+                .nickname(questionBoard.getUser().getActive() ? questionBoard.getUser().getNickname() : "탈퇴한 사용자")
+                .title(questionBoard.getTitle())
+                .content(questionBoard.getContent())
+                .createDate(questionBoard.getCreateDate())
+                .commentResponses(questionBoardCommentServiceImpl.getCommentsForBoard(questionBoard.getId(), 0))
+                .commentCount(questionBoard.getQuestionBoardComments().size())
+                .view(questionBoard.incView())
                 .images(imagesName)
                 .build();
     }
@@ -164,7 +164,7 @@ public class FreeBoardServiceImpl implements BoardService {
     @Override
     public Page<BoardResponse> getBoardsForUser(Long userId, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards = freeBoardRepository.findByUserId(userId, pageable);
+        Page<QuestionBoard> boards = questionBoardRepository.findByUserId(userId, pageable);
 
         return boards
                 .map(board -> BoardResponse.builder()
@@ -173,7 +173,7 @@ public class FreeBoardServiceImpl implements BoardService {
                         .title(board.getTitle())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(board.getQuestionBoardComments().size())
                         .view(board.getView())
                         .hasImage(!board.getImages().isEmpty())
                         .build());
@@ -187,10 +187,10 @@ public class FreeBoardServiceImpl implements BoardService {
      */
     @Override
     public String getWriter(Long boardId) {
-        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+        QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-        return freeBoard.getUser().getNickname();
+        return questionBoard.getUser().getNickname();
     }
 
     /**
@@ -201,10 +201,10 @@ public class FreeBoardServiceImpl implements BoardService {
     public void writerCheck(Long boardId) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+            QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-            if (!customUserDetails.getId().equals(freeBoard.getUser().getId())) {
+            if (!customUserDetails.getId().equals(questionBoard.getUser().getId())) {
                 throw new IllegalArgumentException("글 작성자만 수정 가능합니다");
             }
         } else {
@@ -224,16 +224,16 @@ public class FreeBoardServiceImpl implements BoardService {
             User user = userRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+            QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-            if (user.getLoginId().equals(freeBoard.getUser().getLoginId())) {
-                List<String> imagesName = freeBoard.getImages().stream()
+            if (user.getLoginId().equals(questionBoard.getUser().getLoginId())) {
+                List<String> imagesName = questionBoard.getImages().stream()
                         .map(Image::getOriginalName)
                         .collect(Collectors.toList());
                 return BoardResponse.builder()
-                        .title(freeBoard.getTitle())
-                        .content(freeBoard.getContent())
+                        .title(questionBoard.getTitle())
+                        .content(questionBoard.getContent())
                         .images(imagesName)
                         .build();
             } else {
@@ -255,14 +255,14 @@ public class FreeBoardServiceImpl implements BoardService {
     public BoardResponse update(Long boardId, BoardRequest dto) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+            QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-            if (freeBoard.getUser().getId().equals(customUserDetails.getId())) {
-                freeBoard.setTitle(dto.getTitle());
-                freeBoard.setContent(dto.getContent());
+            if (questionBoard.getUser().getId().equals(customUserDetails.getId())) {
+                questionBoard.setTitle(dto.getTitle());
+                questionBoard.setContent(dto.getContent());
                 List<String> originalImageNames = dto.getOriginalImages();
-                List<Image> dbImages = imageRepository.findByFreeBoardId(boardId);
+                List<Image> dbImages = imageRepository.findByQuestionBoardId(boardId);
 
                 // 기존 이미지 처리 로직
                 for (Image image : dbImages) {
@@ -276,21 +276,21 @@ public class FreeBoardServiceImpl implements BoardService {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
                         List<Image> images = imageService.saveImage(dto.getImages());
                         for (Image image : images) {
-                            freeBoard.addImage(image);
+                            questionBoard.addImage(image);
                         }
                     }
                 } catch (Exception e) {
                     throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
                 }
 
-                freeBoardRepository.save(freeBoard);
+                questionBoardRepository.save(questionBoard);
 
                 return BoardResponse.builder()
-                        .id(freeBoard.getId())
-                        .nickname(freeBoard.getUser().getNickname())
-                        .title(freeBoard.getTitle())
-                        .content(freeBoard.getContent())
-                        .createDate(freeBoard.getCreateDate())
+                        .id(questionBoard.getId())
+                        .nickname(questionBoard.getUser().getNickname())
+                        .title(questionBoard.getTitle())
+                        .content(questionBoard.getContent())
+                        .createDate(questionBoard.getCreateDate())
                         .build();
             } else {
                 throw new IllegalArgumentException("본인이 작성한 글만 수정 가능합니다");

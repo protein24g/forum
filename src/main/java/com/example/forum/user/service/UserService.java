@@ -2,9 +2,9 @@ package com.example.forum.user.service;
 
 import com.example.forum.admin.dto.response.AdminResponse;
 import com.example.forum.base.board.auth.AuthenticationService;
+import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
-import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
@@ -102,8 +102,8 @@ public class UserService {
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
-                    .boards_size(user.getFreeBoards().size())
-                    .comments_size(user.getFreeBoardComments().size())
+                    .boards_size(user.getQuestionBoards().size())
+                    .comments_size(user.getQuestionBoardComments().size())
                     .build();
         } else {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
@@ -202,10 +202,10 @@ public class UserService {
      * @param page 페이지 번호
      * @return 게시글 또는 댓글 목록 응답 페이지 DTO
      */
-    public Page<FreeBoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
+    public Page<BoardResponse> myPageBoards(String id, int page) { // id에 따른 내가 쓴 글, 댓글 단 글 불러오기
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
-            Page<FreeBoardResponse> boardResponses;
+            Page<BoardResponse> boardResponses;
             User user = userRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 

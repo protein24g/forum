@@ -1,4 +1,4 @@
-package com.example.forum.boards.freeBoard.comment.dto.requests;
+package com.example.forum.base.comment.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class FreeBoardCommentRequest {
+public class CommentRequest {
     private String content;
 }

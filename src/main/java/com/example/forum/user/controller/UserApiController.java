@@ -1,6 +1,6 @@
 package com.example.forum.user.controller;
 
-import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
+import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
 import com.example.forum.user.service.UserService;
@@ -64,7 +64,7 @@ public class UserApiController {
     public ResponseEntity<?> myPageBoards(@RequestParam(name = "id") String id,
                                           @RequestParam(name = "page", defaultValue = "0") int page){
         try{
-            Page<FreeBoardResponse> boardResponses = userService.myPageBoards(id, page);
+            Page<BoardResponse> boardResponses = userService.myPageBoards(id, page);
             return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

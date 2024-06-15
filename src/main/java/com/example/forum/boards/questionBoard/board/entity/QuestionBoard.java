@@ -1,7 +1,7 @@
-package com.example.forum.boards.freeBoard.board.entity;
+package com.example.forum.boards.questionBoard.board.entity;
 
 import com.example.forum.base.image.entity.Image;
-import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
+import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
 import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class FreeBoard {
+public class QuestionBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,14 +34,14 @@ public class FreeBoard {
 
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
-    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
+    @OneToMany(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
 
     @Builder
-    public FreeBoard(String title, String content, LocalDateTime createDate, User user, int view){
+    public QuestionBoard(String title, String content, LocalDateTime createDate, User user, int view){
         this.title = title;
         this.content = content;
         this.createDate = createDate;
@@ -60,9 +60,9 @@ public class FreeBoard {
         image.setBoard(this);
     }
 
-    public void addComment(FreeBoardComment freeBoardComment){
-        this.freeBoardComments.add(freeBoardComment);
-        freeBoardComment.setBoard(this);
+    public void addComment(QuestionBoardComment questionBoardComment){
+        this.questionBoardComments.add(questionBoardComment);
+        questionBoardComment.setBoard(this);
     }
 
     public int incView() {

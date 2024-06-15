@@ -2,6 +2,8 @@
 
     import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
     import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
+    import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
+    import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -51,6 +53,14 @@
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
 
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private List<QuestionBoard> questionBoards = new ArrayList<>();
+
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
+
+
+
         @Builder
         public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
                     int age, User.Gender gender, User.Role role, boolean isActive){
@@ -69,9 +79,19 @@
             freeBoard.setUser(this);
         }
 
+        public void addBoard(QuestionBoard questionBoard){
+            this.questionBoards.add(questionBoard);
+            questionBoard.setUser(this);
+        }
+
         public void addComment(FreeBoardComment freeBoardComment){
             this.freeBoardComments.add(freeBoardComment);
             freeBoardComment.setUser(this);
+        }
+
+        public void addComment(QuestionBoardComment questionBoardComment){
+            this.questionBoardComments.add(questionBoardComment);
+            questionBoardComment.setUser(this);
         }
 
         public boolean getActive() {

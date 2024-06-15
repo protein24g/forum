@@ -50,7 +50,7 @@
         async function getBoardList(keyword, page, option){ // 게시글 리스트
             let _csrf = document.querySelector("._csrf").value;
             try{
-                const response = await fetch("/api/freeBoard", {
+                const response = await fetch("/api/questionBoard", {
                     method : "POST",
                     headers : {
                         "Content-Type" : "application/json",
@@ -92,7 +92,7 @@
                                         </div>
                                     `;
                 });
-                document.querySelector(".freeBoard-list").innerHTML = boardHtml;
+                document.querySelector(".questionBoard-list").innerHTML = boardHtml;
 
 
                 let pageHtml = "";
@@ -118,18 +118,18 @@
                                     </li>
                                 `;
 
-                document.querySelector(".freeBoard-page").innerHTML = pageHtml;
+                document.querySelector(".questionBoard-page").innerHTML = pageHtml;
                 addEventToRows();
             }catch (error){
                 alert(error);
-                window.location.href = "/freeBoard";
+                window.location.href = "/questionBoard";
             }
         }
 
         function addEventToRows() {
             document.querySelectorAll(".board-item").forEach(function (div) {
                 div.addEventListener("click", function (){
-                    window.location.href = "/freeBoard/" + div.getAttribute("id");
+                    window.location.href = "/questionBoard/" + div.getAttribute("id");
                 });
             });
 
@@ -195,7 +195,7 @@
                             <h5 class="fw-bold">인기게시글</h5>
                         </div>
                         <div class="ms-auto">
-                            <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
+                            <a href="/questionBoard" class="text-black" style="text-decoration: none;">더보기</a>
                         </div>
                     </div>
                     <hr class="m-1">
@@ -223,7 +223,7 @@
         <div class="order-xl-2 order-1 col-xl-9">
             <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
             <!--검색-->
-            <div class="freeBoard-search mb-1">
+            <div class="questionBoard-search mb-1">
                 <div class="d-flex justify-content-center justify-content-sm-end">
                     <form class="d-flex" role="search">
                         <div class="col-auto">
@@ -241,19 +241,19 @@
                     </form>
                 </div>
             </div>
-            <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
+            <div class="questionBoard-wrap" style="background-color: white; border-radius: 15px;">
                 <!--게시글 Detail-->
-                <div class="freeBoard-list"></div>
+                <div class="questionBoard-list"></div>
 
                 <!--게시글 페이징-->
                 <nav>
-                    <ul class="pagination justify-content-center freeBoard-page">
+                    <ul class="pagination justify-content-center questionBoard-page">
                     </ul>
                 </nav>
 
                 <!--글쓰기-->
                 <div class="text-start">
-                    <a class="btn btn-primary" href="/freeBoard/create">글쓰기</a>
+                    <a class="btn btn-primary" href="/questionBoard/create">글쓰기</a>
                 </div>
             </div>
         </div>

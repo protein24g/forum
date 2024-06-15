@@ -1,14 +1,14 @@
-package com.example.forum.boards.freeBoard.comment.service;
+package com.example.forum.boards.questionBoard.comment.service;
 
 import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.comment.dto.request.CommentRequest;
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.base.comment.service.CommentService;
 import com.example.forum.base.board.auth.AuthenticationService;
-import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
-import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
-import com.example.forum.boards.freeBoard.comment.repository.FreeBoardCommentRepository;
-import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
+import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
+import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
+import com.example.forum.boards.questionBoard.comment.repository.QuestionBoardCommentRepository;
+import com.example.forum.boards.questionBoard.board.repository.QuestionBoardRepository;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -28,10 +28,10 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class FreeBoardCommentServiceImpl implements CommentService {
-    private final FreeBoardCommentRepository freeBoardCommentRepository;
+public class QuestionBoardCommentServiceImpl implements CommentService {
+    private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final UserRepository userRepository;
-    private final FreeBoardRepository freeBoardRepository;
+    private final QuestionBoardRepository questionBoardRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -49,18 +49,18 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+            QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
-            FreeBoardComment freeBoardComment = FreeBoardComment.builder()
+            QuestionBoardComment questionBoardComment = QuestionBoardComment.builder()
                     .user(user)
-                    .freeBoard(freeBoard)
+                    .questionBoard(questionBoard)
                     .content(dto.getContent())
                     .createDate(LocalDateTime.now())
                     .build();
-            freeBoardCommentRepository.save(freeBoardComment);
-            user.addComment(freeBoardComment);
-            freeBoard.addComment(freeBoardComment);
+            questionBoardCommentRepository.save(questionBoardComment);
+            user.addComment(questionBoardComment);
+            questionBoard.addComment(questionBoardComment);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
@@ -78,14 +78,14 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-            Page<FreeBoardComment> comments = freeBoardCommentRepository.findByUserId(userId, pageable);
+            Page<QuestionBoardComment> comments = questionBoardCommentRepository.findByUserId(userId, pageable);
             return comments.map(comment -> CommentResponse.builder()
                     .id(comment.getId())
                     .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
                     .content(comment.getContent())
                     .createDate(comment.getCreateDate())
                     .isAuthor(comment.getUser().getNickname().equals(customUserDetails.getUsername()))
-                    .boardId(comment.getFreeBoard().getId())
+                    .boardId(comment.getQuestionBoard().getId())
                     .build());
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
@@ -103,7 +103,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     public Page<CommentResponse> getCommentsForBoard(Long boardId, int page) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoardComment> comments = freeBoardCommentRepository.findByFreeBoardId(boardId, pageable);
+        Page<QuestionBoardComment> comments = questionBoardCommentRepository.findByQuestionBoardId(boardId, pageable);
         return comments.map(comment -> CommentResponse.builder()
                 .id(comment.getId())
                 .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
@@ -123,7 +123,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     @Override
     public Page<BoardResponse> getBoardsByUserComments(User user, int page){
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards = freeBoardCommentRepository.getfreeBoardByUserComments(user, pageable);
+        Page<QuestionBoard> boards = questionBoardCommentRepository.getquestionBoardByUserComments(user, pageable);
         return boards
                 .map(board -> BoardResponse.builder()
                         .id(board.getId())
@@ -132,7 +132,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                         .title(board.getTitle())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(board.getQuestionBoardComments().size())
                         .view(board.getView())
                         .hasImage((board.getImages().size() >= 1 ? true : false))
                         .build());
@@ -153,12 +153,12 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글
-            FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId)
+            QuestionBoardComment questionBoardComment = questionBoardCommentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if(freeBoardComment.getUser().getId().equals(user.getId())){
-                freeBoardComment.setContent(dto.getContent());
-                freeBoardCommentRepository.save(freeBoardComment);
+            if(questionBoardComment.getUser().getId().equals(user.getId())){
+                questionBoardComment.setContent(dto.getContent());
+                questionBoardCommentRepository.save(questionBoardComment);
             }else{
                 throw new IllegalArgumentException("댓글 작성자만 수정 가능합니다.");
             }
@@ -181,11 +181,11 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글
-            FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId)
+            QuestionBoardComment questionBoardComment = questionBoardCommentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
 
-            if (freeBoardComment.getUser().getId().equals(user.getId())) {
-                freeBoardCommentRepository.delete(freeBoardComment);
+            if (questionBoardComment.getUser().getId().equals(user.getId())) {
+                questionBoardCommentRepository.delete(questionBoardComment);
             } else {
                 throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
             }

@@ -1,9 +1,9 @@
-package com.example.forum.boards.freeBoard.board.controller;
+package com.example.forum.boards.questionBoard.board.controller;
 
 import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.board.dto.request.BoardRequest;
 import com.example.forum.base.board.dto.request.BoardSearch;
-import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
+import com.example.forum.boards.questionBoard.board.service.QuestionBoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequiredArgsConstructor
-public class FreeBoardApiController {
-    private final FreeBoardServiceImpl freeBoardServiceImpl;
+public class QuestionBoardApiController {
+    private final QuestionBoardServiceImpl questionBoardServiceImpl;
 
     /**
      * 게시글 목록을 검색하여 반환
@@ -25,9 +25,9 @@ public class FreeBoardApiController {
      * @param dto 검색 조건을 포함한 DTO
      * @return 검색된 게시글 목록 페이지
      */
-    @PostMapping("/api/freeBoard")
+    @PostMapping("/api/questionBoard")
     public ResponseEntity<?> boardPage(@RequestBody BoardSearch dto) {
-        Page<BoardResponse> boardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
+        Page<BoardResponse> boardResponses = questionBoardServiceImpl.boardPage(dto); // 검색 페이징
         System.out.println(boardResponses);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
     }
@@ -38,10 +38,10 @@ public class FreeBoardApiController {
      * @param boardId 게시글 ID
      * @return 게시글 상세 정보
      */
-    @GetMapping("/api/freeBoard/{boardId}")
+    @GetMapping("/api/questionBoard/{boardId}")
     public ResponseEntity<?> getBoardDetail(@PathVariable("boardId") Long boardId){
         try {
-            BoardResponse BoardResponse = freeBoardServiceImpl.getDetail(boardId);
+            BoardResponse BoardResponse = questionBoardServiceImpl.getDetail(boardId);
             return ResponseEntity.status(HttpStatus.OK).body(BoardResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -55,12 +55,12 @@ public class FreeBoardApiController {
      * @param boardId 게시글 ID
      * @return 게시글 수정을 위한 데이터
      */
-    @GetMapping("/api/freeBoard/{boardId}/update")
+    @GetMapping("/api/questionBoard/{boardId}/update")
     public ResponseEntity<?> getBoardUpdateData(BoardRequest dto, @PathVariable(name = "boardId") Long boardId){
         try{
             System.out.println(dto);
             System.out.println(dto.getOriginalImages());
-            BoardResponse BoardResponse = freeBoardServiceImpl.getBoardUpdateData(boardId);
+            BoardResponse BoardResponse = questionBoardServiceImpl.getBoardUpdateData(boardId);
             return ResponseEntity.status(HttpStatus.OK).body(BoardResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -74,10 +74,10 @@ public class FreeBoardApiController {
      * @param dto     수정할 게시글 내용을 담은 DTO
      * @return 수정 결과 메시지
      */
-    @PutMapping("/api/freeBoard/{boardId}")
+    @PutMapping("/api/questionBoard/{boardId}")
     public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, BoardRequest dto){
         try{
-            freeBoardServiceImpl.update(boardId, dto);
+            questionBoardServiceImpl.update(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
         } catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

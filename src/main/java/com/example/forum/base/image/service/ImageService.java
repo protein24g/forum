@@ -25,7 +25,7 @@ import java.util.UUID;
 public class ImageService {
     private final ImageRepository imageRepository;
 
-    @Value("${freeBoard.dir}")
+    @Value("${image.dir}")
     private String uploadDir;
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)

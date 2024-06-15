@@ -1,6 +1,6 @@
-package com.example.forum.boards.freeBoard.board.dto.response;
+package com.example.forum.base.board.dto.response;
 
-import com.example.forum.boards.freeBoard.comment.dto.response.FreeBoardCommentResponse;
+import com.example.forum.base.comment.dto.response.CommentResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,21 +13,21 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class FreeBoardResponse {
+public class BoardResponse {
     private Long id;
     private String nickname;
     private String title;
     private String content;
     private LocalDateTime createDate;
-    private Page<FreeBoardCommentResponse> commentResponses;
+    private Page<CommentResponse> commentResponses;
     private int commentCount;
     private int view;
     private List<String> images;
     private boolean hasImage;
 
     @Builder
-    public FreeBoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
-                             Page<FreeBoardCommentResponse> commentResponses, int commentCount, int view, List<String> images, boolean hasImage){
+    public BoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
+                         Page<CommentResponse> commentResponses, int commentCount, int view, List<String> images, boolean hasImage) {
         this.id = id;
         this.nickname = nickname;
         this.title = title;

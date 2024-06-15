@@ -1,4 +1,4 @@
-package com.example.forum.boards.freeBoard.comment.dto.response;
+package com.example.forum.base.comment.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class FreeBoardCommentResponse {
+public class CommentResponse {
     private Long id;
     private String nickname;
     private String content;
@@ -19,7 +19,7 @@ public class FreeBoardCommentResponse {
     private Long boardId;
 
     @Builder
-    public FreeBoardCommentResponse(Long id, String nickname, String content, LocalDateTime createDate, boolean isAuthor, Long boardId){
+    public CommentResponse(Long id, String nickname, String content, LocalDateTime createDate, boolean isAuthor, Long boardId) {
         this.id = id;
         this.nickname = nickname;
         this.content = content;

@@ -26,7 +26,7 @@
             function addEventToRows() {
                 document.querySelectorAll(".board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
                     row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/freeBoard/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                        window.location.href = "/questionBoard/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
             }
@@ -35,7 +35,7 @@
             async function tab1(page){
                 let userId = document.getElementById("userId").value;
                 try{
-                    const response = await fetch(`/api/admin/users/${userId}/freeBoard?page=${page}`, {
+                    const response = await fetch(`/api/admin/users/${userId}/questionBoard?page=${page}`, {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json",
@@ -73,7 +73,7 @@
                                 </tr>
                             `;
                     });
-                        document.querySelector(".freeBoard-list").innerHTML = boardHtml;
+                        document.querySelector(".questionBoard-list").innerHTML = boardHtml;
 
                         let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                         boardPageHtml += `
@@ -137,7 +137,7 @@
                                     </tr>
                                 `;
                     });
-                    document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
+                    document.querySelector(".questionBoardComment-list").innerHTML = commentHtml;
 
                     let commentPageHtml = ""; // 유저 검색 창 댓글 페이징
                     commentPageHtml += `
@@ -201,12 +201,12 @@
             <div class="row" style="background-color: white">
                 <nav class="navbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" onclick="tab1(0)" id="nav-freeBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoard" type="button" role="tab" aria-controls="nav-freeBoard" aria-selected="true">작성글</button>
-                        <button class="nav-link" onclick="tab2(0)" id="nav-freeBoardComment-tab" data-bs-toggle="tab" data-bs-target="#nav-freeBoardComment" type="button" role="tab" aria-controls="nav-freeBoardComment" aria-selected="false">댓글</button>
+                        <button class="nav-link active" onclick="tab1(0)" id="nav-questionBoard-tab" data-bs-toggle="tab" data-bs-target="#nav-questionBoard" type="button" role="tab" aria-controls="nav-questionBoard" aria-selected="true">작성글</button>
+                        <button class="nav-link" onclick="tab2(0)" id="nav-questionBoardComment-tab" data-bs-toggle="tab" data-bs-target="#nav-questionBoardComment" type="button" role="tab" aria-controls="nav-questionBoardComment" aria-selected="false">댓글</button>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-freeBoard" role="tabpanel" aria-labelledby="nav-freeBoard-tab" tabindex="0">
+                    <div class="tab-pane fade show active" id="nav-questionBoard" role="tabpanel" aria-labelledby="nav-questionBoard-tab" tabindex="0">
                         <!--게시글 Detail-->
                         <table class="table text-center">
                             <thead>
@@ -218,7 +218,7 @@
                                     <th class="col-auto d-none d-lg-table-cell">조회</th>
                                 </tr>
                             </thead>
-                            <tbody class="freeBoard-list board-list"></tbody>
+                            <tbody class="questionBoard-list board-list"></tbody>
                         </table>
                         <!--게시글 페이징-->
                         <nav aria-label="">
@@ -226,7 +226,7 @@
                             </ul>
                         </nav>
                     </div>
-                    <div class="tab-pane fade" id="nav-freeBoardComment" role="tabpanel" aria-labelledby="nav-freeBoardComment-tab" tabindex="0">
+                    <div class="tab-pane fade" id="nav-questionBoardComment" role="tabpanel" aria-labelledby="nav-questionBoardComment-tab" tabindex="0">
                         <!--/* 댓글 렌더링 영역 */-->
                         <table class="table text-center">
                             <thead>
@@ -236,7 +236,7 @@
                                 <th class="col-auto">등록일</th>
                             </tr>
                             </thead>
-                            <tbody class="freeBoardComment-list board-list"></tbody>
+                            <tbody class="questionBoardComment-list board-list"></tbody>
                         </table>
                         <!--댓글 페이징-->
                         <nav aria-label="Page navigation example">

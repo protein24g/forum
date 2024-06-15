@@ -1,6 +1,6 @@
-package com.example.forum.boards.freeBoard.comment.entity;
+package com.example.forum.boards.questionBoard.comment.entity;
 
-import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
+import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class FreeBoardComment {
+public class QuestionBoardComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,17 +22,17 @@ public class FreeBoardComment {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "free_Board_id")
-    private FreeBoard freeBoard;
+    @JoinColumn(name = "question_Board_id")
+    private QuestionBoard questionBoard;
 
     private String content;
 
     private LocalDateTime createDate;
 
     @Builder
-    public FreeBoardComment(User user, FreeBoard freeBoard, String content, LocalDateTime createDate){
+    public QuestionBoardComment(User user, QuestionBoard questionBoard, String content, LocalDateTime createDate){
         this.user = user;
-        this.freeBoard = freeBoard;
+        this.questionBoard = questionBoard;
         this.content = content;
         this.createDate = createDate;
     }
@@ -41,7 +41,7 @@ public class FreeBoardComment {
         this.user = user;
     }
 
-    public void setBoard(FreeBoard freeBoard) { this.freeBoard = freeBoard; }
+    public void setBoard(QuestionBoard questionBoard) { this.questionBoard = questionBoard; }
 
     public void setContent(String content) { this.content = content; };
 }

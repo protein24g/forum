@@ -1,4 +1,4 @@
-package com.example.forum.base.board.dto;
+package com.example.forum.base.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

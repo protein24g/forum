@@ -1,7 +1,7 @@
 package com.example.forum.boards.freeBoard.board.controller;
 
-import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
-import com.example.forum.base.board.dto.BoardRequest;
+import com.example.forum.base.board.dto.response.BoardResponse;
+import com.example.forum.base.board.dto.request.BoardRequest;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -47,9 +47,9 @@ public class FreeBoardController {
                     System.out.println("이미지 파일 이름: " + image.getOriginalFilename());
                 }
             }
-            FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.create(dto);
+            BoardResponse BoardResponse = freeBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/freeBoard/" + freeBoardResponse.getId());
+            model.addAttribute("url", "/freeBoard/" + BoardResponse.getId());
             return "message/index";
         } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());

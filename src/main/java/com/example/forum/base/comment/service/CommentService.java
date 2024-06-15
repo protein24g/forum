@@ -1,6 +1,6 @@
 package com.example.forum.base.comment.service;
 
-import com.example.forum.boards.freeBoard.comment.dto.requests.FreeBoardCommentRequest;
+import com.example.forum.base.comment.dto.request.CommentRequest;
 import com.example.forum.user.entity.User;
 import org.springframework.data.domain.Page;
 
@@ -19,7 +19,7 @@ public interface CommentService<T> {
      * @param boardId 게시글의 고유 번호
      * @param dto     생성할 댓글의 정보가 담긴 DTO
      */
-    void createCommentForBoard(Long boardId, FreeBoardCommentRequest dto);
+    void createCommentForBoard(Long boardId, CommentRequest dto);
 
     /**
      * 특정 사용자가 작성한 댓글 목록을 페이지 단위로 반환
@@ -54,7 +54,7 @@ public interface CommentService<T> {
      * @param commentId 댓글의 고유 번호
      * @param dto       업데이트할 댓글의 정보가 담긴 DTO
      */
-    void updateComment(Long commentId, FreeBoardCommentRequest dto);
+    void updateComment(Long commentId, CommentRequest dto);
 
     /**
      * 댓글을 삭제
