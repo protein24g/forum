@@ -1,16 +1,14 @@
 package com.example.forum.boards.freeBoard.board.controller;
 
-import com.example.forum.base.board.dto.response.BoardResponse;
-import com.example.forum.base.board.dto.request.BoardRequest;
+import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 자유 게시판 컨트롤러
@@ -40,11 +38,11 @@ public class FreeBoardController {
      */
 
     @PostMapping("/freeBoard/create")
-    public String createProc(@Valid BoardRequest dto, Model model) {
+    public String createProc(@Valid FreeBoardRequest dto, Model model) {
         try {
-            BoardResponse BoardResponse = freeBoardServiceImpl.create(dto);
+            FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/freeBoard/" + BoardResponse.getId());
+            model.addAttribute("url", "/freeBoard/" + freeBoardResponse.getId());
             return "message/index";
         } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());

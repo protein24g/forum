@@ -1,4 +1,4 @@
-package com.example.forum.base.board.dto.response;
+package com.example.forum.boards.freeBoard.board.dto.response;
 
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class BoardResponse {
+public class FreeBoardResponse {
     private Long id;
     private String nickname;
     private String title;
@@ -26,8 +26,8 @@ public class BoardResponse {
     private boolean hasImage;
 
     @Builder
-    public BoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
-                         Page<CommentResponse> commentResponses, int commentCount, int view, List<String> images, boolean hasImage) {
+    public FreeBoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
+                             Page<CommentResponse> commentResponses, int commentCount, int view, List<String> images, boolean hasImage) {
         this.id = id;
         this.nickname = nickname;
         this.title = title;

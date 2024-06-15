@@ -1,16 +1,14 @@
 package com.example.forum.boards.questionBoard.board.controller;
 
-import com.example.forum.base.board.dto.request.BoardRequest;
-import com.example.forum.base.board.dto.response.BoardResponse;
+import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardRequest;
+import com.example.forum.boards.questionBoard.board.dto.response.QuestionBoardResponse;
 import com.example.forum.boards.questionBoard.board.service.QuestionBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 자유 게시판 컨트롤러
@@ -40,11 +38,11 @@ public class QuestionBoardController {
      */
 
     @PostMapping("/questionBoard/create")
-    public String createProc(@Valid BoardRequest dto, Model model) {
+    public String createProc(@Valid QuestionBoardRequest dto, Model model) {
         try {
-            BoardResponse BoardResponse = questionBoardServiceImpl.create(dto);
+            QuestionBoardResponse questionBoardResponse = questionBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/questionBoard/" + BoardResponse.getId());
+            model.addAttribute("url", "/questionBoard/" + questionBoardResponse.getId());
             return "message/index";
         } catch (IllegalArgumentException e) {
             model.addAttribute("msg", e.getMessage());

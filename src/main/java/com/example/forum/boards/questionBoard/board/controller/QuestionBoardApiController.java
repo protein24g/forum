@@ -1,8 +1,8 @@
 package com.example.forum.boards.questionBoard.board.controller;
 
-import com.example.forum.base.board.dto.response.BoardResponse;
-import com.example.forum.base.board.dto.request.BoardRequest;
-import com.example.forum.base.board.dto.request.BoardSearch;
+import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardRequest;
+import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardSearch;
+import com.example.forum.boards.questionBoard.board.dto.response.QuestionBoardResponse;
 import com.example.forum.boards.questionBoard.board.service.QuestionBoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,10 +26,10 @@ public class QuestionBoardApiController {
      * @return 검색된 게시글 목록 페이지
      */
     @PostMapping("/api/questionBoard")
-    public ResponseEntity<?> boardPage(@RequestBody BoardSearch dto) {
-        Page<BoardResponse> boardResponses = questionBoardServiceImpl.boardPage(dto); // 검색 페이징
-        System.out.println(boardResponses);
-        return ResponseEntity.status(HttpStatus.OK).body(boardResponses);
+    public ResponseEntity<?> boardPage(@RequestBody QuestionBoardSearch dto) {
+        Page<QuestionBoardResponse> questionBoardResponses = questionBoardServiceImpl.boardPage(dto); // 검색 페이징
+        System.out.println(questionBoardResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(questionBoardResponses);
     }
 
     /**
@@ -41,8 +41,8 @@ public class QuestionBoardApiController {
     @GetMapping("/api/questionBoard/{boardId}")
     public ResponseEntity<?> getBoardDetail(@PathVariable("boardId") Long boardId){
         try {
-            BoardResponse BoardResponse = questionBoardServiceImpl.getDetail(boardId);
-            return ResponseEntity.status(HttpStatus.OK).body(BoardResponse);
+            QuestionBoardResponse questionBoardResponse = questionBoardServiceImpl.getDetail(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(questionBoardResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -56,12 +56,12 @@ public class QuestionBoardApiController {
      * @return 게시글 수정을 위한 데이터
      */
     @GetMapping("/api/questionBoard/{boardId}/update")
-    public ResponseEntity<?> getBoardUpdateData(BoardRequest dto, @PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardUpdateData(QuestionBoardRequest dto, @PathVariable(name = "boardId") Long boardId){
         try{
             System.out.println(dto);
             System.out.println(dto.getOriginalImages());
-            BoardResponse BoardResponse = questionBoardServiceImpl.getBoardUpdateData(boardId);
-            return ResponseEntity.status(HttpStatus.OK).body(BoardResponse);
+            QuestionBoardResponse questionBoardResponse = questionBoardServiceImpl.getBoardUpdateData(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(questionBoardResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -75,7 +75,7 @@ public class QuestionBoardApiController {
      * @return 수정 결과 메시지
      */
     @PutMapping("/api/questionBoard/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, BoardRequest dto){
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, QuestionBoardRequest dto){
         try{
             questionBoardServiceImpl.update(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");

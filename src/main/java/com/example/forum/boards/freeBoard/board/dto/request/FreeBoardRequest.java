@@ -1,4 +1,4 @@
-package com.example.forum.base.board.dto.request;
+package com.example.forum.boards.freeBoard.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -11,13 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class BoardRequest {
+public class FreeBoardRequest {
     @NotBlank(message = "제목을 입력하세요")
     private String title;
 
     @NotBlank(message = "내용을 입력하세요")
     private String content;
-
 
     private List<String> originalImages; // 업데이트 기존 이미지
 

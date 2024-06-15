@@ -1,17 +1,16 @@
 package com.example.forum.boards.freeBoard.board.service;
 
-import com.example.forum.base.board.dto.request.BoardSearch;
-import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.auth.service.AuthenticationService;
-import com.example.forum.base.board.dto.request.BoardRequest;
+import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
+import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.boards.freeBoard.image.repository.FreeBoardImageRepository;
 import com.example.forum.boards.freeBoard.image.service.FreeBoardImageService;
-import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class FreeBoardServiceImpl implements BoardService {
+public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRequest, FreeBoardResponse, FreeBoardSearch> {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
@@ -48,7 +46,7 @@ public class FreeBoardServiceImpl implements BoardService {
      * @return 생성된 게시글 응답 DTO
      */
     @Override
-    public BoardResponse create(BoardRequest dto) {
+    public FreeBoardResponse create(FreeBoardRequest dto) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
 
         if(customUserDetails != null){
@@ -76,7 +74,7 @@ public class FreeBoardServiceImpl implements BoardService {
             user.addBoard(freeBoard);
             freeBoardRepository.save(freeBoard);
 
-            return BoardResponse.builder()
+            return FreeBoardResponse.builder()
                     .id(freeBoard.getId())
                     .nickname(freeBoard.getUser().getNickname())
                     .title(freeBoard.getTitle())
@@ -96,7 +94,7 @@ public class FreeBoardServiceImpl implements BoardService {
      */
     @Override
     @Transactional
-    public Page<BoardResponse> boardPage(BoardSearch dto) {
+    public Page<FreeBoardResponse> boardPage(FreeBoardSearch dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         Page<FreeBoard> boards;
 
@@ -116,7 +114,7 @@ public class FreeBoardServiceImpl implements BoardService {
         }
 
         return boards
-                .map(board -> BoardResponse.builder()
+                .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
@@ -135,7 +133,7 @@ public class FreeBoardServiceImpl implements BoardService {
      */
     @Override
     @Transactional
-    public BoardResponse getDetail(Long boardId) {
+    public FreeBoardResponse getDetail(Long boardId) {
         FreeBoard freeBoard = freeBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
@@ -143,7 +141,7 @@ public class FreeBoardServiceImpl implements BoardService {
                 .map(FreeBoardImage::getFileName)
                 .collect(Collectors.toList());
 
-        return BoardResponse.builder()
+        return FreeBoardResponse.builder()
                 .id(freeBoard.getId())
                 .nickname(freeBoard.getUser().getActive() ? freeBoard.getUser().getNickname() : "탈퇴한 사용자")
                 .title(freeBoard.getTitle())
@@ -164,12 +162,12 @@ public class FreeBoardServiceImpl implements BoardService {
      * @return 게시글 페이지 응답 DTO
      */
     @Override
-    public Page<BoardResponse> getBoardsForUser(Long userId, int page) {
+    public Page<FreeBoardResponse> getBoardsForUser(Long userId, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<FreeBoard> boards = freeBoardRepository.findByUserId(userId, pageable);
 
         return boards
-                .map(board -> BoardResponse.builder()
+                .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
@@ -220,7 +218,7 @@ public class FreeBoardServiceImpl implements BoardService {
      * @param boardId 게시글 ID
      * @return 수정할 게시글 응답 DTO
      */
-    public BoardResponse getBoardUpdateData(Long boardId) {
+    public FreeBoardResponse getBoardUpdateData(Long boardId) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             User user = userRepository.findById(customUserDetails.getId())
@@ -233,7 +231,7 @@ public class FreeBoardServiceImpl implements BoardService {
                 List<String> imagesName = freeBoard.getImages().stream()
                         .map(FreeBoardImage::getOriginalName)
                         .collect(Collectors.toList());
-                return BoardResponse.builder()
+                return FreeBoardResponse.builder()
                         .title(freeBoard.getTitle())
                         .content(freeBoard.getContent())
                         .images(imagesName)
@@ -254,7 +252,7 @@ public class FreeBoardServiceImpl implements BoardService {
      * @return 수정된 게시글 응답 DTO
      */
     @Override
-    public BoardResponse update(Long boardId, BoardRequest dto) {
+    public FreeBoardResponse update(Long boardId, FreeBoardRequest dto) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             FreeBoard freeBoard = freeBoardRepository.findById(boardId)
@@ -287,7 +285,7 @@ public class FreeBoardServiceImpl implements BoardService {
 
                 freeBoardRepository.save(freeBoard);
 
-                return BoardResponse.builder()
+                return FreeBoardResponse.builder()
                         .id(freeBoard.getId())
                         .nickname(freeBoard.getUser().getNickname())
                         .title(freeBoard.getTitle())

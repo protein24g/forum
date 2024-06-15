@@ -1,10 +1,10 @@
 package com.example.forum.boards.questionBoard.comment.service;
 
-import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.comment.dto.request.CommentRequest;
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.base.comment.service.CommentService;
 import com.example.forum.base.auth.service.AuthenticationService;
+import com.example.forum.boards.questionBoard.board.dto.response.QuestionBoardResponse;
 import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
 import com.example.forum.boards.questionBoard.comment.repository.QuestionBoardCommentRepository;
@@ -121,11 +121,11 @@ public class QuestionBoardCommentServiceImpl implements CommentService {
      * @return 게시글 페이지 응답 DTO
      */
     @Override
-    public Page<BoardResponse> getBoardsByUserComments(User user, int page){
+    public Page<QuestionBoardResponse> getBoardsByUserComments(User user, int page){
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
         Page<QuestionBoard> boards = questionBoardCommentRepository.getquestionBoardByUserComments(user, pageable);
         return boards
-                .map(board -> BoardResponse.builder()
+                .map(board -> QuestionBoardResponse.builder()
                         .id(board.getId())
                         // 사용자의 활성화 상태를 확인하고 비활성화된 경우 "탈퇴한 사용자"로 표시
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
