@@ -3,14 +3,14 @@ package com.example.forum.boards.questionBoard.board.service;
 import com.example.forum.base.board.dto.request.BoardSearch;
 import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.board.service.BoardService;
-import com.example.forum.base.image.entity.Image;
-import com.example.forum.base.board.auth.AuthenticationService;
-import com.example.forum.base.image.repository.ImageRepository;
-import com.example.forum.base.image.service.ImageService;
+import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.base.board.dto.request.BoardRequest;
 import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import com.example.forum.boards.questionBoard.board.repository.QuestionBoardRepository;
 import com.example.forum.boards.questionBoard.comment.service.QuestionBoardCommentServiceImpl;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
+import com.example.forum.boards.questionBoard.image.repository.QuestionBoardImageRepository;
+import com.example.forum.boards.questionBoard.image.service.QuestionImageService;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -35,8 +35,8 @@ public class QuestionBoardServiceImpl implements BoardService {
     private final QuestionBoardCommentServiceImpl questionBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final QuestionBoardRepository questionBoardRepository;
-    private final ImageService imageService;
-    private final ImageRepository imageRepository;
+    private final QuestionImageService questionImageService;
+    private final QuestionBoardImageRepository questionBoardImageRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -62,8 +62,8 @@ public class QuestionBoardServiceImpl implements BoardService {
                     .build();
             try {
                 if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<Image> images = imageService.saveImage(dto.getImages());
-                    for (Image image : images) {
+                    List<QuestionBoardImage> questionBoardImages = questionImageService.saveImage(dto.getImages());
+                    for (QuestionBoardImage image : questionBoardImages) {
                         questionBoard.addImage(image);
                     }
                 }
@@ -138,7 +138,7 @@ public class QuestionBoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         List<String> imagesName = questionBoard.getImages().stream()
-                .map(Image::getFileName)
+                .map(QuestionBoardImage::getFileName)
                 .collect(Collectors.toList());
 
         return BoardResponse.builder()
@@ -229,7 +229,7 @@ public class QuestionBoardServiceImpl implements BoardService {
 
             if (user.getLoginId().equals(questionBoard.getUser().getLoginId())) {
                 List<String> imagesName = questionBoard.getImages().stream()
-                        .map(Image::getOriginalName)
+                        .map(QuestionBoardImage::getOriginalName)
                         .collect(Collectors.toList());
                 return BoardResponse.builder()
                         .title(questionBoard.getTitle())
@@ -262,20 +262,20 @@ public class QuestionBoardServiceImpl implements BoardService {
                 questionBoard.setTitle(dto.getTitle());
                 questionBoard.setContent(dto.getContent());
                 List<String> originalImageNames = dto.getOriginalImages();
-                List<Image> dbImages = imageRepository.findByQuestionBoardId(boardId);
+                List<QuestionBoardImage> dbImages = questionBoardImageRepository.findByQuestionBoardId(boardId);
 
                 // 기존 이미지 처리 로직
-                for (Image image : dbImages) {
+                for (QuestionBoardImage image : dbImages) {
                     if(originalImageNames == null || !originalImageNames.contains(image.getOriginalName())){
-                        imageRepository.delete(image);
+                        questionBoardImageRepository.delete(image);
                     }
                 }
 
                 // 새로운 이미지 저장 로직
                 try {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                        List<Image> images = imageService.saveImage(dto.getImages());
-                        for (Image image : images) {
+                        List<QuestionBoardImage> questionBoardImages = questionImageService.saveImage(dto.getImages());
+                        for (QuestionBoardImage image : questionBoardImages) {
                             questionBoard.addImage(image);
                         }
                     }

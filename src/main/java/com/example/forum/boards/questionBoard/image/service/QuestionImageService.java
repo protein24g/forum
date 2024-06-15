@@ -1,14 +1,15 @@
-package com.example.forum.base.image.service;
+package com.example.forum.boards.questionBoard.image.service;
 
-import com.example.forum.base.image.entity.Image;
-import com.example.forum.base.image.repository.ImageRepository;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
+import com.example.forum.boards.questionBoard.image.repository.QuestionBoardImageRepository;
 import com.sun.nio.sctp.IllegalReceiveException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,8 +23,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ImageService {
-    private final ImageRepository imageRepository;
+public class QuestionImageService {
+    private final QuestionBoardImageRepository questionBoardImageRepository;
 
     @Value("${image.dir}")
     private String uploadDir;
@@ -38,8 +39,8 @@ public class ImageService {
      * @return 저장된 이미지 목록
      * @throws Exception 파일 처리 중 예외가 발생할 경우
      */
-    public List<Image> saveImage(List<MultipartFile> files) throws Exception {
-        List<Image> savedImages = new ArrayList<>();
+    public List<QuestionBoardImage> saveImage(List<MultipartFile> files) throws Exception {
+        List<QuestionBoardImage> savedImages = new ArrayList<>();
 
         if (files == null || files.isEmpty()) {
             throw new IllegalReceiveException("파일이 존재하지 않습니다");
@@ -67,8 +68,8 @@ public class ImageService {
             Files.copy(file.getInputStream(), filePath);
 
             // 이미지 정보 저장
-            Image savedImage = imageRepository.save(
-                    Image.builder()
+            QuestionBoardImage savedImage = questionBoardImageRepository.save(
+                    QuestionBoardImage.builder()
                             .originalName(file.getOriginalFilename())
                             .fileName(fileName)
                             .filePath(filePath.toString())

@@ -6,6 +6,7 @@ import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class FreeBoardController {
      * @param model Model 객체
      * @return 메시지 페이지 URL
      */
+
     @PostMapping("/freeBoard/create")
     public String createProc(@Valid BoardRequest dto, Model model) {
         try {

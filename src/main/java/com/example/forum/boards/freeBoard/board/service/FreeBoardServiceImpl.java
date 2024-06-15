@@ -3,14 +3,15 @@ package com.example.forum.boards.freeBoard.board.service;
 import com.example.forum.base.board.dto.request.BoardSearch;
 import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.board.service.BoardService;
-import com.example.forum.base.image.entity.Image;
-import com.example.forum.base.board.auth.AuthenticationService;
-import com.example.forum.base.image.repository.ImageRepository;
-import com.example.forum.base.image.service.ImageService;
+import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.base.board.dto.request.BoardRequest;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
+import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
+import com.example.forum.boards.freeBoard.image.repository.FreeBoardImageRepository;
+import com.example.forum.boards.freeBoard.image.service.FreeBoardImageService;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +37,8 @@ public class FreeBoardServiceImpl implements BoardService {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
-    private final ImageService imageService;
-    private final ImageRepository imageRepository;
+    private final FreeBoardImageService freeBoardImageService;
+    private final FreeBoardImageRepository freeBoardImageRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -62,8 +64,8 @@ public class FreeBoardServiceImpl implements BoardService {
                     .build();
             try {
                 if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<Image> images = imageService.saveImage(dto.getImages());
-                    for (Image image : images) {
+                    List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImage(dto.getImages());
+                    for (FreeBoardImage image : freeBoardImages) {
                         freeBoard.addImage(image);
                     }
                 }
@@ -138,7 +140,7 @@ public class FreeBoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         List<String> imagesName = freeBoard.getImages().stream()
-                .map(Image::getFileName)
+                .map(FreeBoardImage::getFileName)
                 .collect(Collectors.toList());
 
         return BoardResponse.builder()
@@ -229,7 +231,7 @@ public class FreeBoardServiceImpl implements BoardService {
 
             if (user.getLoginId().equals(freeBoard.getUser().getLoginId())) {
                 List<String> imagesName = freeBoard.getImages().stream()
-                        .map(Image::getOriginalName)
+                        .map(FreeBoardImage::getOriginalName)
                         .collect(Collectors.toList());
                 return BoardResponse.builder()
                         .title(freeBoard.getTitle())
@@ -262,20 +264,20 @@ public class FreeBoardServiceImpl implements BoardService {
                 freeBoard.setTitle(dto.getTitle());
                 freeBoard.setContent(dto.getContent());
                 List<String> originalImageNames = dto.getOriginalImages();
-                List<Image> dbImages = imageRepository.findByFreeBoardId(boardId);
+                List<FreeBoardImage> dbImages = freeBoardImageRepository.findByFreeBoardId(boardId);
 
                 // 기존 이미지 처리 로직
-                for (Image image : dbImages) {
-                    if(originalImageNames == null || !originalImageNames.contains(image.getOriginalName())){
-                        imageRepository.delete(image);
+                for (FreeBoardImage freeBoardImage : dbImages) {
+                    if(originalImageNames == null || !originalImageNames.contains(freeBoardImage.getOriginalName())){
+                        freeBoardImageRepository.delete(freeBoardImage);
                     }
                 }
 
                 // 새로운 이미지 저장 로직
                 try {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                        List<Image> images = imageService.saveImage(dto.getImages());
-                        for (Image image : images) {
+                        List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImage(dto.getImages());
+                        for (FreeBoardImage image : freeBoardImages) {
                             freeBoard.addImage(image);
                         }
                     }

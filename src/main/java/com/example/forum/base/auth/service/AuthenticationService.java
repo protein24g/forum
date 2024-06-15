@@ -1,4 +1,4 @@
-package com.example.forum.base.board.auth;
+package com.example.forum.base.auth.service;
 
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import org.springframework.security.core.Authentication;

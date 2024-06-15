@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -16,27 +18,31 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
+        handler.setUseReferer(true); // Referer를 사용하여 이전 주소로 리디렉션
+        return handler;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
-
+                        .requestMatchers("/freeBoard/create", "/questionBoard/create").authenticated()
                         .requestMatchers("/", "/mobile/font.css", "/logo/**",
                                 "/account/logout.js", "/navbar/active.js",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
                                 "/checkLoginId", "/checkNickname").permitAll()
-
                         .requestMatchers( // 자유 게시판
                                 "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
                                 "/freeBoardUpload/**"
                         ).permitAll()
-
                         .requestMatchers( // 질문과 토론 게시판
                                 "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
                                 "/questionBoardUpload/**"
                         ).permitAll()
-
                         .anyRequest().authenticated());
 
         http
@@ -44,7 +50,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .loginProcessingUrl("/loginProc")
                         .failureUrl("/login?error=true")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler(savedRequestAwareAuthenticationSuccessHandler())
                         .permitAll());
 
         http

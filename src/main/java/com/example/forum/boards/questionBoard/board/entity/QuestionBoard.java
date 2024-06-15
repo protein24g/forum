@@ -1,7 +1,7 @@
 package com.example.forum.boards.questionBoard.board.entity;
 
-import com.example.forum.base.image.entity.Image;
 import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
 import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -20,6 +20,9 @@ public class QuestionBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     private String title;
 
     private String content;
@@ -35,7 +38,7 @@ public class QuestionBoard {
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    private List<QuestionBoardImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
@@ -55,9 +58,9 @@ public class QuestionBoard {
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
 
-    public void addImage(Image image){
-        this.images.add(image);
-        image.setBoard(this);
+    public void addImage(QuestionBoardImage questionBoardImage){
+        this.images.add(questionBoardImage);
+        questionBoardImage.setBoard(this);
     }
 
     public void addComment(QuestionBoardComment questionBoardComment){
@@ -67,5 +70,20 @@ public class QuestionBoard {
 
     public int incView() {
         return ++this.view;
+    }
+
+    public enum Category {
+        QUESTION("질문"),
+        TALK("토론");
+
+        private final String value;
+
+        Category(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

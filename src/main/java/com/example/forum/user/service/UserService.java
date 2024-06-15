@@ -1,7 +1,7 @@
 package com.example.forum.user.service;
 
 import com.example.forum.admin.dto.response.AdminResponse;
-import com.example.forum.base.board.auth.AuthenticationService;
+import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;

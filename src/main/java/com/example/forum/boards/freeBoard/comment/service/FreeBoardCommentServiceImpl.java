@@ -4,7 +4,7 @@ import com.example.forum.base.board.dto.response.BoardResponse;
 import com.example.forum.base.comment.dto.request.CommentRequest;
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.base.comment.service.CommentService;
-import com.example.forum.base.board.auth.AuthenticationService;
+import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.comment.repository.FreeBoardCommentRepository;

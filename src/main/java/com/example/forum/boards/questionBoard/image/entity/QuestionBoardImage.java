@@ -1,5 +1,6 @@
-package com.example.forum.base.image.entity;
+package com.example.forum.boards.questionBoard.image.entity;
 
+import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Image2 {
+public class QuestionBoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,11 +22,11 @@ public class Image2 {
     private String filePath;
 
     @ManyToOne
-    @JoinColumn(name = "free_board_id")
+    @JoinColumn(name = "question_board_id")
     private QuestionBoard questionBoard;
 
     @Builder
-    public Image2(String originalName, String fileName, String filePath){
+    public QuestionBoardImage(String originalName, String fileName, String filePath){
         this.originalName = originalName;
         this.fileName = fileName;
         this.filePath = filePath;
