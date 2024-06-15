@@ -42,13 +42,6 @@ public class FreeBoardController {
     @PostMapping("/freeBoard/create")
     public String createProc(@Valid BoardRequest dto, Model model) {
         try {
-            if (dto.getImages() == null || dto.getImages().isEmpty()) {
-                System.out.println("이미지 파일이 전송되지 않았습니다.");
-            } else {
-                for (MultipartFile image : dto.getImages()) {
-                    System.out.println("이미지 파일 이름: " + image.getOriginalFilename());
-                }
-            }
             BoardResponse BoardResponse = freeBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/freeBoard/" + BoardResponse.getId());
