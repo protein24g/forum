@@ -13,6 +13,7 @@ import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,15 +32,14 @@ public class FreeBoardImageService {
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
-
     /**
-     * 이미지를 저장하고 저장된 이미지 목록을 반환
+     * 여러 이미지를 저장하고 저장된 이미지 목록을 반환
      *
      * @param files 이미지 파일 목록
      * @return 저장된 이미지 목록
      * @throws Exception 파일 처리 중 예외가 발생할 경우
      */
-    public List<FreeBoardImage> saveImage(List<MultipartFile> files) throws Exception {
+    public List<FreeBoardImage> saveImages(List<MultipartFile> files) throws Exception {
         List<FreeBoardImage> savedImages = new ArrayList<>();
 
         if (files == null || files.isEmpty()) {
@@ -73,6 +73,7 @@ public class FreeBoardImageService {
                             .originalName(file.getOriginalFilename())
                             .fileName(fileName)
                             .filePath(filePath.toString())
+                            .createDate(LocalDateTime.now())
                             .build()
             );
             savedImages.add(savedImage);

@@ -28,7 +28,6 @@ public class FreeBoardApiController {
     @PostMapping("/api/freeBoard")
     public ResponseEntity<?> boardPage(@RequestBody FreeBoardSearch dto) {
         Page<FreeBoardResponse> freeBoardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
-        System.out.println(freeBoardResponses);
         return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
     }
 
@@ -51,15 +50,12 @@ public class FreeBoardApiController {
     /**
      * 게시글 수정을 위한 데이터 반환
      *
-     * @param dto     수정할 게시글 내용을 담은 DTO
      * @param boardId 게시글 ID
      * @return 게시글 수정을 위한 데이터
      */
     @GetMapping("/api/freeBoard/{boardId}/update")
-    public ResponseEntity<?> getBoardUpdateData(FreeBoardRequest dto, @PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardUpdateData(@PathVariable(name = "boardId") Long boardId){
         try{
-            System.out.println(dto);
-            System.out.println(dto.getOriginalImages());
             FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.getBoardUpdateData(boardId);
             return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponse);
         }catch (IllegalArgumentException e){

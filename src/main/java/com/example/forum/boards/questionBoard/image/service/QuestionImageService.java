@@ -39,7 +39,7 @@ public class QuestionImageService {
      * @return 저장된 이미지 목록
      * @throws Exception 파일 처리 중 예외가 발생할 경우
      */
-    public List<QuestionBoardImage> saveImage(List<MultipartFile> files) throws Exception {
+    public List<QuestionBoardImage> saveImages(List<MultipartFile> files) throws Exception {
         List<QuestionBoardImage> savedImages = new ArrayList<>();
 
         if (files == null || files.isEmpty()) {

@@ -9,8 +9,11 @@ import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
+import com.example.forum.boards.freeBoard.image.entity.FreeBoardThumbnail;
 import com.example.forum.boards.freeBoard.image.repository.FreeBoardImageRepository;
+import com.example.forum.boards.freeBoard.image.repository.FreeBoardThumbnailRepository;
 import com.example.forum.boards.freeBoard.image.service.FreeBoardImageService;
+import com.example.forum.boards.freeBoard.image.service.FreeBoardThumbnailImageService;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -36,7 +39,9 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardImageService freeBoardImageService;
+    private final FreeBoardThumbnailImageService freeBoardThumbnailImageService;
     private final FreeBoardImageRepository freeBoardImageRepository;
+    private final FreeBoardThumbnailRepository freeBoardThumbnailRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -61,8 +66,15 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                     .view(0)
                     .build();
             try {
-                if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImage(dto.getImages());
+                // 썸네일 이미지 저장
+                if(dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()){
+                    FreeBoardThumbnail freeBoardThumbnail = freeBoardThumbnailImageService.saveImage(dto.getThumbnail());
+                    freeBoard.addThumbnail(freeBoardThumbnail);
+                }
+
+                // 이미지 저장
+                if(dto.getImages() != null && !dto.getImages().isEmpty()) {
+                    List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImages(dto.getImages());
                     for (FreeBoardImage image : freeBoardImages) {
                         freeBoard.addImage(image);
                     }
@@ -121,7 +133,8 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                         .createDate(board.getCreateDate())
                         .commentCount(board.getFreeBoardComments().size())
                         .view(board.getView())
-                        .hasImage(!board.getImages().isEmpty())
+                        .thumbnail((board.getThumbnail() != null) ? board.getThumbnail().getFileName() : null)
+                        .hasImage(board.getThumbnail() != null)
                         .build());
     }
 
@@ -140,7 +153,6 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         List<String> imagesName = freeBoard.getImages().stream()
                 .map(FreeBoardImage::getFileName)
                 .collect(Collectors.toList());
-
         return FreeBoardResponse.builder()
                 .id(freeBoard.getId())
                 .nickname(freeBoard.getUser().getActive() ? freeBoard.getUser().getNickname() : "탈퇴한 사용자")
@@ -261,6 +273,19 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
             if (freeBoard.getUser().getId().equals(customUserDetails.getId())) {
                 freeBoard.setTitle(dto.getTitle());
                 freeBoard.setContent(dto.getContent());
+
+                // 썸네일 이미지 수정
+                if(dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()){
+                    List<FreeBoardThumbnail> freeBoardThumbnail = freeBoardThumbnailRepository.findByFreeBoardId(boardId);
+                    freeBoardThumbnailRepository.delete(freeBoardThumbnail.get(0));
+                    try{
+                        FreeBoardThumbnail freeBoardThumbnail1 = freeBoardThumbnailImageService.saveImage(dto.getThumbnail());
+                        freeBoard.addThumbnail(freeBoardThumbnail1);
+                    } catch (Exception e){
+                        throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
+                    }
+                }
+
                 List<String> originalImageNames = dto.getOriginalImages();
                 List<FreeBoardImage> dbImages = freeBoardImageRepository.findByFreeBoardId(boardId);
 
@@ -274,7 +299,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                 // 새로운 이미지 저장 로직
                 try {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                        List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImage(dto.getImages());
+                        List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImages(dto.getImages());
                         for (FreeBoardImage image : freeBoardImages) {
                             freeBoard.addImage(image);
                         }

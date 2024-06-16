@@ -73,7 +73,7 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
                     .build();
             try {
                 if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<QuestionBoardImage> questionBoardImages = questionImageService.saveImage(dto.getImages());
+                    List<QuestionBoardImage> questionBoardImages = questionImageService.saveImages(dto.getImages());
                     for (QuestionBoardImage image : questionBoardImages) {
                         questionBoard.addImage(image);
                     }
@@ -285,7 +285,7 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
                 // 새로운 이미지 저장 로직
                 try {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                        List<QuestionBoardImage> questionBoardImages = questionImageService.saveImage(dto.getImages());
+                        List<QuestionBoardImage> questionBoardImages = questionImageService.saveImages(dto.getImages());
                         for (QuestionBoardImage image : questionBoardImages) {
                             questionBoard.addImage(image);
                         }

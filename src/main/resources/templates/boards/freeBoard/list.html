@@ -71,7 +71,7 @@
                         let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
 
                         // 이미지 태그를 조건에 따라 동적으로 생성
-                        let imageTag = row.hasImage ? '<img src="https://dzvpypcfjkr44.cloudfront.net/262057d57bcb4b9a9d7220bcec8b60c7.webp" width="70px;" height="50px;" style="border-radius: 10px;">' : '';
+                        let imageTag = row.hasImage ? `<img src="/freeBoardUpload/${row.thumbnail}" width="70px;" height="50px;" style="border-radius: 10px;">` : '';
                         boardHtml += `
                                         <div class="board-item row p-3 m-0 text-center" id="${row.id}" style="border-bottom: 1px solid #ccc">
                                             <div class="col-9 col-md-10 me-auto">
@@ -220,7 +220,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="order-xl-2 order-1 col-xl-9">
+                <div class="order-xl-2 order-1 col-xl-7">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
                     <!--검색-->
                     <div class="freeBoard-search mb-1">
