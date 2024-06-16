@@ -67,11 +67,11 @@
         function addOriginalFileInput(images){
             const container = document.querySelector(".image-list");
 
-            container.insertAdjacentHTML("beforeend", "<div class='my-3'>기존 이미지</div>")
+            container.insertAdjacentHTML("beforeend", "<div class='mt-3'>기존 이미지</div>")
 
             for(let i = 0; i < images.length; i++){
                 let div = document.createElement("div");
-                div.classList.add("original-image", "col-md-6", "d-flex", "my-3");
+                div.classList.add("original-image", "col-md-6", "d-flex");
                 div.innerHTML += `
                             <div class="p-2 col-11 me-auto text-dot border" style=" border-radius: 5px;" name="originalImages">${images[i]}</div>
                             <span class="col-auto p-2 file-remove" style="background-color: #F78181; border-radius: 5px; color: white; cursor: pointer;">삭제</span>
@@ -141,6 +141,13 @@
             let formData = new FormData();
             formData.append("title", document.getElementById("edit-title").value);
             formData.append("content", document.getElementById("edit-questionBoard-content").value);
+
+
+            const thumbnail = document.querySelector("input[name='thumbnail']").files[0];
+            if(thumbnail !== undefined){
+                formData.append("thumbnail", thumbnail);
+            }
+
             originalImageList.forEach(image => { // 기존 원본 이미지 파일명
                 formData.append("originalImages", image);
             });
@@ -260,9 +267,13 @@
             <div class="p-3 text-start" style="background-color: white; border-radius: 15px;">
                 <p><input class="form-control title" id="edit-title" type="text"></p>
                 <p><textarea class="form-control content" id="edit-questionBoard-content" rows="10"></textarea></p>
+                <div class="col-md-6">
+                    <div class="mt-3">대표 이미지 변경 시 선택</div>
+                    <input type="file" class="form-control" name="thumbnail" accept="image/*">
+                </div>
                 <div class="image-list my-3">
                     <div class="col-md-6">
-                        <div class="my-3">새로운 이미지</div>
+                        <div class="mt-3">추가 이미지</div>
                         <input type="file" class="form-control" name="images" accept="image/*" multiple>
                     </div>
                 </div>

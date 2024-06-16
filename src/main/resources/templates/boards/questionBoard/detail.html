@@ -15,18 +15,6 @@
             getAllComment(0);
         })
 
-        // -------------- //
-        function editBoard(){
-            document.getElementById("edit-title").value = document.getElementById("title").innerText;
-            document.getElementById("edit-questionBoard-content").value = document.getElementById("questionBoard-content").innerText;
-
-            // 'editBoardButton' ID를 가진 요소에 click 이벤트 리스너 설정
-            // updateBoard 함수를 호출
-            document.getElementById("editBoardButton").onclick = function (){
-                updateBoard();
-            };
-        }
-
         function editComment(commentId, content) {
             // 모달 내의 textarea 에 기존댓글의 내용을 넣어줌
             document.getElementById("edit-content").value = content.replace(/<br>/g, "\n");
@@ -38,7 +26,6 @@
             };
 
         }
-        // -------------- //
 
         // C(Create)
         async function createUserComment(){
@@ -243,43 +230,6 @@
         }
 
         // U(Update)
-        async function updateBoard() {
-            let boardId = document.getElementById("boardId").value;
-            let _csrf = document.querySelector("._csrf").value;
-
-            // Bootstrap 모달의 경우, 모달을 닫을 때 단순히 스타일을 변경하여 숨기는 것 이외에도 Bootstrap 자체적으로 처리해야 하는 이벤트와 클래스가 있어서 이렇게 사용
-            let myModal = document.getElementById("questionBoard-modalView");
-            // Bootstrap Modal 인스턴스를 생성합니다.
-            let modalInstance = bootstrap.Modal.getInstance(myModal);
-
-            try{
-                const response = await fetch(`/api/questionBoard/${boardId}`, {
-                    method : "PUT",
-                    headers : {
-                        "Content-Type" : "application/json",
-                        "X-CSRF-TOKEN" : _csrf
-                    },
-                    body : JSON.stringify({
-                        title : document.getElementById("edit-title").value,
-                        content : document.getElementById("edit-questionBoard-content").value
-                    })
-                });
-
-                const res = await response.text();
-                alert(res);
-                modalInstance.hide();
-                getBoardDetails();
-            }catch (error){
-                if(error instanceof TypeError){
-                    alert("로그인 후 이용하세요");
-                    window.location.href = "/login";
-                }else{
-                    alert(error);
-                    window.location.href = "/questionBoard/" + boardId;
-                }
-            }
-        }
-
         async function updateComment(id) {
             let boardId = document.getElementById("boardId").value;
             let commentId = id;
@@ -321,6 +271,28 @@
         async function deleteBoard(){
             let boardId = document.getElementById("boardId").value;
             let _csrf = document.querySelector("._csrf").value;
+
+            try{
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                } else {
+                    const response = await fetch(`/api/questionBoard/${boardId}`, {
+                        method : "DELETE",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        }
+                    });
+
+                    if (response.status === 200){
+                        alert("삭제 완료");
+                        window.location.href = "/questionBoard";
+                    }
+                }
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
         }
 
         async function deleteComment(commentId){
@@ -473,11 +445,11 @@
                                         <li>
                                             <form th:action="@{'/questionBoard/' + ${boardId}}" method="post">
                                                 <input type="hidden" name="_method" value="PUT"/>
-                                                <button type="submit">수정</button>
+                                                <button style="background-color: white; border: none;" class="form-control" type="submit">수정</button>
                                             </form>
                                         </li>
                                         <li>
-                                            <button>삭제</button>
+                                            <button style="background-color: white; border: none;" class="form-control" onclick="deleteBoard()">삭제</button>
                                         </li>
                                     </ul>
                                 </div>
@@ -496,7 +468,7 @@
                 <h4 class="mt-5">댓글</h4>
                 <div class="comments">
                     <!-- 댓글 작성-->
-                    <div class="newComment p-3" style="background-color: #eee; border-radius: 10px;">
+                    <div class="newComment p-3 my-3" style="background-color: #eee; border-radius: 10px;">
                         <textarea class="form-control" id="comment_content" rows="3" style="border: none; background: none;"></textarea>
                         <input class="px-3 py-2 d-flex ms-auto" type="button" onclick="createUserComment()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
                     </div>
@@ -507,39 +479,6 @@
                         <ul class="pagination justify-content-center comment-page-list">
                         </ul>
                     </nav>
-                </div>
-
-                <div class="p-0">
-                    <!-- 댓글 수정, 삭제 -->
-                    <div class="d-flex justify-content-end" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}"> <!-- 글 작성자라면 수정 가능 -->
-                        <!-- Button trigger modal -->
-                        <button type="button" onclick="editBoard()" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#questionBoard-modalView">
-                            수정
-                        </button>
-
-                        <!-- 게시글 수정 Modal -->
-                        <div class="modal fade" id="questionBoard-modalView" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">수정</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label>제목</label>
-                                        <textarea type="text" class="form-control" id="edit-title"></textarea>
-                                        <label>내용</label>
-                                        <textarea type="text" class="form-control" id="edit-questionBoard-content"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">닫기</button>
-                                        <button type="button" class="btn btn-sm btn-primary" id="editBoardButton">작성</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
                 </div>
 
                 <!-- 댓글 수정 Modal -->

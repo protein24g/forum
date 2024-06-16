@@ -1,8 +1,8 @@
-package com.example.forum.boards.freeBoard.image.service;
+package com.example.forum.boards.questionBoard.image.service;
 
 import com.example.forum.base.image.service.ImageService;
-import com.example.forum.boards.freeBoard.image.entity.FreeBoardThumbnail;
-import com.example.forum.boards.freeBoard.image.repository.FreeBoardThumbnailRepository;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardThumbnail;
+import com.example.forum.boards.questionBoard.image.repository.QuestionBoardThumbnailRepository;
 import com.sun.nio.sctp.IllegalReceiveException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class FreeBoardThumbnailImageService {
-    private final FreeBoardThumbnailRepository freeBoardThumbnailRepository;
+public class QuestionBoardThumbnailImageService {
+    private final QuestionBoardThumbnailRepository questionBoardThumbnailRepository;
     private final ImageService imageService;
 
     @Value("${image.dir}")
@@ -39,7 +39,7 @@ public class FreeBoardThumbnailImageService {
      * @return 저장된 이미지
      * @throws Exception 파일 처리 중 예외가 발생할 경우
      */
-    public FreeBoardThumbnail saveImage(MultipartFile file) throws Exception{
+    public QuestionBoardThumbnail saveImage(MultipartFile file) throws Exception{
         if (file == null || file.isEmpty()) {
             throw new IllegalReceiveException("파일이 존재하지 않습니다");
         }
@@ -61,8 +61,8 @@ public class FreeBoardThumbnailImageService {
         Files.copy(file.getInputStream(), filePath);
 
         // 이미지 정보 저장
-        FreeBoardThumbnail savedImage = freeBoardThumbnailRepository.save(
-                FreeBoardThumbnail.builder()
+        QuestionBoardThumbnail savedImage = questionBoardThumbnailRepository.save(
+                QuestionBoardThumbnail.builder()
                         .originalName(file.getOriginalFilename())
                         .fileName(fileName)
                         .filePath(filePath.toString())

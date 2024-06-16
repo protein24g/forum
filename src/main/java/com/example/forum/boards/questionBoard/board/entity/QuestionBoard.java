@@ -2,6 +2,7 @@ package com.example.forum.boards.questionBoard.board.entity;
 
 import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
 import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardThumbnail;
 import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -20,9 +21,6 @@ public class QuestionBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
     private String title;
 
     private String content;
@@ -35,6 +33,9 @@ public class QuestionBoard {
 
     private int view;
 
+    @OneToOne(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private QuestionBoardThumbnail thumbnail;
+
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "questionBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -44,8 +45,7 @@ public class QuestionBoard {
     private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
 
     @Builder
-    public QuestionBoard(Category category, String title, String content, LocalDateTime createDate, User user, int view){
-        this.category = category;
+    public QuestionBoard(String title, String content, LocalDateTime createDate, User user, int view){
         this.title = title;
         this.content = content;
         this.createDate = createDate;
@@ -59,6 +59,11 @@ public class QuestionBoard {
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
 
+    public void addThumbnail(QuestionBoardThumbnail questionBoardThumbnail){
+        this.thumbnail = questionBoardThumbnail;
+        questionBoardThumbnail.setBoard(this);
+    }
+
     public void addImage(QuestionBoardImage questionBoardImage){
         this.images.add(questionBoardImage);
         questionBoardImage.setBoard(this);
@@ -71,10 +76,5 @@ public class QuestionBoard {
 
     public int incView() {
         return ++this.view;
-    }
-
-    public enum Category {
-        QUESTION,
-        TALK;
     }
 }

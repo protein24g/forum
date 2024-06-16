@@ -40,8 +40,6 @@ public class QuestionBoardController {
     @PostMapping("/questionBoard/create")
     public String createProc(@Valid QuestionBoardRequest dto, Model model) {
         try {
-            System.out.println("질문글 dto");
-            System.out.println(dto.toString());
             QuestionBoardResponse questionBoardResponse = questionBoardServiceImpl.create(dto);
             model.addAttribute("msg", "글 작성이 완료되었습니다.");
             model.addAttribute("url", "/questionBoard/" + questionBoardResponse.getId());

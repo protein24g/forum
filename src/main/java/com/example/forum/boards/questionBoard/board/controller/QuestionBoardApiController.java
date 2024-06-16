@@ -28,7 +28,6 @@ public class QuestionBoardApiController {
     @PostMapping("/api/questionBoard")
     public ResponseEntity<?> boardPage(@RequestBody QuestionBoardSearch dto) {
         Page<QuestionBoardResponse> questionBoardResponses = questionBoardServiceImpl.boardPage(dto); // 검색 페이징
-        System.out.println(questionBoardResponses);
         return ResponseEntity.status(HttpStatus.OK).body(questionBoardResponses);
     }
 
@@ -51,15 +50,12 @@ public class QuestionBoardApiController {
     /**
      * 게시글 수정을 위한 데이터 반환
      *
-     * @param dto     수정할 게시글 내용을 담은 DTO
      * @param boardId 게시글 ID
      * @return 게시글 수정을 위한 데이터
      */
     @GetMapping("/api/questionBoard/{boardId}/update")
-    public ResponseEntity<?> getBoardUpdateData(QuestionBoardRequest dto, @PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardUpdateData(@PathVariable(name = "boardId") Long boardId){
         try{
-            System.out.println(dto);
-            System.out.println(dto.getOriginalImages());
             QuestionBoardResponse questionBoardResponse = questionBoardServiceImpl.getBoardUpdateData(boardId);
             return ResponseEntity.status(HttpStatus.OK).body(questionBoardResponse);
         }catch (IllegalArgumentException e){
@@ -75,13 +71,27 @@ public class QuestionBoardApiController {
      * @return 수정 결과 메시지
      */
     @PutMapping("/api/questionBoard/{boardId}")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, QuestionBoardRequest dto){
-        try{
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") Long boardId, QuestionBoardRequest dto) {
+        try {
             questionBoardServiceImpl.update(boardId, dto);
             return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
+    /**
+     * 게시글 삭제
+     *
+     * @param boardId 게시글 ID
+     */
+    @DeleteMapping("/api/questionBoard/{boardId}")
+    public ResponseEntity<?> delete(@PathVariable("boardId") Long boardId) {
+        try {
+            questionBoardServiceImpl.delete(boardId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

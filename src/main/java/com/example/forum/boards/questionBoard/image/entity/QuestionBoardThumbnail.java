@@ -1,19 +1,17 @@
 package com.example.forum.boards.questionBoard.image.entity;
 
 import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
-import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class QuestionBoardImage {
+public class QuestionBoardThumbnail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +24,12 @@ public class QuestionBoardImage {
 
     private LocalDateTime createDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "question_board_id")
     private QuestionBoard questionBoard;
 
     @Builder
-    public QuestionBoardImage(String originalName, String fileName, String filePath, LocalDateTime createDate){
+    public QuestionBoardThumbnail(String originalName, String fileName, String filePath, LocalDateTime createDate){
         this.originalName = originalName;
         this.fileName = fileName;
         this.filePath = filePath;

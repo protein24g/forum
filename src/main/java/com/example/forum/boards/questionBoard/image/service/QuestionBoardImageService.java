@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class QuestionImageService {
+public class QuestionBoardImageService {
     private final QuestionBoardImageRepository questionBoardImageRepository;
 
     @Value("${image.dir}")
@@ -31,9 +31,8 @@ public class QuestionImageService {
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
-
     /**
-     * 이미지를 저장하고 저장된 이미지 목록을 반환
+     * 여러 이미지를 저장하고 저장된 이미지 목록을 반환
      *
      * @param files 이미지 파일 목록
      * @return 저장된 이미지 목록
@@ -73,6 +72,7 @@ public class QuestionImageService {
                             .originalName(file.getOriginalFilename())
                             .fileName(fileName)
                             .filePath(filePath.toString())
+                            .createDate(LocalDateTime.now())
                             .build()
             );
             savedImages.add(savedImage);

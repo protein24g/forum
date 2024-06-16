@@ -2,7 +2,6 @@ package com.example.forum.boards.questionBoard.board.service;
 
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.auth.service.AuthenticationService;
-import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardRequest;
 import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardSearch;
 import com.example.forum.boards.questionBoard.board.dto.response.QuestionBoardResponse;
@@ -10,8 +9,11 @@ import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import com.example.forum.boards.questionBoard.board.repository.QuestionBoardRepository;
 import com.example.forum.boards.questionBoard.comment.service.QuestionBoardCommentServiceImpl;
 import com.example.forum.boards.questionBoard.image.entity.QuestionBoardImage;
+import com.example.forum.boards.questionBoard.image.entity.QuestionBoardThumbnail;
 import com.example.forum.boards.questionBoard.image.repository.QuestionBoardImageRepository;
-import com.example.forum.boards.questionBoard.image.service.QuestionImageService;
+import com.example.forum.boards.questionBoard.image.repository.QuestionBoardThumbnailRepository;
+import com.example.forum.boards.questionBoard.image.service.QuestionBoardImageService;
+import com.example.forum.boards.questionBoard.image.service.QuestionBoardThumbnailImageService;
 import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.repository.UserRepository;
@@ -36,8 +38,10 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
     private final QuestionBoardCommentServiceImpl questionBoardCommentServiceImpl;
     private final UserRepository userRepository;
     private final QuestionBoardRepository questionBoardRepository;
-    private final QuestionImageService questionImageService;
+    private final QuestionBoardImageService questionBoardImageService;
+    private final QuestionBoardThumbnailImageService questionBoardThumbnailImageService;
     private final QuestionBoardImageRepository questionBoardImageRepository;
+    private final QuestionBoardThumbnailRepository questionBoardThumbnailRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -54,18 +58,7 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
-            // 카테고리 값 매핑
-            QuestionBoard.Category category = null;
-            if ("QUESTION".equals(dto.getCategory())) {
-                category = QuestionBoard.Category.QUESTION;
-            } else if ("TALK".equals(dto.getCategory())) {
-                category = QuestionBoard.Category.TALK;
-            } else {
-                throw new IllegalArgumentException("올바른 카테고리 값을 선택해주세요");
-            }
-
             QuestionBoard questionBoard = QuestionBoard.builder()
-                    .category(category)
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .user(user)
@@ -73,8 +66,15 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
                     .view(0)
                     .build();
             try {
-                if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<QuestionBoardImage> questionBoardImages = questionImageService.saveImages(dto.getImages());
+                // 썸네일 이미지 저장
+                if(dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()){
+                    QuestionBoardThumbnail questionBoardThumbnail = questionBoardThumbnailImageService.saveImage(dto.getThumbnail());
+                    questionBoard.addThumbnail(questionBoardThumbnail);
+                }
+
+                // 이미지 저장
+                if(dto.getImages() != null && !dto.getImages().isEmpty()) {
+                    List<QuestionBoardImage> questionBoardImages = questionBoardImageService.saveImages(dto.getImages());
                     for (QuestionBoardImage image : questionBoardImages) {
                         questionBoard.addImage(image);
                     }
@@ -133,7 +133,8 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
                         .createDate(board.getCreateDate())
                         .commentCount(board.getQuestionBoardComments().size())
                         .view(board.getView())
-                        .hasImage(!board.getImages().isEmpty())
+                        .thumbnail((board.getThumbnail() != null) ? board.getThumbnail().getFileName() : null)
+                        .hasImage(board.getThumbnail() != null)
                         .build());
     }
 
@@ -152,7 +153,6 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
         List<String> imagesName = questionBoard.getImages().stream()
                 .map(QuestionBoardImage::getFileName)
                 .collect(Collectors.toList());
-
         return QuestionBoardResponse.builder()
                 .id(questionBoard.getId())
                 .nickname(questionBoard.getUser().getActive() ? questionBoard.getUser().getNickname() : "탈퇴한 사용자")
@@ -192,7 +192,7 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
     }
 
     /**
-     * 게시글 작성자 조회
+     * 게시글 작성자 닉네임 조회
      *
      * @param boardId 게시글 ID
      * @return 작성자 닉네임
@@ -206,7 +206,7 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
     }
 
     /**
-     * 게시글 작성자 확인
+     * 내가 쓴 글인지 체크
      *
      * @param boardId 게시글 ID
      */
@@ -273,20 +273,33 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
             if (questionBoard.getUser().getId().equals(customUserDetails.getId())) {
                 questionBoard.setTitle(dto.getTitle());
                 questionBoard.setContent(dto.getContent());
+
+                // 썸네일 이미지 수정
+                if(dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()){
+                    List<QuestionBoardThumbnail> questionBoardThumbnail = questionBoardThumbnailRepository.findByQuestionBoardId(boardId);
+                    questionBoardThumbnailRepository.delete(questionBoardThumbnail.get(0));
+                    try{
+                        QuestionBoardThumbnail questionBoardThumbnail1 = questionBoardThumbnailImageService.saveImage(dto.getThumbnail());
+                        questionBoard.addThumbnail(questionBoardThumbnail1);
+                    } catch (Exception e){
+                        throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
+                    }
+                }
+
                 List<String> originalImageNames = dto.getOriginalImages();
                 List<QuestionBoardImage> dbImages = questionBoardImageRepository.findByQuestionBoardId(boardId);
 
                 // 기존 이미지 처리 로직
-                for (QuestionBoardImage image : dbImages) {
-                    if(originalImageNames == null || !originalImageNames.contains(image.getOriginalName())){
-                        questionBoardImageRepository.delete(image);
+                for (QuestionBoardImage questionBoardImage : dbImages) {
+                    if(originalImageNames == null || !originalImageNames.contains(questionBoardImage.getOriginalName())){
+                        questionBoardImageRepository.delete(questionBoardImage);
                     }
                 }
 
                 // 새로운 이미지 저장 로직
                 try {
                     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-                        List<QuestionBoardImage> questionBoardImages = questionImageService.saveImages(dto.getImages());
+                        List<QuestionBoardImage> questionBoardImages = questionBoardImageService.saveImages(dto.getImages());
                         for (QuestionBoardImage image : questionBoardImages) {
                             questionBoard.addImage(image);
                         }
@@ -323,7 +336,6 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
         if(customUserDetails != null){
             QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
-
             if(customUserDetails.getId().equals(questionBoard.getUser().getId())){
                 questionBoardRepository.delete(questionBoard);
             }else{
