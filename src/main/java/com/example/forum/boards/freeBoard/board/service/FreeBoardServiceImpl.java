@@ -192,7 +192,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     }
 
     /**
-     * 게시글 작성자 조회
+     * 게시글 작성자 닉네임 조회
      *
      * @param boardId 게시글 ID
      * @return 작성자 닉네임
@@ -206,7 +206,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     }
 
     /**
-     * 게시글 작성자 확인
+     * 내가 쓴 글인지 체크
      *
      * @param boardId 게시글 ID
      */
@@ -325,5 +325,24 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         }
     }
 
-    // D(Delete) - 삭제 메서드 추가 필요
+    /**
+     * 게시글 삭제
+     *
+     * @param boardId 게시글 ID
+     */
+    @Override
+    public void delete(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+            if(customUserDetails.getId().equals(freeBoard.getUser().getId())){
+                freeBoardRepository.delete(freeBoard);
+            }else{
+                throw new IllegalArgumentException("글 작성자만 삭제 가능합니다");
+            }
+        }else{
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
 }

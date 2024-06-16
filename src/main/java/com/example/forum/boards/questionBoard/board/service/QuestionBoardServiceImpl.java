@@ -2,6 +2,7 @@ package com.example.forum.boards.questionBoard.board.service;
 
 import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.auth.service.AuthenticationService;
+import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardRequest;
 import com.example.forum.boards.questionBoard.board.dto.request.QuestionBoardSearch;
 import com.example.forum.boards.questionBoard.board.dto.response.QuestionBoardResponse;
@@ -311,5 +312,25 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
         }
     }
 
-    // D(Delete) - 삭제 메서드 추가 필요
+    /**
+     * 게시글 삭제
+     *
+     * @param boardId 게시글 ID
+     */
+    @Override
+    public void delete(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            if(customUserDetails.getId().equals(questionBoard.getUser().getId())){
+                questionBoardRepository.delete(questionBoard);
+            }else{
+                throw new IllegalArgumentException("글 작성자만 삭제 가능합니다");
+            }
+        }else{
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
 }

@@ -80,7 +80,7 @@ public class QuestionBoardController {
             return "boards/questionBoard/detail";
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/boards");
+            model.addAttribute("url", "/questionBoard");
             return "message/index";
         }
     }

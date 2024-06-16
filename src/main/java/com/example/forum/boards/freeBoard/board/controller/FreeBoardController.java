@@ -78,7 +78,7 @@ public class FreeBoardController {
             return "boards/freeBoard/detail";
         }catch (IllegalArgumentException e){
             model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/boards");
+            model.addAttribute("url", "/freeBoard");
             return "message/index";
         }
     }

@@ -12,52 +12,74 @@ import org.springframework.data.domain.Page;
 public interface BoardService<T, Req, Res, Search> {
 
     /**
-     * 새로운 게시글을 생성
+     * 게시글 생성
      *
-     * @param dto 새로운 게시글의 정보가 담긴 DTO
-     * @return 생성된 게시글 엔터티
+     * @param dto 게시글 요청 DTO
+     * @return 생성된 게시글 응답 DTO
      */
     Res create(Req dto);
 
     /**
-     * 게시글 목록을 페이지 단위로 반환
+     * 게시글 목록 조회
      *
-     * @param dto 게시글 검색을 위한 검색 조건이 담긴 DTO
-     * @return 페이지별 게시글 목록
+     * @param dto 검색 조건 DTO
+     * @return 게시글 페이지 응답 DTO
      */
     Page<Res> boardPage(Search dto);
 
     /**
-     * 특정 게시글의 상세 정보를 조회
+     * 게시글 상세 조회
      *
-     * @param boardNum 조회할 게시글의 고유 번호
-     * @return 조회된 게시글의 상세 정보
+     * @param boardId 게시글 ID
+     * @return 게시글 응답 DTO
      */
-    Res getDetail(Long boardNum);
+    Res getDetail(Long boardId);
 
     /**
-     * 특정 사용자가 작성한 게시글 목록을 페이지 단위로 반환
+     * 특정 사용자의 게시글 목록 조회
      *
-     * @param userId 사용자의 고유 식별자
+     * @param userId 사용자 ID
      * @param page   페이지 번호
-     * @return 특정 사용자가 작성한 게시글 목록
+     * @return 게시글 페이지 응답 DTO
      */
     Page<Res> getBoardsForUser(Long userId, int page);
 
     /**
-     * 특정 게시글의 작성자를 반환
+     * 게시글 작성자 닉네임 조회
      *
-     * @param boardNum 게시글의 고유 번호
-     * @return 게시글의 작성자
+     * @param boardId 게시글 ID
+     * @return 작성자 닉네임
      */
-    String getWriter(Long boardNum);
+    String getWriter(Long boardId);
 
     /**
-     * 게시글을 업데이트
+     * 내가 쓴 글인지 체크
      *
-     * @param boardNum 게시글의 고유 번호
-     * @param dto      업데이트할 게시글의 정보가 담긴 DTO
-     * @return 업데이트된 게시글 엔터티
+     * @param boardId 게시글 ID
      */
-    Res update(Long boardNum, Req dto);
+    void writerCheck(Long boardId);
+
+    /**
+     * 게시글 수정 데이터 가져오기
+     *
+     * @param boardId 게시글 ID
+     * @return 수정할 게시글 응답 DTO
+     */
+    Res getBoardUpdateData(Long boardId);
+
+    /**
+     * 게시글 수정
+     *
+     * @param boardId 게시글 ID
+     * @param dto     게시글 요청 DTO
+     * @return 수정된 게시글 응답 DTO
+     */
+    Res update(Long boardId, Req dto);
+
+    /**
+     * 게시글 삭제
+     *
+     * @param boardId 게시글 ID
+     */
+    void delete(Long boardId);
 }

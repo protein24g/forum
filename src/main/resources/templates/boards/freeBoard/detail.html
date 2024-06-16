@@ -271,6 +271,28 @@
         async function deleteBoard(){
             let boardId = document.getElementById("boardId").value;
             let _csrf = document.querySelector("._csrf").value;
+
+            try{
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                } else {
+                    const response = await fetch(`/api/freeBoard/${boardId}`, {
+                        method : "DELETE",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        }
+                    });
+
+                    if (response.status === 200){
+                        alert("삭제 완료");
+                        window.location.href = "/freeBoard";
+                    }
+                }
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
         }
 
         async function deleteComment(commentId){
@@ -423,11 +445,11 @@
                                         <li>
                                             <form th:action="@{'/freeBoard/' + ${boardId}}" method="post">
                                                 <input type="hidden" name="_method" value="PUT"/>
-                                                <button type="submit">수정</button>
+                                                <button style="background-color: white; border: none;" class="form-control" type="submit">수정</button>
                                             </form>
                                         </li>
                                         <li>
-                                            <button>삭제</button>
+                                            <button style="background-color: white; border: none;" class="form-control" onclick="deleteBoard()">삭제</button>
                                         </li>
                                     </ul>
                                 </div>
