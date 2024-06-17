@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
  * @param <T> 게시글 엔터티의 유형을 지정하는 제네릭 타입
  */
 public interface BoardService<T, Req, Res, Search> {
-
     /**
      * 게시글 생성
      *

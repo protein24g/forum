@@ -277,7 +277,9 @@ public class QuestionBoardServiceImpl implements BoardService<QuestionBoard, Que
                 // 썸네일 이미지 수정
                 if(dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()){
                     List<QuestionBoardThumbnail> questionBoardThumbnail = questionBoardThumbnailRepository.findByQuestionBoardId(boardId);
-                    questionBoardThumbnailRepository.delete(questionBoardThumbnail.get(0));
+                    if (!questionBoardThumbnail.isEmpty()) { // 리스트가 비어있지 않은 경우에만 삭제 시도
+                        questionBoardThumbnailRepository.delete(questionBoardThumbnail.get(0));
+                    }
                     try{
                         QuestionBoardThumbnail questionBoardThumbnail1 = questionBoardThumbnailImageService.saveImage(dto.getThumbnail());
                         questionBoard.addThumbnail(questionBoardThumbnail1);
