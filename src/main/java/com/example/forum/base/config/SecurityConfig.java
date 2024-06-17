@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -42,6 +43,10 @@ public class SecurityConfig {
                         .requestMatchers( // 질문과 토론 게시판
                                 "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
                                 "/questionBoardUpload/**"
+                        ).permitAll()
+                        .requestMatchers( // 이미지 게시판
+                                "/imageBoard/**", "/api/imageBoard/**", "/api/imageBoard/*/comments",
+                                "/imageBoardUpload/**"
                         ).permitAll()
                         .anyRequest().authenticated());
 

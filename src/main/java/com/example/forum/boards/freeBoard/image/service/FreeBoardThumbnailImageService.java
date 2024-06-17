@@ -26,7 +26,7 @@ public class FreeBoardThumbnailImageService {
     private final FreeBoardThumbnailRepository freeBoardThumbnailRepository;
     private final ImageService imageService;
 
-    @Value("${image.dir}")
+    @Value("${freeBoardImage.dir}")
     private String uploadDir;
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)
@@ -69,7 +69,6 @@ public class FreeBoardThumbnailImageService {
                         .createDate(LocalDateTime.now())
                         .build()
         );
-
         return savedImage;
     }
 }

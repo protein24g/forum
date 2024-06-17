@@ -9,6 +9,7 @@ import com.example.forum.user.dto.requests.CustomUserDetails;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.entity.UserImage;
 import com.example.forum.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserImageService userImageService;
     private final FreeBoardServiceImpl freeBoardServiceImpl;
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final AuthenticationService authenticationService;
@@ -38,31 +40,41 @@ public class UserService {
     /**
      * 회원 가입
      *
-     * @param joinRequest 회원 가입 요청 DTO
+     * @param dto 회원 가입 요청 DTO
      */
-    public void join(JoinRequest joinRequest) {
-        userRepository.findByLoginId(joinRequest.getLoginId())
+    public void join(JoinRequest dto) {
+        userRepository.findByLoginId(dto.getLoginId())
                 .ifPresentOrElse(
                         user -> {
                             throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
                         },
                         () -> {
-                            userRepository.findByNickname(joinRequest.getNickname())
+                            userRepository.findByNickname(dto.getNickname())
                                 .ifPresentOrElse(
                                     user -> {
                                         throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
                                     },
                                     () -> {
-                                        userRepository.save(User.builder()
-                                            .nickname(joinRequest.getNickname())
-                                            .loginId(joinRequest.getLoginId())
-                                            .loginPw(passwordEncoder.encode(joinRequest.getLoginPw()))
+                                        User user = userRepository.save(User.builder()
+                                            .nickname(dto.getNickname())
+                                            .loginId(dto.getLoginId())
+                                            .loginPw(passwordEncoder.encode(dto.getLoginPw()))
                                             .createDate(LocalDateTime.now())
-                                            .age(joinRequest.getAge())
-                                            .gender(joinRequest.getGender())
+                                            .age(dto.getAge())
+                                            .gender(dto.getGender())
                                             .role(User.Role.USER)
                                             .isActive(true)
                                             .build());
+
+                                        try{
+                                            // 이미지 저장
+                                            if(dto.getProfile() != null && !dto.getProfile().isEmpty()) {
+                                                UserImage userImage = userImageService.saveImage(dto.getProfile());
+                                                user.addUserImage(userImage);
+                                            }
+                                        } catch (Exception e){
+                                            throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
+                                        }
                                     }
                                 );
                         }
@@ -102,8 +114,10 @@ public class UserService {
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
+                    .createDate(user.getCreateDate())
                     .freeBoards_Size(user.getFreeBoards().size())
                     .comments_size(user.getFreeBoardComments().size())
+                    .userImage_file_name((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
                     .build();
         } else {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
@@ -125,7 +139,6 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .freeBoards(freeBoardServiceImpl.getBoardsForUser(userId, page))
                     .freeBoards(freeBoardServiceImpl.getBoardsForUser(userId, page))
                     .isActive(user.getActive())
                     .build();
@@ -219,11 +232,5 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
-
-
-
-
-
-
     }
 }

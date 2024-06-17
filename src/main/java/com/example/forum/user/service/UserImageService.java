@@ -1,8 +1,8 @@
-package com.example.forum.boards.questionBoard.image.service;
+package com.example.forum.user.service;
 
 import com.example.forum.base.image.service.ImageService;
-import com.example.forum.boards.questionBoard.image.entity.QuestionBoardThumbnail;
-import com.example.forum.boards.questionBoard.image.repository.QuestionBoardThumbnailRepository;
+import com.example.forum.user.entity.UserImage;
+import com.example.forum.user.repository.UserImageRepository;
 import com.sun.nio.sctp.IllegalReceiveException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,24 +22,23 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class QuestionBoardThumbnailImageService {
-    private final QuestionBoardThumbnailRepository questionBoardThumbnailRepository;
+public class UserImageService {
+    private final UserImageRepository userImageRepository;
     private final ImageService imageService;
 
-    @Value("${questionBoardImage.dir}")
+    @Value("${profile.dir}")
     private String uploadDir;
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
-
     /**
-     * 썸네일 이미지를 저장하고 저장된 이미지 반환
+     * 여러 이미지를 저장하고 저장된 이미지 목록을 반환
      *
-     * @param file 이미지 파일
-     * @return 저장된 이미지
+     * @param file 이미지 파일 목록
+     * @return 저장된 이미지 목록
      * @throws Exception 파일 처리 중 예외가 발생할 경우
      */
-    public QuestionBoardThumbnail saveImage(MultipartFile file) throws Exception{
+    public UserImage saveImage(MultipartFile file) throws Exception {
         if (file == null || file.isEmpty()) {
             throw new IllegalReceiveException("파일이 존재하지 않습니다");
         }
@@ -61,8 +60,8 @@ public class QuestionBoardThumbnailImageService {
         Files.copy(file.getInputStream(), filePath);
 
         // 이미지 정보 저장
-        QuestionBoardThumbnail savedImage = questionBoardThumbnailRepository.save(
-                QuestionBoardThumbnail.builder()
+        UserImage savedImage = userImageRepository.save(
+                UserImage.builder()
                         .originalName(file.getOriginalFilename())
                         .fileName(fileName)
                         .filePath(filePath.toString())

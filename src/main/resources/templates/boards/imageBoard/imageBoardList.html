@@ -36,8 +36,11 @@
 
                     const res = await response.json();
                     console.log(res);
+                    document.querySelector(".profile").innerHTML = `${(res.userImage_file_name != null) ?
+                        `<img src="/profileUpload/${res.userImage_file_name}" width="32" height="32" class="rounded-circle me-2">` :
+                        '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
                     document.querySelector(".nickname").innerText = `${res.nickname}`;
-                    document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                    document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                     document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
                 }catch (error){
@@ -73,7 +76,7 @@
                         boardHtml += `
                                     <div class="board-item col p-1 text-start" id="${row.id}">
                                         <div class="border" style="background-color: white; border-radius: 15px;">
-                                            <img src="https://dzvpypcfjkr44.cloudfront.net/262057d57bcb4b9a9d7220bcec8b60c7.webp" width="100%;" height="100%;" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                                            <img src="" width="100%;" height="100%;" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
                                             <div class="p-3">
                                                 <div class="text-dot fw-bold">${row.title}</div>
                                                 <div class="row">
@@ -160,7 +163,7 @@
                         </script>
                         <div class="d-flex align-items-center text-black px-1">
                             <div class="me-auto">
-                                <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">
                                 <strong class="nickname"></strong>
                             </div>
                             <div sec:authorize="hasRole('ADMIN')">
@@ -200,7 +203,7 @@
                             <div class="hotBoard-list">
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -208,7 +211,39 @@
                                 </div>
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -218,7 +253,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="order-xl-2 order-1 col-xl-7">
+                <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">이미지게시판</h4>
                     <!--검색-->
                     <div class="imageBoard-search mb-1">

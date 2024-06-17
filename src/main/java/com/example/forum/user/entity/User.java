@@ -13,7 +13,7 @@
 
     @Entity
     @Getter
-    @RequiredArgsConstructor
+    @NoArgsConstructor
     public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +59,8 @@
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
 
-
+        @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private UserImage userImage;
 
         @Builder
         public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
@@ -92,6 +93,11 @@
         public void addComment(QuestionBoardComment questionBoardComment){
             this.questionBoardComments.add(questionBoardComment);
             questionBoardComment.setUser(this);
+        }
+
+        public void addUserImage(UserImage userImage){
+            this.userImage = userImage;
+            userImage.setUser(this);
         }
 
         public boolean getActive() {

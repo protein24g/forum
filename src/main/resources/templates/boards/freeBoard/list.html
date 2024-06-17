@@ -37,8 +37,11 @@
 
                     const res = await response.json();
                     console.log(res);
+                    document.querySelector(".profile").innerHTML = `${(res.userImage_file_name != null) ?
+                        `<img src="/profileUpload/${res.userImage_file_name}" width="32" height="32" class="rounded-circle me-2">` :
+                        '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
                     document.querySelector(".nickname").innerText = `${res.nickname}`;
-                    document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                    document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                     document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
                 }catch (error){
@@ -161,8 +164,8 @@
                             });
                         </script>
                         <div class="d-flex align-items-center text-black px-1">
-                            <div class="me-auto">
-                                <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                            <div class="me-auto d-flex">
+                                <div class="profile"></div>
                                 <strong class="nickname"></strong>
                             </div>
                             <div sec:authorize="hasRole('ADMIN')">
@@ -202,7 +205,7 @@
                             <div class="hotBoard-list">
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -210,7 +213,31 @@
                                 </div>
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -220,7 +247,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="order-xl-2 order-1 col-xl-7">
+                <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
                     <!--검색-->
                     <div class="freeBoard-search mb-1">

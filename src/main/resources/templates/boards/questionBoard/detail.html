@@ -72,8 +72,11 @@
 
                 const res = await response.json();
                 console.log(res);
+                document.querySelector(".profile").innerHTML = `${(res.userImage_file_name != null) ?
+                    `<img src="/profileUpload/${res.userImage_file_name}" width="32" height="32" class="rounded-circle me-2">` :
+                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
                 document.querySelector(".nickname").innerText = `${res.nickname}`;
-                document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
             }catch (error){
@@ -355,8 +358,8 @@
                     });
                 </script>
                 <div class="d-flex align-items-center text-black px-1">
-                    <div class="me-auto">
-                        <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                    <div class="me-auto d-flex">
+                        <div class="profile"></div>
                         <strong class="nickname"></strong>
                     </div>
                     <div sec:authorize="hasRole('ADMIN')">
@@ -414,7 +417,7 @@
                 </div>
             </div>
         </div>
-        <div class="order-xl-2 order-1 col-xl-7 text-start">
+        <div class="order-xl-2 order-1 col-xl-9 text-start">
             <br><a class="text-black px-3 py-2 fw-bold" href="/questionBoard" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
 
             <div class="board-info px-3" style="background-color: white; border-radius: 15px;">

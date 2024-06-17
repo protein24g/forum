@@ -118,7 +118,7 @@
             <div class="py-3">
                 <a href="/"><img src="/logo/developersForum.png" width="160px;"></a>
             </div>
-            <form action="/joinProc" method="post" id="joinForm">
+            <form action="/joinProc" method="post" id="joinForm" enctype="multipart/form-data">
                 <input class="form-control test" type="text" name="nickname" id="nickname" placeholder="닉네임">
                 <label class="pb-3" id="nickname-error"></label>
 
@@ -133,14 +133,22 @@
 
                 <input class="form-control" type="number" name="age" id="age" placeholder="나이">
 
-                <input type="radio" id="male" name="gender" value="MALE" checked>
-                <label class="pb-3" for="male">남자</label>
 
-                <input type="radio" id="female" name="gender" value="FEMALE">
-                <label class="py-3" for="female">여자</label>
+                <div class="my-3">
+                    <label>프로필 이미지</label>
+                    <input type="file" name="profile" accept="image/*" class="form-control">
+                </div>
+
+                <div>
+                    <input type="radio" id="male" name="gender" value="MALE" checked>
+                    <label class="my-3" for="male">남자</label>
+
+                    <input type="radio" id="female" name="gender" value="FEMALE">
+                    <label class="my-3" for="female">여자</label>
+                </div>
 
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-                <input class="btn mt-3" type="submit" style="background-color: #434B57; color: white;" value="회원가입">
+                <input class="btn" type="submit" style="background-color: #434B57; color: white;" value="회원가입">
             </form>
         </div>
     </div>

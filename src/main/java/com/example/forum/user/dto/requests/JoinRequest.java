@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -36,5 +37,5 @@ public class JoinRequest {
 
     private User.Gender gender;
 
-    private User.Role role;
+    private MultipartFile profile;
 }

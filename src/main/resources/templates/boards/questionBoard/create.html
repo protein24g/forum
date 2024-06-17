@@ -12,33 +12,33 @@
             document.getElementById("write").addEventListener("click", function (event) {
                 let images = document.querySelector("input[name='images']");
                 let thumbnail = document.querySelector("input[name='thumbnail']");
-                if(extensionCheck(event, images) && extensionCheck(event, thumbnail)){
-                    document.getElementById("createForm").submit();
+                let isConfirmed = confirm("저장하시겠습니까?");
+                if(isConfirmed){
+                    if(extensionCheck(event, images) && extensionCheck(event, thumbnail)){
+                        document.getElementById("createForm").submit();
+                    }
+                }else{
+                    event.preventDefault(); // 폼 제출 방지
                 }
             });
         });
 
         function extensionCheck(event, images) {
-            let isConfirmed = confirm("저장하시겠습니까?");
-            if (isConfirmed) {
-                if (images.files.length !== 0) {
-                    let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
-                    for(let i = 0; i < images.files.length; i++) {
-                        let name = images.files[i].name;
-                        let ext_index = name.lastIndexOf(".");
-                        let extension = name.slice(ext_index).toLowerCase(); // 확장자 추출
+            if (images.files.length !== 0) {
+                let image_extension = [".jpg", ".jpeg", ".png", ".gif"];
+                for(let i = 0; i < images.files.length; i++) {
+                    let name = images.files[i].name;
+                    let ext_index = name.lastIndexOf(".");
+                    let extension = name.slice(ext_index).toLowerCase(); // 확장자 추출
 
-                        if (!image_extension.includes(extension)) {
-                            alert("이미지 파일만 첨부 가능합니다");
-                            event.preventDefault(); // 폼 제출 방지
-                            return false;
-                        }
+                    if (!image_extension.includes(extension)) {
+                        alert("이미지 파일만 첨부 가능합니다");
+                        event.preventDefault(); // 폼 제출 방지
+                        return false;
                     }
                 }
-                return true;
-            } else {
-                event.preventDefault(); // 폼 제출 방지
             }
+            return true;
         }
 
         // R(Read)
@@ -52,8 +52,11 @@
                 });
 
                 const res = await response.json();
+                document.querySelector(".profile").innerHTML = `${(res.userImage_file_name != null) ?
+                    `<img src="/profileUpload/${res.userImage_file_name}" width="32" height="32" class="rounded-circle me-2">` :
+                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
                 document.querySelector(".nickname").innerText = `${res.nickname}`;
-                document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
             } catch (error) {
@@ -86,8 +89,8 @@
                     });
                 </script>
                 <div class="d-flex align-items-center text-black px-1">
-                    <div class="me-auto">
-                        <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                    <div class="me-auto d-flex">
+                        <div class="profile"></div>
                         <strong class="nickname"></strong>
                     </div>
                     <div sec:authorize="hasRole('ADMIN')">
@@ -145,7 +148,7 @@
                 </div>
             </div>
         </div>
-        <div class="order-xl-2 order-1 col-xl-7">
+        <div class="order-xl-2 order-1 col-xl-9">
             <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 작성</h4>
             <form class="p-3 text-start" action="/questionBoard/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
                 <p><input class="form-control" type="text" name="title" placeholder="제목"></p>

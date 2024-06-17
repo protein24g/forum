@@ -1,5 +1,6 @@
 package com.example.forum.boards.freeBoard.image.service;
 
+import com.example.forum.base.image.service.ImageService;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.boards.freeBoard.image.repository.FreeBoardImageRepository;
 import com.sun.nio.sctp.IllegalReceiveException;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,8 +26,9 @@ import java.util.UUID;
 @Transactional
 public class FreeBoardImageService {
     private final FreeBoardImageRepository freeBoardImageRepository;
+    private final ImageService imageService;
 
-    @Value("${image.dir}")
+    @Value("${freeBoardImage.dir}")
     private String uploadDir;
 
     // 파일 업로드 최대 크기 설정 (예: 5MB)
@@ -57,8 +58,8 @@ public class FreeBoardImageService {
             }
 
             // 파일 확장자 확인
-            String fileExtension = getFileExtension(file.getOriginalFilename());
-            if (!isValidExtension(fileExtension)) {
+            String fileExtension = imageService.getFileExtension(file.getOriginalFilename());
+            if (!imageService.isValidExtension(fileExtension)) {
                 throw new IllegalArgumentException("유효하지 않은 파일 확장자입니다");
             }
 
@@ -78,40 +79,6 @@ public class FreeBoardImageService {
             );
             savedImages.add(savedImage);
         }
-
         return savedImages;
-    }
-
-    /**
-     * 파일의 확장자를 추출하여 반환
-     *
-     * @param fileName 파일 이름
-     * @return 파일 확장자
-     */
-    private String getFileExtension(String fileName) {
-        // 파일 이름이 null인지, 비어 있는지, 또는 점('.')을 포함하고 있는지 확인
-        if (fileName == null || fileName.isEmpty() || !fileName.contains(".")) {
-            return "";
-        }
-        // fileName.lastIndexOf('.'): 파일 이름에서 마지막 점('.')의 인덱스를 찾습니다.
-        // fileName.substring(...): 인덱스부터 마지막 인덱스까지 문자열 반환
-        return fileName.substring(fileName.lastIndexOf('.')); // "."의 인덱스부터 끝까지 문자열을 반환
-    }
-
-    /**
-     * 파일 확장자가 유효성 검사
-     *
-     * @param extension 파일 확장자
-     * @return 유효한 확장자인 경우 true, 그렇지 않으면 false
-     */
-    private boolean isValidExtension(String extension) {
-        // 유효한 파일 확장자들
-        String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};
-        for (String validExtension : validExtensions) {
-            if (extension.equalsIgnoreCase(validExtension)) { // equalsIgnoreCase: 대소문자 구분 X
-                return true;
-            }
-        }
-        return false;
     }
 }

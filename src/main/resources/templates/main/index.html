@@ -26,8 +26,11 @@
 
                     const res = await response.json();
                     console.log(res);
+                    document.querySelector(".profile").innerHTML = `${(res.userImage_file_name != null) ?
+                        `<img src="/profileUpload/${res.userImage_file_name}" width="32" height="32" class="rounded-circle me-2">` :
+                        '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
                     document.querySelector(".nickname").innerText = `${res.nickname}`;
-                    document.querySelector(".boardsSize").innerText = `작성글 ${res.boards_size}개`;
+                    document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                     document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
                 }catch (error){
@@ -71,7 +74,7 @@
                     });
 
                     document.querySelector(".freeBoard-list").innerHTML = boardHtml;
-                    document.querySelector(".freeBoard-list2").innerHTML = boardHtml;
+                    document.querySelector(".questionBoard-list").innerHTML = boardHtml;
                     addEventToRows();
                 }catch (error){
                     alert("알 수 없는 오류가 발생했습니다");
@@ -112,8 +115,8 @@
                             });
                         </script>
                         <div class="d-flex align-items-center text-black px-1">
-                            <div class="me-auto">
-                                <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
+                            <div class="me-auto d-flex">
+                                <div class="profile"></div>
                                 <strong class="nickname"></strong>
                             </div>
                             <div sec:authorize="hasRole('ADMIN')">
@@ -153,7 +156,7 @@
                             <div class="hotBoard-list">
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -161,7 +164,31 @@
                                 </div>
                                 <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
-                                        z
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
+                                    </span>
+                                    <span class="col-auto">
+                                        2024-05-12
+                                    </span>
+                                </div>
+                                <div class="hotBoard-item d-flex text-start p-1">
+                                    <span class="col me-auto pe-3">
+                                        구현 예정
                                     </span>
                                     <span class="col-auto">
                                         2024-05-12
@@ -171,7 +198,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="order-xl-2 order-1 col-xl-7">
+                <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 px-3 py-4" style="background-color: white; border-radius: 15px;">
                         <p class="m-0" style="font-size: 15px;">운동 메이트는 개인적인 경험을 바탕으로 운동 조언을 주고받으며, 운동에 관한 소통을 하는 공간입니다.<br>각 사용자의 신체 조건, 목표, 체형, 수행 능력, 생활 패턴은 개인마다 다르기 때문에,<br>다양한 사용자들의 경험과 노하우를 바탕으로 피드백을 받아 자신에게 맞는 최적의 운동 계획을 만들어 보세요.</p>
                     </h4>
@@ -227,14 +254,14 @@
                             <div class="p-3" style="background-color: white; border-radius: 15px;">
                                 <div class="d-flex">
                                     <div>
-                                        <h5 class="fw-bold">이미지게시판</h5>
+                                        <h5 class="fw-bold">질문과 토론</h5>
                                     </div>
                                     <div class="ms-auto">
-                                        <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
+                                        <a href="/questionBoard" class="text-black" style="text-decoration: none;">더보기</a>
                                     </div>
                                 </div>
                                 <hr class="m-1">
-                                <div class="freeBoard-list2"></div>
+                                <div class="questionBoard-list"></div>
                             </div>
                         </div>
                     </div>
