@@ -2,12 +2,8 @@ package com.example.forum.base.board.service;
 
 import org.springframework.data.domain.Page;
 
-// interface : 추상 메소드의 집합
-// 클래스가 클래스를 상속 받을 때 : extends
 /**
- * 게시판 서비스를 정의하는 인터페이스
- *
- * @param <T> 게시글 엔터티의 유형을 지정하는 제네릭 타입
+ * 자유 게시판 서비스 인터페이스
  */
 public interface BoardService<T, Req, Res, Search> {
     /**

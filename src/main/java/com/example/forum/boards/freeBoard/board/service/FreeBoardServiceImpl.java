@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 자유 게시판 서비스 구현 클래스
+ * 자유 게시판 서비스
  */
 @Service
 @RequiredArgsConstructor

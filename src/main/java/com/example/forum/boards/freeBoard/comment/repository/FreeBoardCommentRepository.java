@@ -9,12 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+/**
+ * 자유 게시판 댓글 서비스
+ */
 public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComment, Long> {
     /**
      * 특정 게시글에 대한 댓글 목록을 페이징 한 내용으로 반환
      *
      * @param boardId  게시글 Id
-     * @param pageable 페이징
+     * @param pageable 페이징 정보
      * @return
      */
     Page<FreeBoardComment> findByFreeBoardId(Long boardId, Pageable pageable);
