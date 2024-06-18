@@ -56,7 +56,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
 
         if(customUserDetails != null){
             User user = userRepository.findByLoginId(customUserDetails.getLoginId())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
             FreeBoard freeBoard = FreeBoard.builder()
                     .title(dto.getTitle())
@@ -74,16 +74,11 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
 
                 // 이미지 저장
                 if(dto.getImages() != null && !dto.getImages().isEmpty()) {
-                    List<FreeBoardImage> freeBoardImages = freeBoardImageService.saveImages(dto.getImages());
-                    for (FreeBoardImage image : freeBoardImages) {
-                        freeBoard.addImage(image);
-                    }
+                    freeBoardImageService.saveImages(dto.getImages());
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
             }
-
-            user.addBoard(freeBoard);
             freeBoardRepository.save(freeBoard);
 
             return FreeBoardResponse.builder()
@@ -131,7 +126,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(0)
                         .view(board.getView())
                         .thumbnail((board.getThumbnail() != null) ? board.getThumbnail().getFileName() : null)
                         .hasImage(board.getThumbnail() != null)

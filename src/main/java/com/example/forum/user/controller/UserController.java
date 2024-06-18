@@ -87,7 +87,7 @@ public class UserController {
      */
     @GetMapping("/checkLoginId")
     public ResponseEntity<Boolean> checkLoginId(@RequestParam(name = "loginId") String loginId) {
-        boolean isAvailable = userService.isLoginIdAvailable(loginId);
+        boolean isAvailable = userService.existsByLoginId(loginId);
         return ResponseEntity.ok(isAvailable);
     }
 
@@ -98,7 +98,7 @@ public class UserController {
      */
     @GetMapping("/checkNickname")
     public ResponseEntity<Boolean> checkNickname(@RequestParam(name = "nickname") String nickname) {
-        boolean isAvailable = userService.isNicknameAvailable(nickname);
+        boolean isAvailable = userService.existsByNickname(nickname);
         return ResponseEntity.ok(isAvailable);
     }
 

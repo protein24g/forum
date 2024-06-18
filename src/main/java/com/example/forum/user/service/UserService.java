@@ -43,42 +43,33 @@ public class UserService {
      * @param dto 회원 가입 요청 DTO
      */
     public void join(JoinRequest dto) {
-        userRepository.findByLoginId(dto.getLoginId())
-                .ifPresentOrElse(
-                        user -> {
-                            throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
-                        },
-                        () -> {
-                            userRepository.findByNickname(dto.getNickname())
-                                .ifPresentOrElse(
-                                    user -> {
-                                        throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
-                                    },
-                                    () -> {
-                                        User user = userRepository.save(User.builder()
-                                            .nickname(dto.getNickname())
-                                            .loginId(dto.getLoginId())
-                                            .loginPw(passwordEncoder.encode(dto.getLoginPw()))
-                                            .createDate(LocalDateTime.now())
-                                            .age(dto.getAge())
-                                            .gender(dto.getGender())
-                                            .role(User.Role.USER)
-                                            .isActive(true)
-                                            .build());
-
-                                        try{
-                                            // 이미지 저장
-                                            if(dto.getProfile() != null && !dto.getProfile().isEmpty()) {
-                                                UserImage userImage = userImageService.saveImage(dto.getProfile());
-                                                user.addUserImage(userImage);
-                                            }
-                                        } catch (Exception e){
-                                            throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
-                                        }
-                                    }
-                                );
-                        }
-                );
+        if(userRepository.existsByLoginId(dto.getLoginId())){
+            throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
+        } else {
+            if(userRepository.existsByNickname(dto.getNickname())){
+                throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
+            } else {
+                User user = userRepository.save(User.builder()
+                        .nickname(dto.getNickname())
+                        .loginId(dto.getLoginId())
+                        .loginPw(passwordEncoder.encode(dto.getLoginPw()))
+                        .createDate(LocalDateTime.now())
+                        .age(dto.getAge())
+                        .gender(dto.getGender())
+                        .role(User.Role.USER)
+                        .isActive(true)
+                        .build());
+                try{
+                    // 이미지 저장
+                    if(dto.getProfile() != null && !dto.getProfile().isEmpty()) {
+                        UserImage userImage = userImageService.saveImage(dto.getProfile());
+                        user.addUserImage(userImage);
+                    }
+                } catch (Exception e){
+                    throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
+                }
+            }
+        }
     }
 
     /**
@@ -87,8 +78,8 @@ public class UserService {
      * @param loginId 로그인 아이디
      * @return 가능 여부
      */
-    public boolean isLoginIdAvailable(String loginId) {
-        return userRepository.findByLoginId(loginId).isPresent();
+    public boolean existsByLoginId(String loginId) {
+        return userRepository.existsByLoginId(loginId);
     }
 
     /**
@@ -97,8 +88,8 @@ public class UserService {
      * @param nickname 닉네임
      * @return 가능 여부
      */
-    public boolean isNicknameAvailable(String nickname) {
-        return userRepository.findByNickname(nickname).isPresent();
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 
     /**
@@ -115,58 +106,12 @@ public class UserService {
             return UserResponse.builder()
                     .nickname(user.getNickname())
                     .createDate(user.getCreateDate())
-                    .freeBoards_Size(user.getFreeBoards().size())
-                    .comments_size(user.getFreeBoardComments().size())
-                    .userImage_file_name((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
+                    .freeBoards_Size(userRepository.getUserPostCount(user.getId()))
+                    .comments_size(userRepository.getUserCommentCount(user.getId()))
+                    .boardListImages((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
                     .build();
         } else {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-        }
-    }
-
-    /**
-     * 특정 사용자가 작성한 게시글 목록 조회
-     *
-     * @param userId 사용자 ID
-     * @param page   페이지 번호
-     * @return 사용자 게시글 응답 DTO
-     */
-    public UserResponse getUserBoards(Long userId, int page){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-
-        if(user.getActive()){
-            return UserResponse.builder()
-                    .nickname(user.getNickname())
-                    .createDate(user.getCreateDate())
-                    .freeBoards(freeBoardServiceImpl.getBoardsForUser(userId, page))
-                    .isActive(user.getActive())
-                    .build();
-        }else{
-            throw new IllegalArgumentException("탈퇴한 사용자");
-        }
-    }
-
-    /**
-     * 특정 사용자가 작성한 댓글 목록 조회
-     *
-     * @param userId 사용자 ID
-     * @param page   페이지 번호
-     * @return 사용자 댓글 응답 DTO
-     */
-    public UserResponse getUserComments(Long userId, int page){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-
-        if(user.getActive()){
-            return UserResponse.builder()
-                    .nickname(user.getNickname())
-                    .createDate(user.getCreateDate())
-                    .comments(freeBoardCommentServiceImpl.getCommentsForUser(userId, page))
-                    .isActive(user.getActive())
-                    .build();
-        }else{
-            throw new IllegalArgumentException("탈퇴한 사용자");
         }
     }
 
@@ -188,7 +133,7 @@ public class UserService {
                         users = userRepository.findByNicknameContaining(keyword, pageable);
                         break;
                     case "2": // 2 아이디
-                        users = userRepository.findByLoginIdContaining(keyword, pageable);
+                        users = userRepository.existsByLoginIdContaining(keyword, pageable);
                         break;
                 }
             }else{
@@ -226,7 +171,7 @@ public class UserService {
             if(id.equals("myBoards")){
                 freeBoardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
             }else{
-                freeBoardResponses = freeBoardCommentServiceImpl.getBoardsByUserComments(user, page);
+                freeBoardResponses = freeBoardCommentServiceImpl.getFreeBoardByUserComments(user.getId(), page);
             }
             return freeBoardResponses;
         } else {

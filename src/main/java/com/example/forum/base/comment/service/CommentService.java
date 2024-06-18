@@ -42,11 +42,11 @@ public interface CommentService<T> {
     /**
      * 특정 사용자가 작성한 댓글을 포함하는 게시글 목록을 페이지 단위로 반환
      *
-     * @param user 사용자 엔터티
+     * @param userId 사용자 ID
      * @param page 페이지 번호
      * @return 특정 사용자가 작성한 댓글을 포함하는 게시글 목록
      */
-    Page<T> getBoardsByUserComments(User user, int page);
+    Page<T> getFreeBoardByUserComments(Long userId, int page);
 
     /**
      * 댓글을 업데이트

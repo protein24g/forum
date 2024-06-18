@@ -1,12 +1,10 @@
 package com.example.forum.boards.freeBoard.image.entity;
 
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
-import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 

@@ -59,7 +59,6 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .createDate(LocalDateTime.now())
                     .build();
             freeBoardCommentRepository.save(freeBoardComment);
-            user.addComment(freeBoardComment);
             freeBoard.addComment(freeBoardComment);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
@@ -114,16 +113,16 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     }
 
     /**
-     * 사용자의 댓글을 포함하는 게시글 목록을 조회
+     * 사용자가 댓글 단 게시글 목록을 조회
      *
-     * @param user 사용자 객체
+     * @param userId 사용자 ID
      * @param page 페이지 번호
      * @return 게시글 페이지 응답 DTO
      */
     @Override
-    public Page<FreeBoardResponse> getBoardsByUserComments(User user, int page){
+    public Page<FreeBoardResponse> getFreeBoardByUserComments(Long userId, int page){
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoard> boards = freeBoardCommentRepository.getfreeBoardByUserComments(user, pageable);
+        Page<FreeBoard> boards = freeBoardCommentRepository.getFreeBoardByUserComments(userId, pageable);
         return boards
                 .map(board -> FreeBoardResponse.builder()
                         .id(board.getId())

@@ -2,8 +2,6 @@
 
     import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
     import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
-    import com.example.forum.boards.questionBoard.board.entity.QuestionBoard;
-    import com.example.forum.boards.questionBoard.comment.entity.QuestionBoardComment;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -45,20 +43,6 @@
         @Column(name = "is_active")
         private boolean isActive = true; // 사용자의 활성화 상태를 나타냅니다.
 
-        // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
-        // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<FreeBoard> freeBoards = new ArrayList<>();
-
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
-
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<QuestionBoard> questionBoards = new ArrayList<>();
-
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-        private List<QuestionBoardComment> questionBoardComments = new ArrayList<>();
-
         @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private UserImage userImage;
 
@@ -73,26 +57,6 @@
             this.gender = gender;
             this.role = role;
             this.isActive = isActive;
-        }
-
-        public void addBoard(FreeBoard freeBoard){
-            this.freeBoards.add(freeBoard);
-            freeBoard.setUser(this);
-        }
-
-        public void addBoard(QuestionBoard questionBoard){
-            this.questionBoards.add(questionBoard);
-            questionBoard.setUser(this);
-        }
-
-        public void addComment(FreeBoardComment freeBoardComment){
-            this.freeBoardComments.add(freeBoardComment);
-            freeBoardComment.setUser(this);
-        }
-
-        public void addComment(QuestionBoardComment questionBoardComment){
-            this.questionBoardComments.add(questionBoardComment);
-            questionBoardComment.setUser(this);
         }
 
         public void addUserImage(UserImage userImage){
