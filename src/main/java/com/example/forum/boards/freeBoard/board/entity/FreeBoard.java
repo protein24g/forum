@@ -1,6 +1,5 @@
 package com.example.forum.boards.freeBoard.board.entity;
 
-import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardThumbnail;
 import com.example.forum.user.entity.User;
@@ -41,9 +40,6 @@ public class FreeBoard {
     @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FreeBoardImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
-
     @Builder
     public FreeBoard(String title, String content, LocalDateTime createDate, User user, int view){
         this.title = title;
@@ -67,11 +63,6 @@ public class FreeBoard {
     public void addImage(FreeBoardImage freeBoardImage){
         this.images.add(freeBoardImage);
         freeBoardImage.setBoard(this);
-    }
-
-    public void addComment(FreeBoardComment freeBoardComment){
-        this.freeBoardComments.add(freeBoardComment);
-        freeBoardComment.setBoard(this);
     }
 
     public int incView() {

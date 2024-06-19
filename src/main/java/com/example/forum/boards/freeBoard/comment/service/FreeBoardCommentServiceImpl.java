@@ -59,7 +59,6 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .createDate(LocalDateTime.now())
                     .build();
             freeBoardCommentRepository.save(freeBoardComment);
-            freeBoard.addComment(freeBoardComment);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
@@ -131,7 +130,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                         .title(board.getTitle())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                         .view(board.getView())
                         .hasImage((board.getImages().size() >= 1 ? true : false))
                         .build());

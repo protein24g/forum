@@ -7,6 +7,7 @@ import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
+import com.example.forum.boards.freeBoard.comment.repository.FreeBoardCommentRepository;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardThumbnail;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRequest, FreeBoardResponse, FreeBoardSearch> {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
+    private final FreeBoardCommentRepository freeBoardCommentRepository;
     private final UserRepository userRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardImageService freeBoardImageService;
@@ -126,7 +128,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                         .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
                         .title(board.getTitle())
                         .createDate(board.getCreateDate())
-                        .commentCount(0)
+                        .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                         .view(board.getView())
                         .thumbnail((board.getThumbnail() != null) ? board.getThumbnail().getFileName() : null)
                         .hasImage(board.getThumbnail() != null)
@@ -142,21 +144,21 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     @Override
     @Transactional
     public FreeBoardResponse getDetail(Long boardId) {
-        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+        FreeBoard board = freeBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-        List<String> imagesName = freeBoard.getImages().stream()
+        List<String> imagesName = board.getImages().stream()
                 .map(FreeBoardImage::getFileName)
                 .collect(Collectors.toList());
         return FreeBoardResponse.builder()
-                .id(freeBoard.getId())
-                .nickname(freeBoard.getUser().getActive() ? freeBoard.getUser().getNickname() : "탈퇴한 사용자")
-                .title(freeBoard.getTitle())
-                .content(freeBoard.getContent())
-                .createDate(freeBoard.getCreateDate())
-                .commentResponses(freeBoardCommentServiceImpl.getCommentsForBoard(freeBoard.getId(), 0))
-                .commentCount(freeBoard.getFreeBoardComments().size())
-                .view(freeBoard.incView())
+                .id(board.getId())
+                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
+                .title(board.getTitle())
+                .content(board.getContent())
+                .createDate(board.getCreateDate())
+                .commentResponses(freeBoardCommentServiceImpl.getCommentsForBoard(board.getId(), 0))
+                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
+                .view(board.incView())
                 .images(imagesName)
                 .build();
     }
@@ -180,7 +182,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                         .title(board.getTitle())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .commentCount(board.getFreeBoardComments().size())
+                        .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                         .view(board.getView())
                         .hasImage(!board.getImages().isEmpty())
                         .build());

@@ -40,4 +40,7 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
      */
     @Query("SELECT DISTINCT b.freeBoard FROM FreeBoardComment b WHERE b.user.id = :userId ORDER BY b.freeBoard.id DESC")
     Page<FreeBoard> getFreeBoardByUserComments(Long userId, Pageable pageable);
+
+    @Query("SELECT COUNT(c) FROM FreeBoardComment c WHERE c.freeBoard.id = :boardId")
+    int getPostCommentCount(Long boardId);
 }
