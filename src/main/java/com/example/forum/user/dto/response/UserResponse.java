@@ -21,11 +21,14 @@ public class UserResponse {
     private Page<CommentResponse> comments;
     private int comments_size;
     private String profileImage;
+    private String certificate;
+    private String career;
 
     @Builder
     public UserResponse(String nickname, LocalDateTime createDate,
                         Page<FreeBoardResponse> freeBoards, int freeBoards_Size,
-                        Page<CommentResponse> comments, int comments_size, String profileImage){
+                        Page<CommentResponse> comments, int comments_size, String profileImage,
+                        String certificate, String career){
         this.nickname = nickname;
         this.createDate = createDate;
         this.freeBoards = freeBoards;
@@ -33,5 +36,7 @@ public class UserResponse {
         this.comments = comments;
         this.comments_size = comments_size;
         this.profileImage = profileImage;
+        this.certificate = certificate;
+        this.career = career;
     }
 }

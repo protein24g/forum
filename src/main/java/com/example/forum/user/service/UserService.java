@@ -39,8 +39,8 @@ public class UserService {
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
-                    .freeBoards_Size(userRepository.getUserPostCount(user.getId()))
-                    .comments_size(userRepository.getUserCommentCount(user.getId()))
+                    .freeBoards_Size(userRepository.getUserFreePostCount(user.getId()))
+                    .comments_size(userRepository.getUserFreeCommentCount(user.getId()))
                     .profileImage((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
                     .build();
         } else {
@@ -49,9 +49,29 @@ public class UserService {
     }
 
     /**
+     * 특정 사용자 정보 조회
+     *
+     * @return 내 정보 반환
+     */
+    public UserResponse getUserInfo(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        return UserResponse.builder()
+                .nickname(user.getNickname())
+                .createDate(user.getCreateDate())
+                .freeBoards_Size(userRepository.getUserFreePostCount(user.getId()))
+                .comments_size(userRepository.getUserFreeCommentCount(user.getId()))
+                .certificate(user.getCertificate())
+                .career(user.getCareer())
+                .profileImage((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
+                .build();
+    }
+
+    /**
      * 마이페이지에서 작성한 게시글 또는 댓글 조회
      *
-     * @param id   게시글 또는 댓글 종류 식별자 ("myBoards" 또는 "myComments")
+     * @param id   게시글 또는 댓글 식별자 ("myBoards" 또는 "myComments")
      * @param page 페이지 번호
      * @return 게시글 또는 댓글 목록 응답 페이지 DTO
      */
@@ -71,5 +91,25 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
+    }
+
+    /**
+     * 특정 유저 상세 페이지에서 작성한 게시글 또는 댓글 조회
+     *
+     * @param id   게시글 또는 댓글 식별자 ("myBoards" 또는 "myComments")
+     * @param page 페이지 번호
+     * @return 게시글 또는 댓글 목록 응답 페이지 DTO
+     */
+    public Page<FreeBoardResponse> userInfoPageBoards(String nickname, String id, int page) { // id에 따른 작성 글, 댓글 단 글 불러오기
+        Page<FreeBoardResponse> freeBoardResponses;
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+
+        if(id.equals("myBoards")){
+            freeBoardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
+        }else{
+            freeBoardResponses = freeBoardCommentServiceImpl.getFreeBoardByUserComments(user.getId(), page);
+        }
+        return freeBoardResponses;
     }
 }

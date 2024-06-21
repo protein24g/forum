@@ -66,7 +66,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     @Query("SELECT COUNT(b) FROM FreeBoard b WHERE b.user.id = :userId")
-    int getUserPostCount(Long userId);
+    int getUserFreePostCount(Long userId);
 
 
     /**
@@ -76,20 +76,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     @Query("SELECT COUNT(c) FROM FreeBoardComment c WHERE c.user.id = :userId")
-    int getUserCommentCount(Long userId);
+    int getUserFreeCommentCount(Long userId);
 
     /**
-     * nickname으로 사용자의 loginId 조회
-     *
-     *
-     */
-
-    /**
-     * 사용자 nickname 으로 loginId 찾기
-     *
+     * 사용자 닉네임으로 유저 조회
+     * 
      * @param nickname
+     * @return
      */
-    @Query("SELECT u FROM User u WHERE u.nickname = :nickname")
-    User findByLoginIdByPk(String nickname);
-
+    Optional<User> findByNickname(String nickname);
 }

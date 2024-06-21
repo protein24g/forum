@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
                                 "/checkLoginId", "/checkNickname",
-                                "/userinfo/**").permitAll()
+                                "/userinfo/**", "/api/userinfo/**").permitAll()
                         .requestMatchers( // 자유 게시판
                                 "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
                                 "/freeBoardUpload/**"

@@ -63,6 +63,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                     .createDate(LocalDateTime.now())
                     .view(0)
                     .build();
+            user.addBoard(freeBoard);
             try {
                 // 이미지 저장
                 if(dto.getImages() != null && !dto.getImages().isEmpty()) {

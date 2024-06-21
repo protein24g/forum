@@ -26,11 +26,11 @@ public class FreeBoard {
 
     private LocalDateTime createDate;
 
+    private int view;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    private int view;
 
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
@@ -54,6 +54,10 @@ public class FreeBoard {
     }
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
+
+    public void setBoard(User user){
+        this.user = user;
+    }
 
     public void addImage(FreeBoardImage freeBoardImage){
         this.images.add(freeBoardImage);

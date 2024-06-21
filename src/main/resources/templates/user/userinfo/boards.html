@@ -15,7 +15,7 @@
         </style>
         <script>
             document.addEventListener("DOMContentLoaded", function (){
-                myPageBoards(0);
+                userInfoPageBoards(0);
             })
 
             function addEventToRows() {
@@ -53,8 +53,9 @@
 
             async function myPageBoards(page){
                 let id = document.querySelector("#id").value;
+                let nickname = document.querySelector("#nickname").value;
                 try{
-                    const response = await fetch(`/api/mypage/boards?id=${id}&page=${page}`, {
+                    const response = await fetch(`/api/userinfo/${nickname}/boards?id=${id}&page=${page}`, {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json"
@@ -117,6 +118,7 @@
     <body style="background-color: #eee">
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
         <input type="hidden" id="id" th:value="${id}">
+        <input type="hidden" id="nickname" th:value="${nickname}">
         <div class="container-xl">
             <div class="row text-center">
                 <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -230,19 +232,18 @@
                     </div>
                 </div>
                 <div class="order-xl-2 order-1 col-xl-9">
-                    <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">마이페이지</h4>
                     <div class="my-3 d-flex">
                         <div class="col-auto me-3">
-                            <a href="/mypage" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center;">회원정보</a>
+                            <a th:href="'/userinfo/' + ${nickname}" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center;">회원정보</a>
                         </div>
                         <div class="col-auto me-3">
-                            <form action="/mypage/boards" method="get">
+                            <form th:action="'/userinfo/' + ${nickname} + '/boards'" method="get">
                                 <input type="hidden" name="id" value="myBoards">
                                 <a href="#" class="form-control px-3" th:classappend="${id == 'myBoards'} ? 'active' : ''" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">내가 쓴 글</a>
                             </form>
                         </div>
                         <div class="col-auto me-3">
-                            <form action="/mypage/boards" method="get">
+                            <form th:action="'/userinfo/' + ${nickname} + '/boards'" method="get">
                                 <input type="hidden" name="id" value="myCommentBoards">
                                 <a href="#" class="form-control px-3" th:classappend="${id == 'myCommentBoards'} ? 'active' : ''" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">댓글 단 글</a>
                             </form>

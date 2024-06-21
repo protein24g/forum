@@ -458,7 +458,9 @@
                     <h3 class="pt-3 pb-2" id="title" style="word-wrap: break-word;"></h3>
                     <div class="row">
                         <div class="col-auto">
-                            <span id="nickname"></span>
+                            <a th:href="'/userinfo/' + ${writer}" style="">
+                                <span id="nickname"></span>
+                            </a>
                         </div>
                         <div class="col-auto">
                             <span id="createDate"></span>

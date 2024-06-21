@@ -68,4 +68,39 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    /**
+     * 특정 사용자 상세 정보 조회
+     *
+     * @return 내 정보 반환
+     */
+    @GetMapping("/api/userinfo/{nickname}")
+    public ResponseEntity<?> getUserInfo(@PathVariable("nickname") String nickname){
+        try{
+            System.out.println("userapicontorller 들어왔다" + nickname);
+            UserResponse userResponse = userService.getUserInfo(nickname);
+            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    /**
+     * 특정 사용자 게시글 조회
+     *
+     * @param id   사용자 ID
+     * @param page 페이지 번호
+     * @return 게시글 목록 반환
+     */
+    @GetMapping("/api/userinfo/{nickname}/boards")
+    public ResponseEntity<?> myPageBoards(@PathVariable(name = "nickname") String nickname,
+                                        @RequestParam(name = "id") String id,
+                                        @RequestParam(name = "page", defaultValue = "0") int page){
+        try{
+            Page<FreeBoardResponse> freeBoardResponses = userService.userInfoPageBoards(nickname, id, page);
+            return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

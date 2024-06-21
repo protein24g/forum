@@ -9,7 +9,8 @@
     <link href="/mobile/font.css" rel="stylesheet">
     <script>
         document.addEventListener("DOMContentLoaded", function (){
-            document.getElementById("nickname").textContent = document.getElementById("model-nickname").value;
+            console.log("함수호출");
+            getUserInfo();
         })
 
         // R(Read)
@@ -18,7 +19,6 @@
                 const response = await fetch("/api/myInfo", {
                     method : "GET",
                     headers : {
-                        "Content-Type" : "application/json"
                     }
                 });
 
@@ -30,6 +30,27 @@
                 document.querySelector(".my-nickname").innerText = `${res.nickname}`;
                 document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
+
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
+        }
+
+        async function getUserInfo(){
+            let nickname = document.querySelector("#model-nickname").value;
+            try{
+                const response = await fetch(`/api/userinfo/${nickname}`, {
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    }
+                });
+
+                const res = await response.json();
+                console.log(res);
+                document.getElementById("certificate").innerText = res.certificate;
+                document.getElementById("career").innerText = res.career;
 
             }catch (error){
                 alert(error);
@@ -133,7 +154,7 @@
                                         2024-05-12
                                     </span>
                         </div>
-                        <div class="hotBoard-item d-flex text-start p-1">
+ +                       <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
                                         구현 예정
                                     </span>
@@ -147,26 +168,26 @@
         </div>
         <div class="order-xl-2 order-1 col-xl-9">
             <div class="my-3 d-flex">
-                <div class="me-3">
-                    <a href="/mypage" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center; color: white; background-color: #434B57">회원정보</a>
+                <div class="col-auto me-3">
+                    <a th:href="'/userinfo/' + ${nickname}" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center; color: white; background-color: #434B57">회원정보</a>
                 </div>
-                <div class="me-3">
-                    <form action="/mypage/boards" method="get">
+                <div class="col-auto me-3">
+                    <form th:action="'/userinfo/' + ${nickname} + '/boards'" method="get">
                         <input type="hidden" name="id" value="myBoards">
                         <a href="#" class="form-control px-3" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">작성 글</a>
                     </form>
                 </div>
-                <div class="me-3">
-                    <form action="/mypage/boards" method="get">
+                <div class="col-auto me-3">
+                    <form th:action="'/userinfo/' + ${nickname} + '/boards'" method="get">
                         <input type="hidden" name="id" value="myCommentBoards">
                         <a href="#" class="form-control px-3" style="text-decoration: none; border-radius: 15px;" onclick="this.parentElement.submit()">댓글 단 글</a>
                     </form>
                 </div>
             </div>
-            <div class="my-3 p-3 text-start d-flex" style="background-color: white; border-radius: 15px;">
+            <div class="my-3 p-3 text-start d-md-flex" style="background-color: white; border-radius: 15px;">
                 <div class="mx-5">
                     <div class="row">
-                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="300px;" height="300px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="250px;" height="250px;">
                     </div>
                     <div class="row">
                         sad
@@ -178,16 +199,11 @@
                 <div>
                     <div class="mb-3">
                         <h3>자격사항</h3>
-                        <span>
-                        생활체육지도자 2급<br>
-                        스포츠마사지 1급<br>
-                    </span>
+                        <span id="certificate"></span>
                     </div>
                     <div class="mb-3">
-                        <h3>자격사항</h3>
-                        <span>
-                        생활체육지도자 2급<br>
-                        스포츠마사지 1급<br>
+                        <h3>경력사항</h3>
+                        <span id="career"></span>
                     </span>
                     </div>
                 </div>

@@ -99,4 +99,27 @@ public class UserController {
             return "message/index";
         }
     }
+
+    /**
+     * 특정 사용자 게시글 조회
+     *
+     * @param model Model 객체
+     * @param id 탭 ID
+     * @return 마이페이지 게시글 뷰
+     */
+    @GetMapping("/userinfo/{nickname}/boards")
+    public String myPageBoards(@PathVariable(name = "nickname") String nickname,
+                               Model model, @RequestParam(name = "id") String id){
+
+        if(id.equals("myBoards")){
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("id", "myBoards");
+            model.addAttribute("title", "내가 쓴 글");
+        } else if (id.equals("myCommentBoards")) {
+            model.addAttribute("nickname", nickname);
+            model.addAttribute("id", "myCommentBoards");
+            model.addAttribute("title", "댓글 단 글");
+        }
+        return "user/userinfo/boards";
+    }
 }
