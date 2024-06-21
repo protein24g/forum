@@ -19,13 +19,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
-        handler.setUseReferer(true); // Referer를 사용하여 이전 주소로 리디렉션
-        return handler;
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests((auth) -> auth
@@ -56,7 +49,6 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .loginProcessingUrl("/loginProc")
                         .failureUrl("/login?error=true")
-                        .successHandler(savedRequestAwareAuthenticationSuccessHandler())
                         .permitAll());
 
         http

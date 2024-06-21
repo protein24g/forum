@@ -114,7 +114,7 @@ public class UserController {
         if(id.equals("myBoards")){
             model.addAttribute("nickname", nickname);
             model.addAttribute("id", "myBoards");
-            model.addAttribute("title", "내가 쓴 글");
+            model.addAttribute("title", "작성 글");
         } else if (id.equals("myCommentBoards")) {
             model.addAttribute("nickname", nickname);
             model.addAttribute("id", "myCommentBoards");
