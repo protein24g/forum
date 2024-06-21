@@ -49,16 +49,17 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+            FreeBoard board = freeBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
 
             FreeBoardComment freeBoardComment = FreeBoardComment.builder()
                     .user(user)
-                    .freeBoard(freeBoard)
+                    .freeBoard(board)
                     .content(dto.getContent())
                     .createDate(LocalDateTime.now())
                     .build();
             freeBoardCommentRepository.save(freeBoardComment);
+            board.addComment(freeBoardComment);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }

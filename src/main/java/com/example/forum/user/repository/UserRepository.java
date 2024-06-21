@@ -77,4 +77,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @Query("SELECT COUNT(c) FROM FreeBoardComment c WHERE c.user.id = :userId")
     int getUserCommentCount(Long userId);
+
+    /**
+     * nickname으로 사용자의 loginId 조회
+     *
+     *
+     */
+
+    /**
+     * 사용자 nickname 으로 loginId 찾기
+     *
+     * @param nickname
+     */
+    @Query("SELECT u FROM User u WHERE u.nickname = :nickname")
+    User findByLoginIdByPk(String nickname);
+
 }

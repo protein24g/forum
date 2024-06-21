@@ -2,6 +2,7 @@ package com.example.forum.admin.controller;
 
 import com.example.forum.admin.dto.requests.AdminSearch;
 import com.example.forum.admin.dto.response.AdminResponse;
+import com.example.forum.admin.service.AdminService;
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
@@ -23,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminApiController {
-    private final UserService userService;
+    private final AdminService adminService;
     private final FreeBoardServiceImpl freeBoardServiceImpl;
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
 
@@ -36,7 +37,7 @@ public class AdminApiController {
     @PostMapping("/api/admin/users")
     public ResponseEntity<?> getAllUsers(@RequestBody AdminSearch dto){
         try{
-            Page<AdminResponse> users = userService.getAllUsersForAdmin(dto.getKeyword(), dto.getPage(), dto.getOption());
+            Page<AdminResponse> users = adminService.getAllUsersForAdmin(dto.getKeyword(), dto.getPage(), dto.getOption());
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

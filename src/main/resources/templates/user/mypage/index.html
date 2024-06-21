@@ -9,9 +9,9 @@
         <link href="/mobile/font.css" rel="stylesheet">
         <script>
             // R(Read)
-            async function getUserInfo(){
+            async function getMyInfo(){
                 try{
-                    const response = await fetch("/api/userInfo", {
+                    const response = await fetch("/api/myInfo", {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json"
@@ -23,7 +23,7 @@
                     document.querySelector(".profile").innerHTML = `${(res.boardListImages != null) ?
                         `<img src="/profileUpload/${res.boardListImages}" width="32" height="32" class="rounded-circle me-2">` :
                         '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
-                    document.querySelector(".nickname").innerText = `${res.nickname}`;
+                    document.querySelector(".my-nickname").innerText = `${res.nickname}`;
                     document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                     document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
 
@@ -53,13 +53,13 @@
                     <div sec:authorize="isAuthenticated()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
                         <script th:inline="javascript">
                             document.addEventListener("DOMContentLoaded", function() {
-                                getUserInfo();
+                                getMyInfo();
                             });
                         </script>
                         <div class="d-flex align-items-center text-black px-1">
                             <div class="me-auto d-flex">
                                 <div class="profile"></div>
-                                <strong class="nickname"></strong>
+                                <strong class="my-nickname"></strong>
                             </div>
                             <div sec:authorize="hasRole('ADMIN')">
                                 <a href="/admin" class="p-2 text-white">

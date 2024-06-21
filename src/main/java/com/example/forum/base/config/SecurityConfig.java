@@ -31,11 +31,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/freeBoard/create", "/questionBoard/create").authenticated()
-                        .requestMatchers("/", "/mobile/font.css", "/logo/**",
+                        .requestMatchers("/", "/mobile/font.css", "/logo/**", "/favicon.ico",
                                 "/account/logout.js", "/navbar/active.js",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
-                                "/checkLoginId", "/checkNickname").permitAll()
+                                "/checkLoginId", "/checkNickname",
+                                "/userinfo/**").permitAll()
                         .requestMatchers( // 자유 게시판
                                 "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
                                 "/freeBoardUpload/**"

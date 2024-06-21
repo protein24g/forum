@@ -1,7 +1,7 @@
 package com.example.forum.boards.freeBoard.board.entity;
 
+import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
-import com.example.forum.boards.freeBoard.image.entity.FreeBoardThumbnail;
 import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -32,13 +32,13 @@ public class FreeBoard {
 
     private int view;
 
-    @OneToOne(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private FreeBoardThumbnail thumbnail;
-
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
     @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FreeBoardImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
 
     @Builder
     public FreeBoard(String title, String content, LocalDateTime createDate, User user, int view){
@@ -49,20 +49,20 @@ public class FreeBoard {
         this.view = view;
     }
 
-    public void setUser(User user) { 
-        this.user = user; 
+    public void setUser(User user) {
+        this.user = user;
     }
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
 
-    public void addThumbnail(FreeBoardThumbnail freeBoardThumbnail){
-        this.thumbnail = freeBoardThumbnail;
-        freeBoardThumbnail.setBoard(this);
-    }
-
     public void addImage(FreeBoardImage freeBoardImage){
         this.images.add(freeBoardImage);
         freeBoardImage.setBoard(this);
+    }
+
+    public void addComment(FreeBoardComment freeBoardComment){
+        this.freeBoardComments.add(freeBoardComment);
+        freeBoardComment.setBoard(this);
     }
 
     public int incView() {

@@ -1,26 +1,17 @@
 package com.example.forum.user.service;
 
-import com.example.forum.admin.dto.response.AdminResponse;
 import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
 import com.example.forum.user.dto.requests.CustomUserDetails;
-import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.entity.UserImage;
 import com.example.forum.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -31,73 +22,16 @@ import java.time.LocalDateTime;
  */
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserImageService userImageService;
     private final FreeBoardServiceImpl freeBoardServiceImpl;
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final AuthenticationService authenticationService;
 
     /**
-     * 회원 가입
+     * 내 정보 조회
      *
-     * @param dto 회원 가입 요청 DTO
+     * @return 내 정보 반환
      */
-    public void join(JoinRequest dto) {
-        if(userRepository.existsByLoginId(dto.getLoginId())){
-            throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
-        } else {
-            if(userRepository.existsByNickname(dto.getNickname())){
-                throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
-            } else {
-                User user = userRepository.save(User.builder()
-                        .nickname(dto.getNickname())
-                        .loginId(dto.getLoginId())
-                        .loginPw(passwordEncoder.encode(dto.getLoginPw()))
-                        .createDate(LocalDateTime.now())
-                        .age(dto.getAge())
-                        .gender(dto.getGender())
-                        .role(User.Role.USER)
-                        .isActive(true)
-                        .build());
-                try{
-                    // 이미지 저장
-                    if(dto.getProfile() != null && !dto.getProfile().isEmpty()) {
-                        UserImage userImage = userImageService.saveImage(dto.getProfile());
-                        user.addUserImage(userImage);
-                    }
-                } catch (Exception e){
-                    throw new IllegalArgumentException("이미지 저장 중 오류가 발생했습니다: " + e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 로그인 아이디 사용가능 여부
-     *
-     * @param loginId 로그인 아이디
-     * @return 가능 여부
-     */
-    public boolean existsByLoginId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
-    }
-
-    /**
-     * 닉네임의 사용가능 여부
-     *
-     * @param nickname 닉네임
-     * @return 가능 여부
-     */
-    public boolean existsByNickname(String nickname) {
-        return userRepository.existsByNickname(nickname);
-    }
-
-    /**
-     * 현재 사용자의 정보 조회
-     *
-     * @return 사용자 정보 응답 DTO
-     */
-    public UserResponse getUserInfo() {
+    public UserResponse getMyInfo() {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             User user = userRepository.findById(customUserDetails.getId())
@@ -105,52 +39,12 @@ public class UserService {
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
-                    .createDate(user.getCreateDate())
                     .freeBoards_Size(userRepository.getUserPostCount(user.getId()))
                     .comments_size(userRepository.getUserCommentCount(user.getId()))
-                    .boardListImages((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
+                    .profileImage((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
                     .build();
         } else {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-        }
-    }
-
-    /**
-     * 관리자용으로 모든 사용자 목록 조회
-     *
-     * @param keyword 검색 키워드
-     * @param page    페이지 번호
-     * @param option  검색 옵션
-     * @return 사용자 목록 응답 페이지 DTO
-     */
-    public Page<AdminResponse> getAllUsersForAdmin(String keyword, int page, String option){
-        if(authenticationService.isAdmin()){
-            Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-            Page<User> users = null;
-            if(keyword.length() != 0){ // 키워드가 있으면
-                switch (option){
-                    case "1": // 1 닉네임
-                        users = userRepository.findByNicknameContaining(keyword, pageable);
-                        break;
-                    case "2": // 2 아이디
-                        users = userRepository.existsByLoginIdContaining(keyword, pageable);
-                        break;
-                }
-            }else{
-                users = userRepository.findAll(pageable);
-            }
-            return users.map(user -> AdminResponse.builder()
-                    .id(user.getId())
-                    .role(String.valueOf(user.getRole()))
-                    .nickname(user.getNickname())
-                    .userId(user.getLoginId())
-                    .age(user.getAge())
-                    .gender(String.valueOf(user.getGender()))
-                    .createDate(user.getCreateDate())
-                    .isActive(user.getActive())
-                    .build());
-        } else {
-            throw new IllegalArgumentException("관리자 권한이 필요합니다");
         }
     }
 

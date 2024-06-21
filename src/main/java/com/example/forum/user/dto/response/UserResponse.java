@@ -14,29 +14,24 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class UserResponse {
-    private Long userId;
     private String nickname;
     private LocalDateTime createDate;
-    private boolean isActive;
     private Page<FreeBoardResponse> freeBoards;
     private int freeBoards_size;
-    private int questionBoards_size;
     private Page<CommentResponse> comments;
     private int comments_size;
-    private String boardListImages;
+    private String profileImage;
 
     @Builder
-    public UserResponse(Long userId, String nickname, LocalDateTime createDate, boolean isActive,
+    public UserResponse(String nickname, LocalDateTime createDate,
                         Page<FreeBoardResponse> freeBoards, int freeBoards_Size,
-                        Page<CommentResponse> comments, int comments_size, String boardListImages){
-        this.userId = userId;
+                        Page<CommentResponse> comments, int comments_size, String profileImage){
         this.nickname = nickname;
         this.createDate = createDate;
-        this.isActive = isActive;
         this.freeBoards = freeBoards;
         this.freeBoards_size = freeBoards_Size;
         this.comments = comments;
         this.comments_size = comments_size;
-        this.boardListImages = boardListImages;
+        this.profileImage = profileImage;
     }
 }

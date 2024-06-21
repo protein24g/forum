@@ -1,13 +1,9 @@
     package com.example.forum.user.entity;
 
-    import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
-    import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
     import jakarta.persistence.*;
     import lombok.*;
 
     import java.time.LocalDateTime;
-    import java.util.ArrayList;
-    import java.util.List;
 
     @Entity
     @Getter
@@ -26,40 +22,38 @@
         @Column(name = "login_pw", nullable = false)
         private String loginPw;
 
+        private String certificate;
+
+        private String career;
+
         @Column(name = "create_date", updatable = false)
         private LocalDateTime createDate;
-
-        @Column(name = "age", nullable = false)
-        private int age;
-
-        public enum Gender{MALE, FEMALE}
-        @Enumerated(EnumType.STRING) // 성별을 문자열로 db에 저장
-        private Gender gender;
 
         public enum Role{ADMIN, USER}
         @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
         private Role role;
 
         @Column(name = "is_active")
-        private boolean isActive = true; // 사용자의 활성화 상태를 나타냅니다.
+        private boolean isActive = true; // 사용자의 활성화 상태
 
         @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private UserImage userImage;
 
         @Builder
-        public User(String nickname, String loginId, String loginPw, LocalDateTime createDate,
-                    int age, User.Gender gender, User.Role role, boolean isActive){
+        public User(String nickname, String loginId, String loginPw,
+                    String certificate, String career,
+                    LocalDateTime createDate, User.Role role, boolean isActive){
             this.nickname = nickname;
             this.loginId = loginId;
             this.loginPw = loginPw;
+            this.certificate = certificate;
+            this.career = career;
             this.createDate = createDate;
-            this.age = age;
-            this.gender = gender;
             this.role = role;
             this.isActive = isActive;
         }
 
-        public void addUserImage(UserImage userImage){
+        public void setUserImage(UserImage userImage){
             this.userImage = userImage;
             userImage.setUser(this);
         }

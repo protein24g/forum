@@ -1,6 +1,5 @@
 package com.example.forum.user.dto.requests;
 
-import com.example.forum.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -31,11 +30,11 @@ public class JoinRequest {
     @Size(min = 6, message = "비밀번호는 최소 6자 이상 입력하세요.")
     private String loginPwCheck;
 
+    private String certificate;
+
+    private String career;
+
     private LocalDateTime createDate;
-
-    private int age;
-
-    private User.Gender gender;
 
     private MultipartFile profile;
 }

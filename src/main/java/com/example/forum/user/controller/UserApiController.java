@@ -3,6 +3,7 @@ package com.example.forum.user.controller;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.dto.requests.JoinRequest;
 import com.example.forum.user.dto.response.UserResponse;
+import com.example.forum.user.service.UserAuthService;
 import com.example.forum.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserApiController {
     private final UserService userService;
+    private final UserAuthService userAuthService;
 
     /**
      * 회원가입 처리
@@ -27,7 +29,7 @@ public class UserApiController {
     @PostMapping("/api/joinProc")
     public ResponseEntity<?> joinProc(@RequestBody JoinRequest dto) {
         try {
-            userService.join(dto);
+            userAuthService.join(dto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -35,14 +37,14 @@ public class UserApiController {
     }
 
     /**
-     * 사용자 정보 조회
+     * 내 정보 조회
      *
-     * @return 사용자 정보 반환
+     * @return 내 정보 반환
      */
-    @GetMapping("/api/userInfo")
-    public ResponseEntity<?> getUserInfo(){
+    @GetMapping("/api/myInfo")
+    public ResponseEntity<?> getMyInfo(){
         try{
-            UserResponse userResponse = userService.getUserInfo();
+            UserResponse userResponse = userService.getMyInfo();
             return ResponseEntity.status(HttpStatus.OK).body(userResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
