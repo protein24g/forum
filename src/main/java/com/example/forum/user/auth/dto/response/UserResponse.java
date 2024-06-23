@@ -1,4 +1,4 @@
-package com.example.forum.user.dto.response;
+package com.example.forum.user.auth.dto.response;
 
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;

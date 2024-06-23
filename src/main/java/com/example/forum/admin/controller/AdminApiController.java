@@ -7,8 +7,6 @@ import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
-import com.example.forum.user.dto.response.UserResponse;
-import com.example.forum.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

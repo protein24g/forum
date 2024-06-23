@@ -1,7 +1,7 @@
-package com.example.forum.user.controller;
+package com.example.forum.user.auth.controller;
 
-import com.example.forum.user.dto.requests.JoinRequest;
-import com.example.forum.user.service.UserAuthService;
+import com.example.forum.user.auth.dto.requests.JoinRequest;
+import com.example.forum.user.auth.service.UserAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class UserAuthController {
     private final UserAuthService userAuthService;
+
+    /**
+     * 로그인 페이지
+     *
+     * @param model Model 객체
+     * @param error 에러 메시지
+     * @return 로그인 페이지 뷰
+     */
+    @GetMapping("/login")
+    public String login(Model model, @RequestParam(name = "error", defaultValue = "none") String error){
+        if(error.equals("true")){
+            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다");
+            model.addAttribute("url", "/login");
+            return "message/index";
+        }
+        return "user/login";
+    }
+
+    /**
+     * 회원가입 페이지
+     *
+     * @return 회원가입 페이지 뷰
+     */
+    @GetMapping("/join")
+    public String joinP(){
+        return "user/join";
+    }
+
     /**
      * 회원가입 처리
      * @param joinRequest 회원가입 정보

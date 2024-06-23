@@ -9,9 +9,9 @@ import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.comment.repository.FreeBoardCommentRepository;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
-import com.example.forum.user.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @Transactional
 public class FreeBoardCommentServiceImpl implements CommentService {
     private final FreeBoardCommentRepository freeBoardCommentRepository;
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final AuthenticationService authenticationService;
 
@@ -45,7 +45,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             // 유저
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 게시글
@@ -148,7 +148,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             // 유저
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글
@@ -176,7 +176,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             // 유저
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             // 댓글

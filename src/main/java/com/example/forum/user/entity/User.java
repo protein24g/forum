@@ -1,6 +1,8 @@
     package com.example.forum.user.entity;
 
     import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
+    import com.example.forum.user.profile.guestbook.entity.GuestBook;
+    import com.example.forum.user.profile.profileImage.entity.UserImage;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -16,27 +18,25 @@
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(name = "nickname", unique = true, nullable = false)
+        @Column(unique = true, nullable = false)
         private String nickname;
 
-        @Column(name = "login_id", unique = true, nullable = false)
+        @Column(unique = true, nullable = false)
         private String loginId;
 
-        @Column(name = "login_pw", nullable = false)
+        @Column(nullable = false)
         private String loginPw;
 
         private String certificate;
 
         private String career;
 
-        @Column(name = "create_date", updatable = false)
         private LocalDateTime createDate;
 
         public enum Role{ADMIN, USER}
         @Enumerated(EnumType.STRING) // 권한을 문자열로 db에 저장
         private Role role;
 
-        @Column(name = "is_active")
         private boolean isActive = true; // 사용자의 활성화 상태
 
         @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -44,6 +44,9 @@
 
         // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
         // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private List<GuestBook> guestBooks = new ArrayList<>();
+
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private List<FreeBoard> freeBoards = new ArrayList<>();
 
@@ -59,6 +62,11 @@
             this.createDate = createDate;
             this.role = role;
             this.isActive = isActive;
+        }
+
+        public void addGuestBook(GuestBook guestBook){
+            this.guestBooks.add(guestBook);
+            guestBook.setUser(this);
         }
 
         public void addBoard(FreeBoard freeBoard){

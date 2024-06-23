@@ -2,8 +2,8 @@ package com.example.forum.admin.service;
 
 import com.example.forum.admin.dto.response.AdminResponse;
 import com.example.forum.base.auth.service.AuthenticationService;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdminService {
     private final AuthenticationService authenticationService;
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
 
     /**
      * 관리자용으로 모든 사용자 목록 조회
@@ -32,14 +32,14 @@ public class AdminService {
             if(keyword.length() != 0){ // 키워드가 있으면
                 switch (option){
                     case "1": // 1 닉네임
-                        users = userRepository.findByNicknameContaining(keyword, pageable);
+                        users = userAuthRepository.findByNicknameContaining(keyword, pageable);
                         break;
                     case "2": // 2 아이디
-                        users = userRepository.existsByLoginIdContaining(keyword, pageable);
+                        users = userAuthRepository.existsByLoginIdContaining(keyword, pageable);
                         break;
                 }
             }else{
-                users = userRepository.findAll(pageable);
+                users = userAuthRepository.findAll(pageable);
             }
             return users.map(user -> AdminResponse.builder()
                     .id(user.getId())

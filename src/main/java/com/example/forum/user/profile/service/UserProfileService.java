@@ -1,17 +1,25 @@
-package com.example.forum.user.service;
+package com.example.forum.user.profile.service;
 
 import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServiceImpl;
-import com.example.forum.user.dto.requests.CustomUserDetails;
-import com.example.forum.user.dto.response.UserResponse;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.dto.response.UserResponse;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.repository.UserRepository;
+import com.example.forum.user.profile.guestbook.dto.request.GuestBookRequest;
+import com.example.forum.user.profile.guestbook.dto.response.GuestBookResponse;
+import com.example.forum.user.profile.guestbook.entity.GuestBook;
+import com.example.forum.user.profile.guestbook.repository.GuestBookRepository;
+import com.example.forum.user.profile.repository.UserProfileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +28,13 @@ import org.springframework.stereotype.Service;
 /**
  * 사용자 관리 서비스 클래스
  */
-public class UserService {
-    private final UserRepository userRepository;
+public class UserProfileService {
+    private final UserAuthRepository userAuthRepository;
+    private final UserProfileRepository userProfileRepository;
     private final FreeBoardServiceImpl freeBoardServiceImpl;
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final AuthenticationService authenticationService;
+    private final GuestBookRepository guestBookRepository;
 
     /**
      * 내 정보 조회
@@ -34,13 +44,13 @@ public class UserService {
     public UserResponse getMyInfo() {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
             return UserResponse.builder()
                     .nickname(user.getNickname())
-                    .freeBoards_Size(userRepository.getUserFreePostCount(user.getId()))
-                    .comments_size(userRepository.getUserFreeCommentCount(user.getId()))
+                    .freeBoards_Size(userProfileRepository.getUserFreePostCount(user.getId()))
+                    .comments_size(userProfileRepository.getUserFreeCommentCount(user.getId()))
                     .profileImage((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
                     .build();
         } else {
@@ -54,14 +64,14 @@ public class UserService {
      * @return 내 정보 반환
      */
     public UserResponse getUserInfo(String nickname) {
-        User user = userRepository.findByNickname(nickname)
+        User user = userAuthRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         return UserResponse.builder()
                 .nickname(user.getNickname())
                 .createDate(user.getCreateDate())
-                .freeBoards_Size(userRepository.getUserFreePostCount(user.getId()))
-                .comments_size(userRepository.getUserFreeCommentCount(user.getId()))
+                .freeBoards_Size(userProfileRepository.getUserFreePostCount(user.getId()))
+                .comments_size(userProfileRepository.getUserFreeCommentCount(user.getId()))
                 .certificate(user.getCertificate())
                 .career(user.getCareer())
                 .profileImage((user.getUserImage() != null) ? user.getUserImage().getFileName() : null)
@@ -79,7 +89,7 @@ public class UserService {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             Page<FreeBoardResponse> freeBoardResponses;
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
             if(id.equals("myBoards")){
@@ -102,8 +112,8 @@ public class UserService {
      */
     public Page<FreeBoardResponse> userInfoPageBoards(String nickname, String id, int page) { // id에 따른 작성 글, 댓글 단 글 불러오기
         Page<FreeBoardResponse> freeBoardResponses;
-        User user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+        User user = userAuthRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
         if(id.equals("myBoards")){
             freeBoardResponses = freeBoardServiceImpl.getBoardsForUser(user.getId(), page);
@@ -111,5 +121,32 @@ public class UserService {
             freeBoardResponses = freeBoardCommentServiceImpl.getFreeBoardByUserComments(user.getId(), page);
         }
         return freeBoardResponses;
+    }
+
+    @Transactional
+    public GuestBookResponse createGuestBook(String nickname, GuestBookRequest dto){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            User target = userAuthRepository.findByNickname(nickname)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            GuestBook guestBook = GuestBook.builder()
+                    .content(dto.getContent())
+                    .createDate(LocalDateTime.now())
+                    .targetId(target.getId())
+                    .build();
+            guestBookRepository.save(guestBook);
+            guestBook.setUser(user);
+
+            return GuestBookResponse.builder()
+                    .content(guestBook.getContent())
+                    .createDate(guestBook.getCreateDate())
+                    .build();
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
     }
 }

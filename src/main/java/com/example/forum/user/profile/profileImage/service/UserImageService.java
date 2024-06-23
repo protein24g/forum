@@ -1,8 +1,8 @@
-package com.example.forum.user.service;
+package com.example.forum.user.profile.profileImage.service;
 
 import com.example.forum.base.image.service.ImageService;
-import com.example.forum.user.entity.UserImage;
-import com.example.forum.user.repository.UserImageRepository;
+import com.example.forum.user.profile.profileImage.repository.UserImageRepository;
+import com.example.forum.user.profile.profileImage.entity.UserImage;
 import com.sun.nio.sctp.IllegalReceiveException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

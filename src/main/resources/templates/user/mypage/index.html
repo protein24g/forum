@@ -8,6 +8,10 @@
         <script src="/account/logout.js"></script>
         <link href="/mobile/font.css" rel="stylesheet">
         <script>
+            document.addEventListener("DOMContentLoaded", function (){
+                getUserInfo();
+            })
+
             // R(Read)
             async function getMyInfo(){
                 try{
@@ -32,10 +36,33 @@
                     window.location.href = "/";
                 }
             }
+
+            async function getUserInfo(){
+                let nickname = document.querySelector("#userinfo-nickname").value;
+                try{
+                    const response = await fetch(`/api/userinfo/${nickname}`, {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        }
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+                    document.getElementById("nickname").innerText = res.nickname;
+                    document.getElementById("certificate").innerText = res.certificate;
+                    document.getElementById("career").innerText = res.career;
+
+                }catch (error){
+                    alert(error);
+                    window.location.href = "/";
+                }
+            }
         </script>
     </head>
     <body style="background-color: #eee">
         <div th:insert="~{layouts/header.html :: headerFragment}"></div>
+        <input type="hidden" id="userinfo-nickname" th:value="${#authentication.getPrincipal().username}">
         <div class="container-xl">
             <div class="row text-center">
                 <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -159,28 +186,26 @@
                             </form>
                         </div>
                     </div>
-                    <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
-                        <h4 class="fw-bold">닉네임 변경</h4>
-                        <hr>
-                        <form>
-                            <p>닉네임 : <input style="border-radius: 5px;" type="password"></p>
-                            <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
-                            <input type="submit" class="px-3" style="background-color: #434B57; color: white; border-radius: 15px;" value="확인">
-                        </form>
-                    </div>
-                    <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
-                        <h4 class="fw-bold">비밀번호 변경</h4>
-                        <hr>
-                        <form>
-                            <p>현재 비밀번호 : <input style="border-radius: 5px;" type="password"></p>
-                            <p>변경할 비밀번호 : <input style="border-radius: 5px;" type="password"></p>
-                            <p>변경할 비밀번호 확인 : <input style="border-radius: 5px;" type="password"></p>
-                            <input type="hidden" name="_csrf" class="_csrf" th:value="${_csrf.token}">
-                            <input type="submit" class="px-3" style="background-color: #434B57; color: white; border-radius: 15px;" value="확인">
-                        </form>
-                    </div>
-                    <div class="my-3 text-start">
-                        <button class="px-3" style="background-color: #434B57; color: red; border-radius: 15px;">회원탈퇴</button>
+                    <div class="my-3 p-3 text-start d-md-flex" style="background-color: white; border-radius: 15px;">
+                        <div class="mx-5">
+                            <div class="row">
+                                <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="250px;" height="250px;">
+                            </div>
+                            <div class="row">
+                                <h3 class="text-center" id="nickname"></h3>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mb-3">
+                                <h3>자격사항</h3>
+                                <span id="certificate"></span>
+                            </div>
+                            <div class="mb-3">
+                                <h3>경력사항</h3>
+                                <span id="career"></span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

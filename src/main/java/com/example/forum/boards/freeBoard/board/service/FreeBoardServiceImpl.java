@@ -12,9 +12,9 @@ import com.example.forum.boards.freeBoard.comment.service.FreeBoardCommentServic
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.boards.freeBoard.image.repository.FreeBoardImageRepository;
 import com.example.forum.boards.freeBoard.image.service.FreeBoardImageService;
-import com.example.forum.user.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRequest, FreeBoardResponse, FreeBoardSearch> {
     private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final FreeBoardCommentRepository freeBoardCommentRepository;
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardImageService freeBoardImageService;
     private final FreeBoardImageRepository freeBoardImageRepository;
@@ -53,7 +53,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
 
         if(customUserDetails != null){
-            User user = userRepository.findByLoginId(customUserDetails.getLoginId())
+            User user = userAuthRepository.findByLoginId(customUserDetails.getLoginId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
             FreeBoard freeBoard = FreeBoard.builder()
@@ -220,7 +220,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     public FreeBoardResponse getBoardUpdateData(Long boardId) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
-            User user = userRepository.findById(customUserDetails.getId())
+            User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
             FreeBoard freeBoard = freeBoardRepository.findById(boardId)

@@ -1,4 +1,4 @@
-package com.example.forum.user.dto.requests;
+package com.example.forum.user.auth.dto.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,4 +1,4 @@
-package com.example.forum.user.dto.requests;
+package com.example.forum.user.auth.dto.requests;
 
 import com.example.forum.user.entity.User;
 import lombok.RequiredArgsConstructor;

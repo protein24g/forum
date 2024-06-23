@@ -9,9 +9,41 @@
     <link href="/mobile/font.css" rel="stylesheet">
     <script>
         document.addEventListener("DOMContentLoaded", function (){
-            console.log("함수호출");
             getUserInfo();
         })
+
+        // C(Create)
+        async function createGuestBook(){
+            let nickname = document.querySelector("#userinfo-nickname").value;
+            let guestBook_comment = document.querySelector("#guestBook-comment").value;
+            console.log("ㅁㄴㅇㅁㄴㅇㄴㅁㅇ" + guestBook_comment);
+            let _csrf = document.querySelector("._csrf").value;
+
+            try{
+                const response = await fetch(`/api/userinfo/${nickname}/guestBooks`, {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : _csrf
+                    },
+                    body : JSON.stringify({
+                        content : guestBook_comment
+                    })
+                });
+
+                const res = response.json();
+                console.log(res);
+                if(response.status === 400){
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
+                } else {
+                    alert("방명록 작성완료");
+                }
+            }catch (error){
+                alert(error);
+                window.location.href = `/userinfo/${nickname};`
+            }
+        }
 
         // R(Read)
         async function getMyInfo(){
@@ -38,7 +70,7 @@
         }
 
         async function getUserInfo(){
-            let nickname = document.querySelector("#model-nickname").value;
+            let nickname = document.querySelector("#userinfo-nickname").value;
             try{
                 const response = await fetch(`/api/userinfo/${nickname}`, {
                     method : "GET",
@@ -49,6 +81,7 @@
 
                 const res = await response.json();
                 console.log(res);
+                document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("certificate").innerText = res.certificate;
                 document.getElementById("career").innerText = res.career;
 
@@ -62,7 +95,7 @@
 <body style="background-color: #eee">
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <div class="container-xl">
-    <input type="hidden" id="model-nickname" th:value="${nickname}">
+    <input type="hidden" id="userinfo-nickname" th:value="${nickname}">
     <div class="row text-center">
         <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
             <div sec:authorize="isAnonymous()" class="d-none d-xl-block my-info p-3" style="background-color: white; border-radius: 15px;">
@@ -190,10 +223,7 @@
                         <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="250px;" height="250px;">
                     </div>
                     <div class="row">
-                        sad
-                        asd
-                        sadsa
-                        d
+                        <h3 class="text-center" id="nickname"></h3>
                     </div>
                 </div>
                 <div>
@@ -206,6 +236,14 @@
                         <span id="career"></span>
                     </span>
                     </div>
+                </div>
+            </div>
+            <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
+                <h4>방명록</h4>
+
+                <div class="newComment p-3 my-3" style="background-color: #eee; border-radius: 10px;">
+                    <textarea class="form-control" id="guestBook-comment" rows="3" style="border: none; background: none;"></textarea>
+                    <input class="px-3 py-2 d-flex ms-auto" type="button" onclick="createGuestBook()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
                 </div>
             </div>
         </div>

@@ -1,53 +1,23 @@
-package com.example.forum.user.controller;
+package com.example.forum.user.profile.controller;
 
 import com.example.forum.base.auth.service.AuthenticationService;
-import com.example.forum.user.dto.requests.CustomUserDetails;
-import com.example.forum.user.dto.requests.JoinRequest;
-import com.example.forum.user.service.UserAuthService;
-import com.example.forum.user.service.UserService;
-import jakarta.validation.Valid;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 유저 컨트롤러
+ * 유저 프로필 컨트롤러
  */
 @Controller
 @RequiredArgsConstructor
-public class UserController {
-    private final UserAuthService userAuthService;
+public class UserProfileController {
     private final AuthenticationService authenticationService;
-
-    /**
-     * 로그인 페이지
-     *
-     * @param model Model 객체
-     * @param error 에러 메시지
-     * @return 로그인 페이지 뷰
-     */
-    @GetMapping("/login")
-    public String login(Model model, @RequestParam(name = "error", defaultValue = "none") String error){
-        if(error.equals("true")){
-            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다");
-            model.addAttribute("url", "/login");
-            return "message/index";
-        }
-        return "user/login";
-    }
-
-    /**
-     * 회원가입 페이지
-     *
-     * @return 회원가입 페이지 뷰
-     */
-    @GetMapping("/join")
-    public String joinP(){
-        return "user/join";
-    }
+    private final UserAuthService userAuthService;
 
     /**
      * 마이페이지

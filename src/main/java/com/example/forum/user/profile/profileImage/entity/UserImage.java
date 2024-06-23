@@ -1,5 +1,6 @@
-package com.example.forum.user.entity;
+package com.example.forum.user.profile.profileImage.entity;
 
+import com.example.forum.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

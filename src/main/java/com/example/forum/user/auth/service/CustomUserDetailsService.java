@@ -1,8 +1,8 @@
-package com.example.forum.user.service;
+package com.example.forum.user.auth.service;
 
-import com.example.forum.user.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
 
     /**
      * 주어진 로그인 ID를 기반으로 사용자의 상세 정보 로드
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        User user = userRepository.findByLoginId(loginId)
+        User user = userAuthRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         return new CustomUserDetails(user);
     }

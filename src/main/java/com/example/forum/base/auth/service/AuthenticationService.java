@@ -1,6 +1,6 @@
 package com.example.forum.base.auth.service;
 
-import com.example.forum.user.dto.requests.CustomUserDetails;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,11 @@
-package com.example.forum.user.controller;
+package com.example.forum.user.profile.controller;
+
 
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
-import com.example.forum.user.dto.requests.JoinRequest;
-import com.example.forum.user.dto.response.UserResponse;
-import com.example.forum.user.service.UserAuthService;
-import com.example.forum.user.service.UserService;
+import com.example.forum.user.auth.dto.response.UserResponse;
+import com.example.forum.user.profile.guestbook.dto.request.GuestBookRequest;
+import com.example.forum.user.profile.guestbook.dto.response.GuestBookResponse;
+import com.example.forum.user.profile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,29 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 유저 API 컨트롤러
+ * 유저 프로필 API 컨트롤러
  */
 @RestController
 @RequiredArgsConstructor
-public class UserApiController {
-    private final UserService userService;
-    private final UserAuthService userAuthService;
-
-    /**
-     * 회원가입 처리
-     *
-     * @param dto JoinRequest 객체
-     * @return HTTP 상태 및 메시지 반환
-     */
-    @PostMapping("/api/joinProc")
-    public ResponseEntity<?> joinProc(@RequestBody JoinRequest dto) {
-        try {
-            userAuthService.join(dto);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+public class UserProfileApiController {
+    private final UserProfileService userProfileService;
 
     /**
      * 내 정보 조회
@@ -44,7 +28,7 @@ public class UserApiController {
     @GetMapping("/api/myInfo")
     public ResponseEntity<?> getMyInfo(){
         try{
-            UserResponse userResponse = userService.getMyInfo();
+            UserResponse userResponse = userProfileService.getMyInfo();
             return ResponseEntity.status(HttpStatus.OK).body(userResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -62,7 +46,7 @@ public class UserApiController {
     public ResponseEntity<?> myPageBoards(@RequestParam(name = "id") String id,
                                           @RequestParam(name = "page", defaultValue = "0") int page){
         try{
-            Page<FreeBoardResponse> freeBoardResponses = userService.myPageBoards(id, page);
+            Page<FreeBoardResponse> freeBoardResponses = userProfileService.myPageBoards(id, page);
             return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -77,8 +61,7 @@ public class UserApiController {
     @GetMapping("/api/userinfo/{nickname}")
     public ResponseEntity<?> getUserInfo(@PathVariable("nickname") String nickname){
         try{
-            System.out.println("userapicontorller 들어왔다" + nickname);
-            UserResponse userResponse = userService.getUserInfo(nickname);
+            UserResponse userResponse = userProfileService.getUserInfo(nickname);
             return ResponseEntity.status(HttpStatus.OK).body(userResponse);
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -94,12 +77,25 @@ public class UserApiController {
      */
     @GetMapping("/api/userinfo/{nickname}/boards")
     public ResponseEntity<?> myPageBoards(@PathVariable(name = "nickname") String nickname,
-                                        @RequestParam(name = "id") String id,
-                                        @RequestParam(name = "page", defaultValue = "0") int page){
+                                          @RequestParam(name = "id") String id,
+                                          @RequestParam(name = "page", defaultValue = "0") int page){
         try{
-            Page<FreeBoardResponse> freeBoardResponses = userService.userInfoPageBoards(nickname, id, page);
+            Page<FreeBoardResponse> freeBoardResponses = userProfileService.userInfoPageBoards(nickname, id, page);
             return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
         }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/api/userinfo/{nickname}/guestBooks")
+    public ResponseEntity<?> createGuestBook(@PathVariable(name = "nickname") String nickname,
+                                              @RequestBody GuestBookRequest dto){
+        try{
+            System.out.println("방명록 들어왔다");
+            System.out.println(dto.toString());
+            GuestBookResponse guestBookResponse = userProfileService.createGuestBook(nickname, dto);
+            return ResponseEntity.status(HttpStatus.OK).body(guestBookResponse);
+        } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

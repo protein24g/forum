@@ -1,9 +1,10 @@
-package com.example.forum.user.service;
+package com.example.forum.user.auth.service;
 
-import com.example.forum.user.dto.requests.JoinRequest;
+import com.example.forum.user.auth.dto.requests.JoinRequest;
+import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
-import com.example.forum.user.entity.UserImage;
-import com.example.forum.user.repository.UserRepository;
+import com.example.forum.user.profile.profileImage.entity.UserImage;
+import com.example.forum.user.profile.profileImage.service.UserImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class UserAuthService {
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserImageService userImageService;
 
@@ -25,13 +26,13 @@ public class UserAuthService {
      */
     @Transactional
     public void join(JoinRequest dto) {
-        if(userRepository.existsByLoginId(dto.getLoginId())){
+        if(userAuthRepository.existsByLoginId(dto.getLoginId())){
             throw new IllegalArgumentException("이미 사용중인 아이디 입니다.");
         } else {
-            if(userRepository.existsByNickname(dto.getNickname())){
+            if(userAuthRepository.existsByNickname(dto.getNickname())){
                 throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
             } else {
-                User user = userRepository.save(User.builder()
+                User user = userAuthRepository.save(User.builder()
                         .nickname(dto.getNickname())
                         .loginId(dto.getLoginId())
                         .loginPw(passwordEncoder.encode(dto.getLoginPw()))
@@ -66,7 +67,7 @@ public class UserAuthService {
      * @return 존재 여부
      */
     public boolean existsByLoginId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
+        return userAuthRepository.existsByLoginId(loginId);
     }
 
     /**
@@ -76,6 +77,6 @@ public class UserAuthService {
      * @return 존재 여부
      */
     public boolean existsByNickname(String nickname) {
-        return userRepository.existsByNickname(nickname);
+        return userAuthRepository.existsByNickname(nickname);
     }
 }
