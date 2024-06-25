@@ -61,20 +61,20 @@ public class UserAuthService {
     }
 
     /**
-     * 로그인 아이디 존재 여부
+     * 회원가입 아이디 중복 체크
      *
-     * @param loginId 로그인 아이디
-     * @return 존재 여부
+     * @param loginId 로그인 ID
+     * @return
      */
     public boolean existsByLoginId(String loginId) {
         return userAuthRepository.existsByLoginId(loginId);
     }
 
     /**
-     * 닉네임의 존재 여부
+     * 회원가입 닉네임 중복 체크
      *
      * @param nickname 닉네임
-     * @return 존재 여부
+     * @return
      */
     public boolean existsByNickname(String nickname) {
         return userAuthRepository.existsByNickname(nickname);

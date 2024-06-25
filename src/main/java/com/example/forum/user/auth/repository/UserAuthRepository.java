@@ -4,6 +4,7 @@ import com.example.forum.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
@@ -65,4 +66,13 @@ public interface UserAuthRepository extends JpaRepository<User, Long> {
      * @return
      */
     Optional<User> findByNickname(String nickname);
+
+    /**
+     * 사용자 고유 Id 로 사용자 닉네임 조회
+     * 
+     * @param id 사용자 Id
+     * @return
+     */
+    @Query("SELECT u.nickname FROM User u WHERE u.id = :id")
+    String getNicknameById(Long id);
 }

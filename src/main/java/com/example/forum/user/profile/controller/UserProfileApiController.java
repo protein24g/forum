@@ -5,6 +5,7 @@ import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.user.auth.dto.response.UserResponse;
 import com.example.forum.user.profile.guestbook.dto.request.GuestBookRequest;
 import com.example.forum.user.profile.guestbook.dto.response.GuestBookResponse;
+import com.example.forum.user.profile.guestbook.dto.response.MyGuestBookResponse;
 import com.example.forum.user.profile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,11 +37,29 @@ public class UserProfileApiController {
     }
 
     /**
-     * 마이페이지 게시글 조회
+     * 마이페이지 내가 쓴 방명록 조회
      *
-     * @param id   사용자 ID
      * @param page 페이지 번호
-     * @return 게시글 목록 반환
+     * @param size 페이지당 보여줄 개수
+     * @return
+     */
+    @GetMapping("/api/mypage/guestBoards")
+    public ResponseEntity<?> myPageGuestBoards(@RequestParam(name = "page", defaultValue = "0") int page,
+                                               @RequestParam(name = "size", defaultValue = "10") int size){
+        try{
+            Page<MyGuestBookResponse> guestBookResponses = userProfileService.myPageGuestBoards(page, size);
+            return ResponseEntity.status(HttpStatus.OK).body(guestBookResponses);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    /**
+     * 마이페이지 게시글 또는 댓글 조회
+     *
+     * @param id   게시글 또는 댓글 식별자 ("myBoards" 또는 "myComments")
+     * @param page 페이지 번호
+     * @return 게시글 또는 댓글 목록 응답 페이지 DTO
      */
     @GetMapping("/api/mypage/boards")
     public ResponseEntity<?> myPageBoards(@RequestParam(name = "id") String id,

@@ -10,6 +10,7 @@ import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.profile.guestbook.dto.request.GuestBookRequest;
 import com.example.forum.user.profile.guestbook.dto.response.GuestBookResponse;
+import com.example.forum.user.profile.guestbook.dto.response.MyGuestBookResponse;
 import com.example.forum.user.profile.guestbook.entity.GuestBook;
 import com.example.forum.user.profile.guestbook.repository.GuestBookRepository;
 import com.example.forum.user.profile.repository.UserProfileRepository;
@@ -81,7 +82,32 @@ public class UserProfileService {
     }
 
     /**
-     * 마이페이지에서 작성한 게시글 또는 댓글 조회
+     * 마이페이지 내가 쓴 방명록 조회
+     *
+     * @param page 페이지 번호
+     * @param size 페이지당 보여줄 개수
+     * @return
+     */
+    public Page<MyGuestBookResponse> myPageGuestBoards(int page, int size) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+            Page<GuestBook> guestBooks = guestBookRepository.findByUserId(user.getId(), pageable);
+            return guestBooks.map(guestBook -> MyGuestBookResponse.builder()
+                    .targetNickname(userAuthRepository.getNicknameById(guestBook.getTargetId()))
+                    .content(guestBook.getContent())
+                    .createDate(guestBook.getCreateDate())
+                    .build());
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 마이페이지 게시글 또는 댓글 조회
      *
      * @param id   게시글 또는 댓글 식별자 ("myBoards" 또는 "myComments")
      * @param page 페이지 번호

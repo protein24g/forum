@@ -15,4 +15,13 @@ public interface GuestBookRepository extends JpaRepository<GuestBook, Long> {
      */
     @Query("SELECT g FROM GuestBook g WHERE g.targetId = (SELECT u.id FROM User u WHERE u.nickname = :nickname)")
     Page<GuestBook> findByNickname(String nickname, Pageable pageable);
+
+    /**
+     * 마이페이지 내가 쓴 방명록 조회
+     *
+     * @param id       유저 ID
+     * @param pageable 페이징 객체
+     * @return
+     */
+    Page<GuestBook> findByUserId(Long id, Pageable pageable);
 }

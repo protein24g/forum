@@ -28,15 +28,24 @@ public class UserProfileController {
     public String myPage(){ return "user/mypage/index"; }
 
     /**
+     * 마이페이지 내가 쓴 방명록 조회
+     *
+     * @return 마이페이지 내가 쓴 방명록 뷰
+     */
+    @GetMapping("/mypage/guestBoards")
+    public String myPageGuestBoards(){
+        return "user/mypage/guestBoards";
+    }
+
+    /**
      * 마이페이지 게시글 조회
      *
      * @param model Model 객체
      * @param id 탭 ID
-     * @return 마이페이지 게시글 뷰
+     * @return 마이페이지 내가 쓴 게시글 뷰
      */
     @GetMapping("/mypage/boards")
     public String myPageBoards(Model model, @RequestParam(name = "id") String id){
-
         if(id.equals("myBoards")){
             model.addAttribute("id", "myBoards");
             model.addAttribute("title", "내가 쓴 글");
