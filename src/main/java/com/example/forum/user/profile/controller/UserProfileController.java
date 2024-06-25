@@ -30,10 +30,12 @@ public class UserProfileController {
     /**
      * 마이페이지 내가 쓴 방명록 조회
      *
+     * @param model Model 객체
      * @return 마이페이지 내가 쓴 방명록 뷰
      */
     @GetMapping("/mypage/guestBoards")
-    public String myPageGuestBoards(){
+    public String myPageGuestBoards(Model model){
+        model.addAttribute("title", "내가 쓴 방명록");
         return "user/mypage/guestBoards";
     }
 
