@@ -10,7 +10,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", function (){
                 getUserInfo();
-                getGuestBooks();
+                getGuestBooks(0);
             })
 
             // R(Read)
@@ -22,7 +22,6 @@
                             "Content-Type" : "application/json"
                         }
                     });
-
                     const res = await response.json();
                     console.log(res);
                     document.querySelector(".profile").innerHTML = `${(res.profileImage != null) ?
@@ -31,7 +30,6 @@
                     document.querySelector(".my-nickname").innerText = `${res.nickname}`;
                     document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                     document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
-
                 }catch (error){
                     alert(error);
                     window.location.href = "/";
@@ -47,60 +45,66 @@
                             "Content-Type" : "application/json"
                         }
                     });
-
                     const res = await response.json();
                     console.log(res);
                     document.getElementById("certificate").innerText = res.certificate;
                     document.getElementById("career").innerText = res.career;
-
                 }catch (error){
                     alert(error);
                     window.location.href = "/";
                 }
             }
 
-            async function getGuestBooks(){
-                console.log("getGuestBooks 호출됨");
+            async function getGuestBooks(page){
+                if(page == undefined) page = 0;
                 let nickname = document.querySelector("#userinfo-nickname").value;
                 try{
-                    const response = await fetch(`/api/userinfo/${nickname}/guestBooks`, {
+                    const response = await fetch(`/api/userinfo/${nickname}/guestBooks?page=${page}`, {
                         method : "GET",
                         headers : {
                             "Content-Type" : "application/json"
                         }
                     });
-
                     const res = await response.json();
                     console.log(res);
-                    console.log(res.content);
-                    let guestBooksHtml = '';
+                    let guestBooksHtml = "";
                     for(let i = 0; i < res.content.length; i++) {
                         let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
                         guestBooksHtml += `
-                        <div class="guest-item row my-3 px-3">
-                            <div class="col-auto ps-0">${createDate}</div>
-                            <div class="col-auto ps-0">
-                                <span style="overflow-wrap: break-word;">${res.content[i].content}</span>
-                            </div>
-                            <div class="d-flex col-auto ms-auto p-0">
-                    `;
-
-                        if (res.content[i].writer) {
-                            guestBooksHtml += `
-                                <input class="px-3 ms-3" type="button" onclick="updateGuestBook()" value="수정" style="background-color: #cccccc; border-radius: 15px; border: none;">
-                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="삭제" style="background-color: #cccccc; border-radius: 15px; border: none;">
-                        `;
-                        } else {
-                            guestBooksHtml += `
-                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="신고" style="background-color: red; border-radius: 15px; border: none; color: white;">
-                        `;
-                        }
-                        guestBooksHtml += `
+                        <div class="guest-item row mx-1 my-3 p-2" id="${res.content[i].id}" style="background-color: #eee; border-radius: 15px;">
+                            <div class="col-auto ps-0 d-flex align-items-center">${createDate}</div>
+                            <div class="col guestBook-comment ps-0 d-flex align-items-center">${res.content[i].content}</div>
+                            <div class="user-actions d-flex col-auto ms-auto p-0">
+                                <button class="px-3 ms-3 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
                             </div>
                         </div>
                     `;
                     }
                     document.querySelector(".guestBook-list").innerHTML = guestBooksHtml;
+
+                    let guestBooksPageHtml = "";
+                    guestBooksPageHtml += `
+                    <li class="page-item ${res.first ? "disabled" : ""}">
+                        <a class="page-link btn-sm" onclick="getGuestBooks(${res.number - 1})"><</a>
+                    </li>
+                    `;
+
+                    let startPage = (Math.floor((res.number) / 5)) * 5;
+                    let endPage = Math.min(startPage + 5, res.totalPages);
+                    for(let page = startPage; page < endPage ; page++){
+                        guestBooksPageHtml += `
+                        <li class="page-item ${page == res.number ? 'active' : ''}">
+                            <a class="page-link btn-sm" onclick="getGuestBooks(${page})">${page + 1}</a>
+                        </li>
+                    `;
+                    }
+
+                    guestBooksPageHtml += `
+                    <li class="page-item ${res.last ? "disabled" : ""}">
+                        <a class="page-link btn-sm" onclick="getGuestBooks(${res.number + 1})">></a>
+                    </li>
+                `;
+                    document.querySelector(".guestBook-page-list").innerHTML = guestBooksPageHtml;
                 } catch (error){
                     alert(error);
                     window.location.href = "/";
@@ -249,15 +253,8 @@
                     </div>
                     <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
                         <h4>방명록</h4>
-                        <div class="guestBook-list">
-                            <div class="guest-item row my-3 px-3">
-                                <div class="col-auto ps-0">2024-05-12</div>
-                                <div class="col-auto ps-0">
-                                    <span style="overflow-wrap: break-word;">asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd</span>
-                                </div>
-                                <input class="px-3 col-auto ms-auto" type="button" onclick="createGuestBook()" value="삭제" style="background-color: #cccccc; border-radius: 15px; border: none;">
-                            </div>
-                        </div>
+                        <div class="guestBook-list"></div>
+                        <ul class="pagination justify-content-center guestBook-page-list"></ul>
                     </div>
                 </div>
             </div>
