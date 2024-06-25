@@ -10,6 +10,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", function (){
                 getUserInfo();
+                getGuestBooks();
             })
 
             // R(Read)
@@ -54,6 +55,54 @@
                     document.getElementById("career").innerText = res.career;
 
                 }catch (error){
+                    alert(error);
+                    window.location.href = "/";
+                }
+            }
+
+            async function getGuestBooks(){
+                console.log("getGuestBooks 호출됨");
+                let nickname = document.querySelector("#userinfo-nickname").value;
+                try{
+                    const response = await fetch(`/api/userinfo/${nickname}/guestBooks`, {
+                        method : "GET",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        }
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+                    console.log(res.content);
+                    let guestBooksHtml = '';
+                    for(let i = 0; i < res.content.length; i++) {
+                        let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
+                        guestBooksHtml += `
+                        <div class="guest-item row my-3 px-3">
+                            <div class="col-auto ps-0">${createDate}</div>
+                            <div class="col-auto ps-0">
+                                <span style="overflow-wrap: break-word;">${res.content[i].content}</span>
+                            </div>
+                            <div class="d-flex col-auto ms-auto p-0">
+                    `;
+
+                        if (res.content[i].writer) {
+                            guestBooksHtml += `
+                                <input class="px-3 ms-3" type="button" onclick="updateGuestBook()" value="수정" style="background-color: #cccccc; border-radius: 15px; border: none;">
+                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="삭제" style="background-color: #cccccc; border-radius: 15px; border: none;">
+                        `;
+                        } else {
+                            guestBooksHtml += `
+                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="신고" style="background-color: red; border-radius: 15px; border: none; color: white;">
+                        `;
+                        }
+                        guestBooksHtml += `
+                            </div>
+                        </div>
+                    `;
+                    }
+                    document.querySelector(".guestBook-list").innerHTML = guestBooksHtml;
+                } catch (error){
                     alert(error);
                     window.location.href = "/";
                 }
@@ -204,6 +253,18 @@
                                 <h3>경력사항</h3>
                                 <span id="career"></span>
                                 </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
+                        <h4>방명록</h4>
+                        <div class="guestBook-list">
+                            <div class="guest-item row my-3 px-3">
+                                <div class="col-auto ps-0">2024-05-12</div>
+                                <div class="col-auto ps-0">
+                                    <span style="overflow-wrap: break-word;">asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd</span>
+                                </div>
+                                <input class="px-3 col-auto ms-auto" type="button" onclick="createGuestBook()" value="삭제" style="background-color: #cccccc; border-radius: 15px; border: none;">
                             </div>
                         </div>
                     </div>

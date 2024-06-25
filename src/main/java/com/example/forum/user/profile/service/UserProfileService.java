@@ -15,8 +15,10 @@ import com.example.forum.user.profile.guestbook.repository.GuestBookRepository;
 import com.example.forum.user.profile.repository.UserProfileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -123,7 +125,13 @@ public class UserProfileService {
         return freeBoardResponses;
     }
 
-    @Transactional
+    /**
+     * 특정 사용자 페이지 방명록 작성
+     *
+     * @param nickname 사용자 닉네임
+     * @param dto      방명록 작성 객체
+     * @return
+     */
     public GuestBookResponse createGuestBook(String nickname, GuestBookRequest dto){
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
@@ -132,6 +140,10 @@ public class UserProfileService {
 
             User target = userAuthRepository.findByNickname(nickname)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            if(user.getId().equals(target.getId())){
+                throw new IllegalArgumentException("자기 자신에게는 방명록 작성이 불가능합니다");
+            }
 
             GuestBook guestBook = GuestBook.builder()
                     .content(dto.getContent())
@@ -148,5 +160,25 @@ public class UserProfileService {
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
+    }
+
+    /**
+     * 특정 사용자 페이지 방명록 글 목록 페이징 조회
+     *
+     * @param nickname 특정 사용자 닉네임
+     * @param page     페이지
+     * @param size     페이지당 보여줄 개수
+     * @return
+     */
+    public Page<GuestBookResponse> userInfoGuestBooks(String nickname, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<GuestBook> guestBooks = guestBookRepository.findByNickname(nickname, pageable);
+
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        return guestBooks.map(guestBook -> GuestBookResponse.builder()
+                .content(guestBook.getContent())
+                .createDate(guestBook.getCreateDate())
+                .isWriter(customUserDetails != null && (customUserDetails.getId().equals(guestBook.getUser().getId())))
+                .build());
     }
 }

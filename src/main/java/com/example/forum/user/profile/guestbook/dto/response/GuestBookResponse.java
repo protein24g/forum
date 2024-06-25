@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 public class GuestBookResponse {
     private String content;
     private LocalDateTime createDate;
+    private boolean isWriter;
 
     @Builder
-    public GuestBookResponse(String content, LocalDateTime createDate){
+    public GuestBookResponse(String content, LocalDateTime createDate, boolean isWriter){
         this.content = content;
         this.createDate = createDate;
+        this.isWriter = isWriter;
     }
 }

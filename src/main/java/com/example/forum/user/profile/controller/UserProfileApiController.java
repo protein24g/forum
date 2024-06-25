@@ -87,6 +87,13 @@ public class UserProfileApiController {
         }
     }
 
+    /**
+     * 특정 사용자 방명록 작성
+     *
+     * @param nickname 사용자 닉네임
+     * @param dto      방명록 작성 객체
+     * @return
+     */
     @PostMapping("/api/userinfo/{nickname}/guestBooks")
     public ResponseEntity<?> createGuestBook(@PathVariable(name = "nickname") String nickname,
                                               @RequestBody GuestBookRequest dto){
@@ -98,5 +105,21 @@ public class UserProfileApiController {
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    /**
+     * 특정 사용자 페이지 방명록 글 목록 페이징 조회
+     *
+     * @param nickname 특정 사용자 닉네임
+     * @param page     페이지
+     * @param size     페이지당 보여줄 개수
+     * @return
+     */
+    @GetMapping("/api/userinfo/{nickname}/guestBooks")
+    public ResponseEntity<?> getGuestBook(@PathVariable(name = "nickname") String nickname,
+                                          @RequestParam(name = "page", defaultValue = "0") int page,
+                                          @RequestParam(name = "size", defaultValue = "10") int size){
+        Page<GuestBookResponse> freeBoardResponses = userProfileService.userInfoGuestBooks(nickname, page, size); // 검색 페이징
+        return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
     }
 }
