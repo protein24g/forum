@@ -84,7 +84,6 @@
 
                 const res = await response.json();
                 console.log(res);
-                document.getElementById("nickname").innerText = res.nickname;
                 document.getElementById("certificate").innerText = res.certificate;
                 document.getElementById("career").innerText = res.career;
 
@@ -275,6 +274,7 @@
             </div>
         </div>
         <div class="order-xl-2 order-1 col-xl-9">
+            <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;" th:text="${nickname}"></h4>
             <div class="my-3 d-flex">
                 <div class="col-auto me-3">
                     <a th:href="'/userinfo/' + ${nickname}" class="px-3 form-control" style="border-radius: 15px; text-decoration: none; align-content: center; color: white; background-color: #434B57">회원정보</a>
@@ -292,24 +292,16 @@
                     </form>
                 </div>
             </div>
-            <div class="my-3 p-3 text-start d-md-flex" style="background-color: white; border-radius: 15px;">
-                <div class="mx-5">
-                    <div class="row">
-                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="250px;" height="250px;">
-                    </div>
-                    <div class="row">
-                        <h3 class="text-center" id="nickname"></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="mb-3">
-                        <h3>자격사항</h3>
+            <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
+                <div class="row">
+                    <img class="col-sm-4" src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="250px;" height="250px;">
+                    <div class="col-sm-4">
+                        <h3 class="text-center">자격사항</h3>
                         <span id="certificate"></span>
                     </div>
-                    <div class="mb-3">
-                        <h3>경력사항</h3>
+                    <div class="col-sm-4">
+                        <h3 class="text-center">경력사항</h3>
                         <span id="career"></span>
-                    </span>
                     </div>
                 </div>
             </div>
