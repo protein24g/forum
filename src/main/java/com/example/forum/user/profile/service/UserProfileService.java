@@ -176,9 +176,67 @@ public class UserProfileService {
 
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         return guestBooks.map(guestBook -> GuestBookResponse.builder()
+                .id(guestBook.getId())
                 .content(guestBook.getContent())
                 .createDate(guestBook.getCreateDate())
                 .isWriter(customUserDetails != null && (customUserDetails.getId().equals(guestBook.getUser().getId())))
                 .build());
+    }
+
+    /**
+     * 방명록 수정
+     *
+     * @param id       방명록 ID
+     * @param content  내가 작성한 방명록 내용
+     * @return
+     */
+    public GuestBookResponse putGuestBook(Long id, String content) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            GuestBook guestBook = guestBookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방명록 입니다"));
+            if(user.getId().equals(guestBook.getUser().getId())){
+                guestBook.setContent(content);
+                guestBookRepository.save(guestBook);
+                return GuestBookResponse.builder()
+                        .id(guestBook.getId())
+                        .content(guestBook.getContent())
+                        .createDate(guestBook.getCreateDate())
+                        .isWriter(customUserDetails != null && (customUserDetails.getId().equals(guestBook.getUser().getId())))
+                        .build();
+            } else {
+                throw new IllegalArgumentException("방명록 작성자만 수정 가능합니다");
+            }
+        } else {
+            throw new IllegalArgumentException("로그인 후 사용하세요");
+        }
+    }
+
+    /**
+     * 방명록 삭제
+     *
+     * @param id 방명록 id
+     * @return
+     */
+    public void deleteGuestBook(Long id) {
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            GuestBook guestBook = guestBookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방명록입니다"));
+
+            if(user.getId().equals(guestBook.getUser().getId())){
+                guestBookRepository.delete(guestBook);
+            } else {
+                throw new IllegalArgumentException("작성자만 삭제 가능합니다");
+            }
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
     }
 }

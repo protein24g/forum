@@ -11,12 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class GuestBookResponse {
+    private Long id;
     private String content;
     private LocalDateTime createDate;
     private boolean isWriter;
 
     @Builder
-    public GuestBookResponse(String content, LocalDateTime createDate, boolean isWriter){
+    public GuestBookResponse(Long id, String content, LocalDateTime createDate, boolean isWriter){
+        this.id = id;
         this.content = content;
         this.createDate = createDate;
         this.isWriter = isWriter;

@@ -122,4 +122,36 @@ public class UserProfileApiController {
         Page<GuestBookResponse> freeBoardResponses = userProfileService.userInfoGuestBooks(nickname, page, size); // 검색 페이징
         return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
     }
+
+    /**
+     * 방명록 수정
+     *
+     * @param dto 방명록 수정 데이터를 담은 객체
+     * @return
+     */
+    @PutMapping("/api/userinfo/guestBooks")
+    public ResponseEntity<?> putGuestBook(@RequestBody GuestBookRequest dto){
+        try{
+            userProfileService.putGuestBook(dto.getId(), dto.getContent());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    /**
+     * 방명록 삭제
+     *
+     * @param dto 방명록 삭제 데이터를 담은 객체
+     * @return
+     */
+    @DeleteMapping("/api/userinfo/guestBooks")
+    public ResponseEntity<?> deleteGuestBook(@RequestBody GuestBookRequest dto){
+        try{
+            userProfileService.deleteGuestBook(dto.getId());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

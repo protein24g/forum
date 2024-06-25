@@ -8,5 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class GuestBookRequest {
+    private Long id;
     private String content;
 }

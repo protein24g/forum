@@ -17,7 +17,6 @@
         async function createGuestBook(){
             let nickname = document.querySelector("#userinfo-nickname").value;
             let guestBook_comment = document.querySelector("#guestBook-comment").value;
-            console.log("ㅁㄴㅇㅁㄴㅇㄴㅁㅇ" + guestBook_comment);
             let _csrf = document.querySelector("._csrf").value;
 
             try{
@@ -110,22 +109,20 @@
                 for(let i = 0; i < res.content.length; i++) {
                     let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
                     guestBooksHtml += `
-                        <div class="guest-item row my-3 px-3">
-                            <div class="col-auto ps-0">${createDate}</div>
-                            <div class="col-auto ps-0">
-                                <span style="overflow-wrap: break-word;">${res.content[i].content}</span>
-                            </div>
-                            <div class="d-flex col-auto ms-auto p-0">
+                        <div class="guest-item row mx-1 my-3 p-2" id="${res.content[i].id}" style="background-color: #eee; border-radius: 15px;">
+                            <div class="col-auto ps-0 d-flex align-items-center">${createDate}</div>
+                            <div class="col guestBook-comment ps-0 d-flex align-items-center">${res.content[i].content}</div>
+                            <div class="user-actions d-flex col-auto ms-auto p-0">
                     `;
 
                     if (res.content[i].writer) {
                         guestBooksHtml += `
-                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="수정" style="background-color: #cccccc; border-radius: 15px; border: none;">
-                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="삭제" style="background-color: #cccccc; border-radius: 15px; border: none;">
+                                <button class="px-3 ms-3 btn btn-primary" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">수정</button>
+                                <button class="px-3 ms-3 btn btn-danger" onclick="deleteGuestBook(${res.content[i].id})" style="border-radius: 15px;">삭제</button>
                         `;
                     } else {
                         guestBooksHtml += `
-                                <input class="px-3 ms-3" type="button" onclick="createGuestBook()" value="신고" style="background-color: red; border-radius: 15px; border: none; color: white;">
+                                <button class="px-3 ms-3 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
                         `;
                     }
                     guestBooksHtml += `
@@ -162,6 +159,81 @@
             } catch (error){
                 alert(error);
                 window.location.href = "/";
+            }
+        }
+
+        async function getUpdateGuestBook(id, page){
+            let text = document.getElementById(id).querySelector(".guestBook-comment").textContent;
+            document.getElementById(id).querySelector(".guestBook-comment").innerHTML = `<input class='form-control' type='text' value='${text}'>`;
+            document.getElementById(id).querySelector(".user-actions").innerHTML = `
+                <button class="px-3 ms-3 btn btn-primary" onclick="updateGuestBook(${id}, ${page})" style="border-radius: 15px;">수정</button>
+                <button class="px-3 ms-3 btn btn-danger" onclick="getGuestBooks(${page})" style="border-radius: 15px;">취소</button>
+            `;
+        }
+
+        // U(Update)
+        async function updateGuestBook(id, page){
+            let nickname = document.querySelector("#userinfo-nickname").value;
+            let _csrf = document.querySelector("._csrf").value;
+            let content = document.getElementById(id).querySelector("input").value;
+
+            if(confirm("수정 하시겠습니까?")){
+                try{
+                    const response = await fetch(`/api/userinfo/guestBooks`, {
+                        method : "PUT",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        },
+                        body : JSON.stringify({
+                            id : id,
+                            content : content
+                        })
+                    });
+
+                    const res = await response;
+                    if(res.status === 200){
+                        alert("수정 완료");
+                        await getGuestBooks(page);
+                    } else {
+                        alert("로그인 후 이용하세요");
+                    }
+                } catch (error){
+                    alert(error);
+                    window.location.href = `/userinfo/${nickname}`;
+                }
+            }
+        }
+
+        // D(Delete)
+        async function deleteGuestBook(id){
+            let nickname = document.querySelector("#userinfo-nickname").value;
+            let _csrf = document.querySelector("._csrf").value;
+
+            if(confirm("삭제 하시겠습니까?")){
+                try{
+                    const response = await fetch("/api/userinfo/guestBooks", {
+                        method : "DELETE",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        },
+                        body : JSON.stringify({
+                            id : id
+                        })
+                    });
+
+                    const res = await response;
+                    if(res.status === 200){
+                        alert("삭제 완료");
+                        await getGuestBooks(0);
+                    } else {
+                        alert("로그인 후 이용하세요");
+                    }
+                } catch (error){
+                    alert(error);
+                    window.location.href = `/userinfo/${nickname}`;
+                }
             }
         }
     </script>
@@ -261,7 +333,7 @@
                                         2024-05-12
                                     </span>
                         </div>
- +                       <div class="hotBoard-item d-flex text-start p-1">
+                        <div class="hotBoard-item d-flex text-start p-1">
                                     <span class="col me-auto pe-3">
                                         구현 예정
                                     </span>
@@ -313,7 +385,7 @@
                 <div class="newComment px-3" style="background-color: #eee; border-radius: 15px;">
                     <div class="row">
                         <input type="text" class="form-control col" id="guestBook-comment" style="border: none; background: none;">
-                        <input class="px-3 py-2 col-auto ms-auto" type="button" onclick="createGuestBook()" value="작성" style="background-color: #cccccc; border-radius: 15px; border: none;">
+                        <input class="px-3 py-2 col-auto ms-auto btn btn-primary" type="button" onclick="createGuestBook()" value="작성" style="border-radius: 15px;">
                     </div>
                 </div>
             </div>
