@@ -19,6 +19,10 @@
             let guestBook_comment = document.querySelector("#guestBook-comment").value;
             let _csrf = document.querySelector("._csrf").value;
 
+            if(guestBook_comment.trim() === ""){
+                alert("내용을 입력하세요");
+                return;
+            }
             try{
                 const response = await fetch(`/api/userinfo/${nickname}/guestBooks`, {
                     method : "POST",

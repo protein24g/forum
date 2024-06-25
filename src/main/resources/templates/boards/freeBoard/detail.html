@@ -33,6 +33,10 @@
             let comment_content = document.getElementById("comment_content").value;
             let _csrf = document.querySelector("._csrf").value;
 
+            if(comment_content.trim() === ""){
+                alert("내용을 입력하세요");
+                return;
+            }
             try{
                 const response = await fetch(`/api/freeBoard/${boardId}/comments`, {
                     method : "POST",
@@ -240,10 +244,15 @@
             let commentId = id;
             let currentPage = document.getElementById("currentPage").value;
             let content = document.getElementById("edit-content").value;
+            if(content.trim() === ""){
+                alert("내용을 입력하세요");
+                return;
+            }
             let _csrf = document.querySelector("._csrf").value;
 
             let myModal = document.getElementById("freeBoardComment-modalView");
             let modalInstance = bootstrap.Modal.getInstance(myModal);
+
 
             try {
                 const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
