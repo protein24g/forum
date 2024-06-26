@@ -10,19 +10,35 @@
     <script src="/account/logout.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function (){
+            getUserInfo();
             userManagement("", 0, "");
         })
 
-        function addEventToRows(){
-            document.querySelectorAll(".user-item").forEach(function (tr){
-                tr.addEventListener("click", function (){
-                    window.location.href = "/admin/users/" + tr.getAttribute("id");
+        // R(Read)
+        async function getUserInfo(){
+            try{
+                const response = await fetch(`/api/myInfo`, {
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    }
                 });
 
-            })
+                const res = await response.json();
+                console.log(res);
+                if(res.profileImage != null){
+                    document.querySelector(".userinfo-profile").src = "/profileUpload/" + res.profileImage;
+                } else {
+                    document.querySelector(".userinfo-profile").src = "https://cdn-icons-png.flaticon.com/128/4530/4530959.png";
+                }
+                document.querySelector("#nickname").textContent = res.nickname;
+
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
         }
 
-        // R(Read)
         function search(){
             // 옵션 선택 요소의 value 값을 가져옵니다.
             var option = document.querySelector("#option").value;
@@ -55,23 +71,20 @@
                 res.content.forEach(row => {
                     let createDate = row.createDate.replace(/[T]/g, ' ').slice(2, 16);
                     usersListHtml += `
-                                <tr class="user-item d-flex" id="${row.id}">
-                                    <td class="col-1 mx-3 mx-md-0">${row.id}</td>
-                                    <td class="col-3 col-md-2 mx-3 mx-md-0">${row.nickname}(${row.userId})</td>
-                                    <td class="col-1 mx-3 mx-md-0">${row.age}</td>
-                                    <td class="col-1 mx-3 mx-md-0">${row.gender}</td>
-                                    <td class="col-2 mx-3 mx-md-0">${createDate}</td>
-                                    <td class="col-2 mx-3  mx-md-0 d-flex">
-                                        <div class="dropdown">
-                                          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            ${row.active}
-                                          </button>
-                                          <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">활동</a></li>
-                                            <li><a class="dropdown-item" href="#">정지</a></li>
-                                            <li><a class="dropdown-item" href="#">탈퇴</a></li>
-                                          </ul>
-                                        </div>
+                                <tr class="user-item d-flex" id="${row.id}" style="white-space: nowrap;">
+                                    <td class="col-1">${row.id}</td>
+                                    <td class="col-3">
+                                        <a href="/userinfo/${row.nickname}">${row.nickname}</a>
+                                    </td>
+                                    <td class="col-3">${row.userId}</td>
+                                    <td class="col-3">${createDate}</td>
+                                    <td class="col-2 d-flex">
+                                        <select class="form-select" aria-label="Default select example">
+                                          <option selected>Open this select menu</option>
+                                          <option value="1">One</option>
+                                          <option value="2">Two</option>
+                                          <option value="3">Three</option>
+                                        </select>
                                         <button>변경</button>
                                     </td>
                                 </tr>
@@ -102,8 +115,6 @@
                                         </li>
                                         `;
                 document.querySelector(".users-page-list").innerHTML = usersPageHtml;
-
-                addEventToRows(); // row 클릭 이벤트 추가
             }catch (error){
                 alert(error);
                 window.location.href = "/";
@@ -116,7 +127,7 @@
 <div class="container-fluid">
     <div class="row vh-100">
         <!--왼쪽 화면-->
-        <div class="d-none d-xxl-flex flex-column flex-shrink-0 p-3 text-bg-dark text-center" style="width: 280px; height: 100%;">
+        <div class="d-none d-xl-flex flex-column flex-shrink-0 p-3 text-bg-dark text-center" style="width: 280px; height: 100%;">
             <div class="d-flex">
                 <a href="/admin" class="text-white text-decoration-none">
                     <span class="fs-4">관리자 페이지</span>
@@ -147,29 +158,29 @@
             </ul>
             <div class="mt-auto">
                 <hr>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/lgo.png" width="32" height="32" class="rounded-circle me-2">
-                        <strong>lgo</strong>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item logoutBtn">로그아웃</a></li>
-                    </ul>
-                </div>
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img width="32" height="32" class="rounded-circle me-2 userinfo-profile">
+                    <strong id="nickname"></strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id="logoutBtn">로그아웃</a></li>
+                </ul>
             </div>
         </div>
         <!--오른쪽 화면-->
         <div class="col p-0" style="background-color: #eee">
             <!--모바일-->
-            <div class="d-xxl-none">
-                <nav class="navbar navbar-expand-xxl bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div class="d-xl-none">
+                <nav class="navbar navbar-expand-xl bg-dark border-bottom border-body" data-bs-theme="dark">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="#">Navbar</a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarColor01">
-                            <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
+                            <ul class="navbar-nav me-auto mb-2 mb-xl-0">
                                 <li class="nav-item">
                                     <a class="nav-link" aria-current="page" href="/admin">관리자 홈</a>
                                 </li>
@@ -182,12 +193,12 @@
                 </nav>
             </div>
 
-            <div class="p-xxl-3 m-4" style="background-color: white;">
+            <div class="p-xl-3 m-4" style="background-color: white;">
                 <div class="p-3">
                     <h3>회원 목록</h3>
                     <div>
                         <!--검색-->
-                        <div class="col-lg-6 ms-auto p-0">
+                        <div class="col-lg-6 ms-auto p-0 my-3">
                             <form class="d-flex" role="search">
                                 <div class="col-3">
                                     <select class="form-select" id="option">
@@ -203,17 +214,16 @@
                                 </div>
                             </form>
                         </div>
-                        <div style="background-color: white; overflow-x: auto;">
-                            <table style="width: 100%;">
+                        <div style="background-color: white; overflow-x: auto; white-space: nowrap;">
+                            <table class="table" style="width: 100%;">
                                 <thead>
-                                <tr class="d-flex text-center">
-                                    <th class="col-1 mx-3 mx-md-0">번호</th>
-                                    <th class="col-3 col-md-2 mx-3 mx-md-0">닉네임</th>
-                                    <th class="col-1 mx-3 mx-md-0">나이</th>
-                                    <th class="col-1 mx-3 mx-md-0">성별</th>
-                                    <th class="col-2 mx-3 mx-md-0">가입 날짜</th>
-                                    <th class="col-2 mx-3 mx-md-0">계정상태</th>
-                                </tr>
+                                    <tr class="d-flex text-center">
+                                        <th class="col-1">고유번호</th>
+                                        <th class="col-3">닉네임</th>
+                                        <th class="col-3">아이디</th>
+                                        <th class="col-3">가입 날짜</th>
+                                        <th class="col-2">계정상태</th>
+                                    </tr>
                                 </thead>
                                 <!--게시글 Detail-->
                                 <tbody class="users-list text-center"></tbody>

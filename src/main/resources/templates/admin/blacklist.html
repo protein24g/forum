@@ -8,6 +8,35 @@
     <link href="/mobile/font.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/account/logout.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+            getUserInfo();
+        })
+
+        async function getUserInfo(){
+            try{
+                const response = await fetch(`/api/myInfo`, {
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    }
+                });
+
+                const res = await response.json();
+                console.log(res);
+                if(res.profileImage != null){
+                    document.querySelector(".userinfo-profile").src = "/profileUpload/" + res.profileImage;
+                } else {
+                    document.querySelector(".userinfo-profile").src = "https://cdn-icons-png.flaticon.com/128/4530/4530959.png";
+                }
+                document.querySelector("#nickname").textContent = res.nickname;
+
+            }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
+        }
+    </script>
 </head>
 <body>
 <input type="hidden" class="_csrf" th:value="${_csrf.token}">
@@ -47,11 +76,13 @@
                 <hr>
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">
-                        <strong>mdo</strong>
+                        <img width="32" height="32" class="rounded-circle me-2 userinfo-profile">
+                        <strong id="nickname"></strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item logoutBtn">로그아웃</a></li>
+                        <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" id="logoutBtn">로그아웃</a></li>
                     </ul>
                 </div>
             </div>

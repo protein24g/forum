@@ -30,9 +30,11 @@ public class SecurityConfig {
                                 "/users/*", "/api/users/**",
                                 "/checkLoginId", "/checkNickname",
                                 "/userinfo/**", "/api/userinfo/**").permitAll()
+                        .requestMatchers( // 이미지 업로드 경로
+                                "/freeBoardUpload/**", "/profileUpload/**")
+                        .permitAll()
                         .requestMatchers( // 자유 게시판
-                                "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments",
-                                "/freeBoardUpload/**"
+                                "/freeBoard/**", "/api/freeBoard/**", "/api/freeBoard/*/comments"
                         ).permitAll()
                         .requestMatchers( // 질문과 토론 게시판
                                 "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
