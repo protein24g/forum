@@ -177,7 +177,7 @@ public class UserProfileService {
                     .targetId(target.getId())
                     .build();
             guestBookRepository.save(guestBook);
-            guestBook.setUser(user);
+            user.addGuestBook(guestBook);
 
             return GuestBookResponse.builder()
                     .content(guestBook.getContent())

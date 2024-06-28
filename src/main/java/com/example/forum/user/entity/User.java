@@ -8,7 +8,9 @@
 
     import java.time.LocalDateTime;
     import java.util.ArrayList;
+    import java.util.HashSet;
     import java.util.List;
+    import java.util.Set;
 
     @Entity
     @Getter
@@ -42,6 +44,9 @@
         @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private UserImage userImage;
 
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private Set<UserLike> userLikes = new HashSet<>();
+
         // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
         // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -62,6 +67,11 @@
             this.createDate = createDate;
             this.role = role;
             this.isActive = isActive;
+        }
+
+        public void addUserLikes(UserLike userLike){
+            this.userLikes.add(userLike);
+            userLike.setUser(this);
         }
 
         public void addGuestBook(GuestBook guestBook){

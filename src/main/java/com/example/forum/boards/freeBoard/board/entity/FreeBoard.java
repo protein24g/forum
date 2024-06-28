@@ -3,6 +3,7 @@ package com.example.forum.boards.freeBoard.board.entity;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.entity.UserLike;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,6 +30,9 @@ public class FreeBoard {
     private LocalDateTime createDate;
 
     private int view;
+
+    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<UserLike> userLikes = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -57,6 +63,11 @@ public class FreeBoard {
 
     public void setBoard(User user){
         this.user = user;
+    }
+
+    public void addUserLikes(UserLike userLike){
+        this.userLikes.add(userLike);
+        userLike.setFreeBoard(this);
     }
 
     public void addImage(FreeBoardImage freeBoardImage){
