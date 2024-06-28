@@ -118,7 +118,7 @@
                 for(let i = 0; i < res.content.length; i++) {
                     let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
                     guestBooksHtml += `
-                        <div class="guest-item row mx-1 my-3 p-2" id="${res.content[i].id}" style="background-color: #eee; border-radius: 15px;">
+                        <div class="guest-item row mx-1 my-2 p-1" id="${res.content[i].id}" style="background-color: #eee; border-radius: 15px;">
                             <div class="col-auto ps-0 d-flex align-items-center">${createDate}</div>
                             <div class="col guestBook-comment ps-0 d-flex align-items-center">${res.content[i].content}</div>
                             <div class="user-actions d-flex col-auto ms-auto p-0">
@@ -390,10 +390,10 @@
                 <h4>방명록</h4>
                 <div class="guestBook-list"></div>
                 <ul class="pagination justify-content-center guestBook-page-list"></ul>
-                <div class="newComment px-3" style="background-color: #eee; border-radius: 15px;">
-                    <div class="row">
-                        <input type="text" class="form-control col" id="guestBook-comment" style="border: none; background: none;">
-                        <input class="px-3 py-2 col-auto ms-auto btn btn-primary" type="button" onclick="createGuestBook()" value="작성" style="border-radius: 15px;">
+                <div class="newComment px-3">
+                    <div class="row p-3" style="background-color: #eee; border-radius: 15px;">
+                        <input type="text" class="form-control col" id="guestBook-comment" style="border: none; background: white;">
+                        <input class="col-auto ms-auto btn btn-primary" type="button" onclick="createGuestBook()" value="작성" style="border-radius: 15px;">
                     </div>
                 </div>
             </div>

@@ -40,10 +40,6 @@ public class SecurityConfig {
                                 "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
                                 "/questionBoardUpload/**"
                         ).permitAll()
-                        .requestMatchers( // 이미지 게시판
-                                "/imageBoard/**", "/api/imageBoard/**", "/api/imageBoard/*/comments",
-                                "/imageBoardUpload/**"
-                        ).permitAll()
                         .anyRequest().authenticated());
 
         http
