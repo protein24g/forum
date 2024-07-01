@@ -94,4 +94,26 @@ public class FreeBoardApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    /**
+     * 특정 게시물 좋아요
+     *
+     * @param boardId
+     * @return
+     */
+    @PostMapping("/api/freeBoard/{boardId}/like")
+    public ResponseEntity<?> insertBoardLike(@PathVariable(name = "boardId") Long boardId){
+        return null;
+    }
+
+    /**
+     * 특정 게시물 좋아요
+     *
+     * @param boardId
+     * @return
+     */
+    @DeleteMapping("/api/freeBoard/{boardId}/like")
+    public ResponseEntity<?> deleteBoardLike(@PathVariable(name = "boardId") Long boardId){
+        return null;
+    }
 }

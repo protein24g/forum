@@ -150,6 +150,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                 .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                 .view(board.incView())
                 .images(imagesName)
+                .likes(board.getUserLikes().size())
                 .build();
     }
 

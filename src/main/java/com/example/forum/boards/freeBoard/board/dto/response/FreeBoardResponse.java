@@ -24,11 +24,12 @@ public class FreeBoardResponse {
     private int view;
     private List<String> images;
     private boolean hasImage;
+    private int likes;
 
     @Builder
     public FreeBoardResponse(Long id, String nickname, String title, String content, LocalDateTime createDate,
                              Page<CommentResponse> commentResponses, int commentCount, int view,
-                             List<String> images, boolean hasImage) {
+                             List<String> images, boolean hasImage, int likes) {
         this.id = id;
         this.nickname = nickname;
         this.title = title;
@@ -39,5 +40,6 @@ public class FreeBoardResponse {
         this.view = view;
         this.images = images;
         this.hasImage = hasImage;
+        this.likes = likes;
     }
 }
