@@ -3,6 +3,7 @@ package com.example.forum.boards.freeBoard.board.controller;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
+import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -96,6 +97,25 @@ public class FreeBoardApiController {
     }
 
     /**
+     * 특정 게시글 좋아요 여부
+     *
+     * @param boardId
+     * @return
+     */
+    @GetMapping("/api/freeBoard/{boardId}/like")
+    public ResponseEntity<?> isLike(@PathVariable(name = "boardId") Long boardId){
+        try{
+            if(freeBoardServiceImpl.isLike(boardId)){
+                return ResponseEntity.status(HttpStatus.OK).body(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(false);
+            }
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
+    }
+
+    /**
      * 특정 게시물 좋아요
      *
      * @param boardId
@@ -103,6 +123,7 @@ public class FreeBoardApiController {
      */
     @PostMapping("/api/freeBoard/{boardId}/like")
     public ResponseEntity<?> insertBoardLike(@PathVariable(name = "boardId") Long boardId){
+        freeBoardServiceImpl.insertBoardLike(boardId);
         return null;
     }
 

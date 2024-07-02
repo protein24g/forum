@@ -15,6 +15,8 @@ import com.example.forum.boards.freeBoard.image.service.FreeBoardImageService;
 import com.example.forum.user.auth.dto.requests.CustomUserDetails;
 import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.entity.UserLike;
+import com.example.forum.user.profile.repository.UserLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +42,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     private final FreeBoardImageService freeBoardImageService;
     private final FreeBoardImageRepository freeBoardImageRepository;
     private final AuthenticationService authenticationService;
+    private final UserLikeRepository userLikeRepository;
 
     /**
      * 게시글 생성
@@ -318,6 +321,57 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                 throw new IllegalArgumentException("글 작성자만 삭제 가능합니다");
             }
         }else{
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 특정 게시글 좋아요 여부
+     *
+     * @param boardId
+     * @return
+     */
+    public boolean isLike(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            // 여기
+            return user.getUserLikes().stream()
+                    .anyMatch(userLike -> freeBoard.getUserLikes().contains(userLike));
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 특정 게시물 좋아요
+     *
+     * @param boardId
+     */
+    public void insertBoardLike(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            if(isLike(boardId)){
+                throw new IllegalArgumentException("이미 좋아요한 게시글입니다.");
+            }
+
+            // 좋아요 추가
+            UserLike userLike = new UserLike();
+            user.addUserLikes(userLike);
+            freeBoard.addUserLikes(userLike);
+            userLikeRepository.save(userLike);
+        } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
     }
