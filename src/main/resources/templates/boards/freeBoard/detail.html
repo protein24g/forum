@@ -13,20 +13,49 @@
         document.addEventListener("DOMContentLoaded", function (){
             getBoardDetails();
             getAllComment(0);
+            getBoardLike();
 
             document.getElementById("like-btn").addEventListener("click", function (){
                 console.log("좋아요 클릭함");
-                boardLike(document.getElementById("boardId").value);
+                boardLike();
             })
         })
 
-        async function boardLike(boardId) {
+        async function getBoardLike(){
+            const boardId = document.getElementById("boardId").value;
+            const likeBtn = document.getElementById("like-btn");
+
             try {
                 // 1. GET 요청으로 좋아요 여부 확인
                 const response = await fetch(`/api/freeBoard/${boardId}/like`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
+                    }
+                });
+
+                const isLiked = await response.json();
+                if (!isLiked) {
+                    likeBtn.innerHTML = `<button class="btn btn-outline-primary me-3">좋아요</button>`;
+                } else {
+                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요</button>`;
+                }
+            } catch (error){
+                alert(error);
+                window.location.href = `/freeBoard/${boardId}`;
+            }
+        }
+
+        async function boardLike() {
+            let _csrf = document.querySelector("._csrf").value;
+            const boardId = document.getElementById("boardId").value;
+
+            try {
+                // 1. GET 요청으로 좋아요 여부 확인
+                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type" : "application/json"
                     }
                 });
 
@@ -45,12 +74,14 @@
                         const response2 = await fetch(`/api/freeBoard/${boardId}/like`, {
                             method: "DELETE",
                             headers: {
-                                "Content-Type": "application/json"
+                                "Content-Type" : "application/json",
+                                "X-CSRF-TOKEN" : _csrf
                             }
                         });
 
                         if (response2.ok) {
                             console.log("좋아요 취소됨");
+                            await getBoardLike();
                             // 취소 성공 시 할 작업
                         } else {
                             throw new Error("좋아요 취소 실패");
@@ -65,12 +96,14 @@
                         const response3 = await fetch(`/api/freeBoard/${boardId}/like`, {
                             method: "POST",
                             headers: {
-                                "Content-Type": "application/json"
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN" : _csrf
                             }
                         });
 
                         if (response3.ok) {
                             console.log("좋아요 추가됨");
+                            await getBoardLike();
                             // 추가 성공 시 할 작업
                         } else {
                             throw new Error("좋아요 추가 실패");
@@ -86,7 +119,6 @@
             }
         }
 
-
         function editComment(commentId, content) {
             // 모달 내의 textarea 에 기존댓글의 내용을 넣어줌
             document.getElementById("edit-content").value = content.replace(/<br>/g, "\n");
@@ -96,7 +128,6 @@
             document.getElementById("editCommentButton").onclick = function (){
                 updateComment(commentId);
             };
-
         }
 
         // C(Create)
@@ -586,7 +617,7 @@
                 <a class="text-black px-3 py-2 my-3" href="/freeBoard" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
                 <br>
                 <div class="my-3 d-flex justify-content-end">
-                    <button class="btn btn-primary me-3" id="like-btn">좋아요</button>
+                    <div id="like-btn"></div>
                     <button class="btn btn-danger" id="report-btn">신고</button>
                 </div>
                 <h4 class="mt-5">댓글</h4>

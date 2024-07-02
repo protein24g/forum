@@ -22,8 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -371,6 +374,32 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
             user.addUserLikes(userLike);
             freeBoard.addUserLikes(userLike);
             userLikeRepository.save(userLike);
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 특정 게시물 좋아요 취소
+     *
+     * @param boardId
+     * @return
+     */
+    @DeleteMapping("/api/freeBoard/{boardId}/like")
+    public void deleteBoardLike(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            if(!isLike(boardId)){
+                throw new IllegalArgumentException("이미 좋아요를 취소한 게시글입니다.");
+            }
+
+            // 좋아요 삭제
+            UserLike userLike = userLikeRepository.findPostsILiked(user, boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+            userLikeRepository.delete(userLike);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }

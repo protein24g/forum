@@ -123,18 +123,27 @@ public class FreeBoardApiController {
      */
     @PostMapping("/api/freeBoard/{boardId}/like")
     public ResponseEntity<?> insertBoardLike(@PathVariable(name = "boardId") Long boardId){
-        freeBoardServiceImpl.insertBoardLike(boardId);
-        return null;
+        try{
+            freeBoardServiceImpl.insertBoardLike(boardId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     /**
-     * 특정 게시물 좋아요
+     * 특정 게시물 좋아요 취소
      *
      * @param boardId
      * @return
      */
     @DeleteMapping("/api/freeBoard/{boardId}/like")
     public ResponseEntity<?> deleteBoardLike(@PathVariable(name = "boardId") Long boardId){
-        return null;
+        try{
+            freeBoardServiceImpl.deleteBoardLike(boardId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
