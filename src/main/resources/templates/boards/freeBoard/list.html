@@ -76,9 +76,9 @@
                         // 이미지 태그를 조건에 따라 동적으로 생성
                         boardHtml += `
                                         <tr>
-                                            <td>${row.id}</td>
+                                            <td class="d-none d-md-table-cell">${row.id}</td>
                                             <td>${row.likes}</td>
-                                            <td>${row.title}</td>
+                                            <td class="text-dot">${row.title}</td>
                                             <td>${createDate}</td>
                                             <td class="d-none d-md-block">${row.nickname}</td>
                                         </tr>
@@ -274,11 +274,11 @@
                         <!--게시글 Detail-->
                         <table class="table" style="table-layout: fixed;">
                             <thead>
-                                <th class="col-1">번호</th>
-                                <th class="col-1">좋아요</th>
-                                <th class="col-4 text-dot">제목</th>
-                                <th class="col-2">작성일시</th>
-                                <th class="d-none d-md-block">작성자</th>
+                                <th class="d-none col-1 d-md-table-cell">번호</th>
+                                <th class="col-3 col-md-1">좋아요</th>
+                                <th class="col-md-4">제목</th>
+                                <th class="col-md-2">작성일시</th>
+                                <th class="col-3 d-none d-md-table-cell">작성자</th>
                             </thead>
                             <tbody class="freeBoard-list"></tbody>
                         </table>
