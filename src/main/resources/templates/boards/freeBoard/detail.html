@@ -16,7 +16,6 @@
             getBoardLike();
 
             document.getElementById("like-btn").addEventListener("click", function (){
-                console.log("좋아요 클릭함");
                 boardLike();
             })
         })
@@ -35,10 +34,12 @@
                 });
 
                 const isLiked = await response.json();
-                if (!isLiked) {
-                    likeBtn.innerHTML = `<button class="btn btn-outline-primary me-3">좋아요</button>`;
+                if (!isLiked.res) {
+                    likeBtn.innerHTML = `<button class="btn btn-primary me-3" style="background-color: white; color: #0D6EFD;">좋아요 ${isLiked.likes}</button>`;
+                    return false;
                 } else {
-                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요</button>`;
+                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요 ${isLiked.likes}</button>`;
+                    return true;
                 }
             } catch (error){
                 alert(error);
@@ -50,72 +51,50 @@
             let _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
 
-            try {
-                // 1. GET 요청으로 좋아요 여부 확인
-                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type" : "application/json"
-                    }
-                });
-
-                if (response.status !== 200) {
-                    alert("로그인 후 이용하세요");
-                    window.location.href = "/login";
-                    return;
-                }
-
-                const isLiked = await response.json();
-
-                // 2. 좋아요 상태에 따라 처리
-                if (isLiked) {
-                    // 이미 좋아요가 되어 있으면 DELETE 요청으로 좋아요 취소
-                    try {
-                        const response2 = await fetch(`/api/freeBoard/${boardId}/like`, {
-                            method: "DELETE",
-                            headers: {
-                                "Content-Type" : "application/json",
-                                "X-CSRF-TOKEN" : _csrf
-                            }
-                        });
-
-                        if (response2.ok) {
-                            console.log("좋아요 취소됨");
-                            await getBoardLike();
-                            // 취소 성공 시 할 작업
-                        } else {
-                            throw new Error("좋아요 취소 실패");
+            if (await getBoardLike()) {
+                // 이미 좋아요가 되어 있으면 DELETE 요청으로 좋아요 취소
+                try {
+                    const response2 = await fetch(`/api/freeBoard/${boardId}/like`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
                         }
-                    } catch (error) {
-                        alert("좋아요 취소 중 오류 발생: " + error.message);
-                        window.location.href = `/freeBoard/${boardId}`;
-                    }
-                } else {
-                    // 좋아요가 되어 있지 않으면 POST 요청으로 좋아요 추가
-                    try {
-                        const response3 = await fetch(`/api/freeBoard/${boardId}/like`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN" : _csrf
-                            }
-                        });
+                    });
 
-                        if (response3.ok) {
-                            console.log("좋아요 추가됨");
-                            await getBoardLike();
-                            // 추가 성공 시 할 작업
-                        } else {
-                            throw new Error("좋아요 추가 실패");
-                        }
-                    } catch (error) {
-                        alert("좋아요 추가 중 오류 발생: " + error.message);
-                        window.location.href = `/freeBoard/${boardId}`;
+                    if (response2.ok) {
+                        await getBoardLike();
+                        // 취소 성공 시 할 작업
+                    } else if (response2.status === 400){
+                        alert("로그인 후 이용하세요");
+                        window.location.href = "/login";
                     }
+                } catch (error) {
+                    alert("좋아요 취소 중 오류 발생: " + error.message);
+                    window.location.href = `/freeBoard/${boardId}`;
                 }
-            } catch (error) {
-                alert("오류 발생: " + error.message);
-                window.location.href = `/freeBoard/${boardId}`;
+            } else {
+                // 좋아요가 되어 있지 않으면 POST 요청으로 좋아요 추가
+                try {
+                    const response3 = await fetch(`/api/freeBoard/${boardId}/like`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        }
+                    });
+
+                    if (response3.ok) {
+                        await getBoardLike();
+                        // 추가 성공 시 할 작업
+                    } else if (response3.status === 400){
+                        alert("로그인 후 이용하세요");
+                        window.location.href = "/login";
+                    }
+                } catch (error) {
+                    alert("좋아요 추가 중 오류 발생: " + error);
+                    window.location.href = `/freeBoard/${boardId}`;
+                }
             }
         }
 

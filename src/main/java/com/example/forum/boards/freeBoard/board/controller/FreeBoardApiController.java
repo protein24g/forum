@@ -2,6 +2,7 @@ package com.example.forum.boards.freeBoard.board.controller;
 
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
@@ -11,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 자유 게시판 API 컨트롤러
@@ -103,15 +107,12 @@ public class FreeBoardApiController {
      * @return
      */
     @GetMapping("/api/freeBoard/{boardId}/like")
-    public ResponseEntity<?> isLike(@PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardLikes(@PathVariable(name = "boardId") Long boardId){
         try{
-            if(freeBoardServiceImpl.isLike(boardId)){
-                return ResponseEntity.status(HttpStatus.OK).body(true);
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body(false);
-            }
+            FreeBoardLikeResponse freeBoardLikeResponse = freeBoardServiceImpl.getBoardLikes(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(freeBoardLikeResponse);
         } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -127,7 +128,9 @@ public class FreeBoardApiController {
             freeBoardServiceImpl.insertBoardLike(boardId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 

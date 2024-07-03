@@ -4,6 +4,7 @@ import com.example.forum.base.board.service.BoardService;
 import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
@@ -128,6 +129,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                         .createDate(board.getCreateDate())
                         .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                         .view(board.getView())
+                        .likes(board.getUserLikes().size())
                         .build());
     }
 
@@ -334,20 +336,25 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
      * @param boardId
      * @return
      */
-    public boolean isLike(Long boardId){
+    public FreeBoardLikeResponse getBoardLikes(Long boardId){
+        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){
             User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
 
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
-
-            // 여기
-            return user.getUserLikes().stream()
-                    .anyMatch(userLike -> freeBoard.getUserLikes().contains(userLike));
+            return FreeBoardLikeResponse.builder()
+                    .res(user.getUserLikes().stream()
+                            .anyMatch(userLike -> freeBoard.getUserLikes().contains(userLike)))
+                    .likes(freeBoard.getUserLikes().size())
+                    .build();
         } else {
-            throw new IllegalArgumentException("로그인 후 이용하세요");
+            return FreeBoardLikeResponse.builder()
+                    .res(false)
+                    .likes(freeBoard.getUserLikes().size())
+                    .build();
         }
     }
 
@@ -365,7 +372,8 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
             FreeBoard freeBoard = freeBoardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-            if(isLike(boardId)){
+            FreeBoardLikeResponse freeBoardLikeResponse = getBoardLikes(boardId);
+            if(freeBoardLikeResponse.isRes()){
                 throw new IllegalArgumentException("이미 좋아요한 게시글입니다.");
             }
 
@@ -392,7 +400,8 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
             User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
-            if(!isLike(boardId)){
+            FreeBoardLikeResponse freeBoardLikeResponse = getBoardLikes(boardId);
+            if(!freeBoardLikeResponse.isRes()){
                 throw new IllegalArgumentException("이미 좋아요를 취소한 게시글입니다.");
             }
 
