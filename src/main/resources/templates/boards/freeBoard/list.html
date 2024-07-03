@@ -74,24 +74,14 @@
                         let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
 
                         // 이미지 태그를 조건에 따라 동적으로 생성
-                        let imageTag = row.hasImage ? `<img src="/freeBoardUpload/" width="70px;" height="50px;" style="border-radius: 10px;">` : '';
                         boardHtml += `
-                                        <div class="board-item row p-3 m-0 text-center" id="${row.id}" style="border-bottom: 1px solid #ccc">
-                                            <div class="row text-start">
-                                                <div class="col-auto text-dot fw-bold p-0">${row.title}</div>
-                                            </div>
-                                            <div class="row text-start">
-                                                <div class="col-auto p-0">${row.nickname}</div>
-                                                <div class="col-auto px-2">좋아요 ${row.likes}</div>
-                                                <div class="col-auto p-0">조회수 ${row.view}</div>
-                                                <div class="col-auto px-2">댓글 ${row.commentCount}</div>
-                                                <div class="col-md px-md-2 p-0">${createDate}</div>
-                                            </div>
-                                            <div class="col-auto p-0">
-                                                ${imageTag}
-                                            </div>
-
-                                        </div>
+                                        <tr>
+                                            <td>${row.id}</td>
+                                            <td>${row.likes}</td>
+                                            <td>${row.title}</td>
+                                            <td>${createDate}</td>
+                                            <td class="d-none d-md-block">${row.nickname}</td>
+                                        </tr>
                                     `;
                     });
                     document.querySelector(".freeBoard-list").innerHTML = boardHtml;
@@ -282,7 +272,16 @@
                         </div>
 
                         <!--게시글 Detail-->
-                        <div class="freeBoard-list"></div>
+                        <table class="table" style="table-layout: fixed;">
+                            <thead>
+                                <th class="col-1">번호</th>
+                                <th class="col-1">좋아요</th>
+                                <th class="col-4 text-dot">제목</th>
+                                <th class="col-2">작성일시</th>
+                                <th class="d-none d-md-block">작성자</th>
+                            </thead>
+                            <tbody class="freeBoard-list"></tbody>
+                        </table>
 
                         <!--게시글 페이징-->
                         <nav>
