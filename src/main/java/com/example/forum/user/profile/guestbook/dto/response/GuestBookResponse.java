@@ -15,12 +15,14 @@ public class GuestBookResponse {
     private String content;
     private LocalDateTime createDate;
     private boolean isWriter;
+    private Long guestBookCount;
 
     @Builder
-    public GuestBookResponse(Long id, String content, LocalDateTime createDate, boolean isWriter){
+    public GuestBookResponse(Long id, String content, LocalDateTime createDate, boolean isWriter, Long guestBookCount){
         this.id = id;
         this.content = content;
         this.createDate = createDate;
         this.isWriter = isWriter;
+        this.guestBookCount = guestBookCount;
     }
 }

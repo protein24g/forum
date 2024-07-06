@@ -134,6 +134,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
                         .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                         .view(board.getView())
                         .hasImage((board.getImages().size() >= 1 ? true : false))
+                        .likes(board.getUserLikes().size())
                         .build());
     }
 

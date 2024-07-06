@@ -19,9 +19,9 @@
             })
 
             function addEventToRows() {
-                document.querySelectorAll(".board-item").forEach(function (div) { // tbody 내에 모든 tr 태그를 찾아서 for
-                    div.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                        window.location.href = "/freeBoard/" + div.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+                document.querySelectorAll(".userInfo-board-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
+                    row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                        window.location.href = "/freeBoard/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                     })
                 })
             }
@@ -71,17 +71,24 @@
 
                         // 이미지 태그를 조건에 따라 동적으로 생성
                         boardHtml += `
-                                <div class="board-item d-flex text-start p-1" id=${row.id}>
-                                    <span class="col me-auto text-dot pe-3">
-                                        ${row.title}[${row.commentCount}]
-                                    </span>
-                                    <span class="col-auto">
-                                        ${createDate}
-                                    </span>
-                                </div>
+                                <tr id="${row.id}">
+                                    <td class="d-none d-md-table-cell">${row.id}</td>
+                                    <td>
+                                        <div class="row px-3">
+                                            <div class="col p-0 d-flex">
+                                                <div class="text-dot">${row.title}</div>
+                                                <div class="ms-1">[${row.commentCount}]</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">${row.nickname}</td>
+                                    <td>${createDate}</td>
+                                    <td class="d-none d-md-table-cell">${row.likes}</td>
+                                    <td class="d-none d-md-table-cell">${row.view}</td>
+                                </tr>
                             `;
                     });
-                        document.querySelector(".myBoard-list").innerHTML = boardHtml;
+                        document.querySelector(".userInfo-board-list").innerHTML = boardHtml;
 
                         let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                         boardPageHtml += `
@@ -252,9 +259,21 @@
                     </div>
                     <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
                         <h4 class="fw-bold" th:text="${title}"></h4>
-                        <hr>
                         <!--게시글 Detail-->
-                        <div class="myBoard-list"></div>
+                        <table class="table text-center" style="table-layout: fixed;">
+                            <thead>
+                            <tr class="table-light">
+                                <th class="d-none col-1 d-md-table-cell">번호</th>
+                                <th class="col-md-4">제목</th>
+                                <th class="col-1 d-none d-md-table-cell">작성자</th>
+                                <th class="col-4 col-md-2">작성일</th>
+                                <th class="col-1 d-none d-md-table-cell">좋아요</th>
+                                <th class="col-1 d-none d-md-table-cell">조회수</th>
+                            </tr>
+                            </thead>
+                            <tbody class="userInfo-board-list"></tbody>
+                        </table>
+
                         <!--게시글 페이징-->
                         <nav aria-label="">
                             <ul class="pagination justify-content-center board-page-list">
