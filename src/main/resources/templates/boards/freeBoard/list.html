@@ -12,11 +12,47 @@
         <script>
             // 페이지 로드시 호출되는 함수
             document.addEventListener("DOMContentLoaded", function (){
-                getBoardList("", 0, "");
+                getBoardList();
+                document.querySelector(".sortSelect").addEventListener("change", function (){
+                    sortSelectEvent();
+                });
 
             })
 
             // R(Read)
+            async function sortSelectEvent(){
+                let keyword = document.querySelector("#keyword").value;
+                let page = document.querySelector("#page").value;
+                let option = document.querySelector("#option").value;
+                let _csrf = document.querySelector("._csrf").value;
+                try{
+                    const response = await fetch("/api/freeBoard", {
+                        method : "POST",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            "X-CSRF-TOKEN" : _csrf
+                        },body : JSON.stringify({
+                            sortNum : getSortNum(),
+                            keyword : keyword,
+                            page : page,
+                            option : option,
+                            pageSize: 10
+                        })
+                    });
+
+                    const res = await response.json();
+                    console.log(res);
+
+                } catch(error){
+                    alert(error);
+                    window.location.href = "/freeBoard";
+                }
+            }
+
+            function getSortNum(){
+                return document.querySelector(".sortSelect").value;
+            }
+
             function search(){
                 // 옵션 선택 요소의 value 값을 가져옵니다.
                 let option = document.querySelector("#option").value;
@@ -50,7 +86,10 @@
                 }
             }
 
-            async function getBoardList(keyword, page, option){ // 게시글 리스트
+            async function getBoardList(){ // 게시글 리스트
+                let keyword = document.querySelector("#keyword").value;
+                let page = document.querySelector("#page").value;
+                let option = document.querySelector("#option").value;
                 let _csrf = document.querySelector("._csrf").value;
                 try{
                     const response = await fetch("/api/freeBoard", {
@@ -60,6 +99,7 @@
                             "X-CSRF-TOKEN" : _csrf
                         },
                         body : JSON.stringify({
+                            sortNum : getSortNum(),
                             keyword : keyword,
                             page : page,
                             option : option,
@@ -140,6 +180,7 @@
     </head>
     <div th:insert="~{layouts/header.html :: headerFragment}"></div>
     <body style="background-color: #eee">
+        <input type="hidden" id="page" value="0">
         <div class="container-xl">
             <div class="row text-center">
                 <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -269,10 +310,10 @@
                         <div class="row">
                             <div class="col-auto">
                                 <select class="p-2 sortSelect" style="border-radius: 5px;">
-                                    <option>날짜순</option>
-                                    <option>조회순</option>
-                                    <option>댓글순</option>
-                                    <option>좋아요순</option>
+                                    <option value="0">날짜순</option>
+                                    <option value="1">조회순</option>
+                                    <option value="2">댓글순</option>
+                                    <option value="3">좋아요순</option>
                                 </select>
                             </div>
                         </div>

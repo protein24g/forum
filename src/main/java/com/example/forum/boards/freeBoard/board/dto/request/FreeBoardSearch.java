@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FreeBoardSearch {
+    private int sortNum;
     private String keyword;
     private int page;
     private String option;

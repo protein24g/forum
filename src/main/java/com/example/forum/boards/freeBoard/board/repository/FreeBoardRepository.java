@@ -4,6 +4,7 @@ import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * 자유 게시판 인터페이스
@@ -35,4 +36,7 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long> {
      * @return
      */
     Page<FreeBoard> findByUserId(Long userId, Pageable pageable);
+
+    @Query("SELECT fb FROM FreeBoard fb LEFT JOIN fb.freeBoardComments fbc GROUP BY fb ORDER BY COUNT(fbc) DESC")
+    Page<FreeBoard> findAllOrderByCommentCountDesc(Pageable pageable);
 }

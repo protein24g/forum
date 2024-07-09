@@ -103,7 +103,15 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     @Override
     @Transactional
     public Page<FreeBoardResponse> boardPage(FreeBoardSearch dto) {
-        Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        Sort sort;
+        switch (dto.getSortNum()){
+            case 1:
+                sort = Sort.by(Sort.Direction.DESC, "view");
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "id");
+        }
+        Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), sort);
         Page<FreeBoard> boards;
 
         if (dto.getKeyword().length() != 0) {

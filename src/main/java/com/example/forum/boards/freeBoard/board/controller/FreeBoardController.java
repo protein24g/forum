@@ -51,7 +51,6 @@ public class FreeBoardController {
         }
     }
 
-
     /**
      * 자유 게시판 목록 페이지로 이동
      *
