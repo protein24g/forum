@@ -103,16 +103,43 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     @Override
     @Transactional
     public Page<FreeBoardResponse> boardPage(FreeBoardSearch dto) {
+        Pageable pageable;
         Sort sort;
+        Page<FreeBoard> boards;
         switch (dto.getSortNum()){
             case 1:
-                sort = Sort.by(Sort.Direction.DESC, "view");
+                sort = Sort.by(Sort.Direction.DESC, "view").and(Sort.by(Sort.Direction.DESC, "id"));;
                 break;
+            case 2:
+                pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "view"));
+                boards = freeBoardRepository.findAllOrderByCommentCountDesc(pageable);
+                return boards
+                        .map(board -> FreeBoardResponse.builder()
+                                .id(board.getId())
+                                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
+                                .title(board.getTitle())
+                                .createDate(board.getCreateDate())
+                                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
+                                .view(board.getView())
+                                .likes(board.getUserLikes().size())
+                                .build());
+            case 3:
+                pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "view"));
+                boards = freeBoardRepository.findAllOrderByLikeCountDesc(pageable);
+                return boards
+                        .map(board -> FreeBoardResponse.builder()
+                                .id(board.getId())
+                                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
+                                .title(board.getTitle())
+                                .createDate(board.getCreateDate())
+                                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
+                                .view(board.getView())
+                                .likes(board.getUserLikes().size())
+                                .build());
             default:
                 sort = Sort.by(Sort.Direction.DESC, "id");
         }
-        Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), sort);
-        Page<FreeBoard> boards;
+        pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), sort);
 
         if (dto.getKeyword().length() != 0) {
             switch (dto.getOption()) {

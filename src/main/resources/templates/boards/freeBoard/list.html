@@ -19,6 +19,62 @@
 
             })
 
+            // C(Create)
+            function displayBoardList(res){
+                let boardHtml = "";
+                res.content.forEach(row => {
+                    let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
+
+                    // 이미지 태그를 조건에 따라 동적으로 생성
+                    boardHtml += `
+                                        <tr id="${row.id}">
+                                            <td class="d-none d-md-table-cell">${row.id}</td>
+                                            <td>
+                                                <div class="row px-3">
+                                                    <div class="col p-0 d-flex">
+                                                        <div class="text-dot">${row.title}</div>
+                                                        <div class="ms-1">[${row.commentCount}]</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="d-none d-md-table-cell">${row.nickname}</td>
+                                            <td>${createDate}</td>
+                                            <td class="d-none d-md-table-cell">${row.likes}</td>
+                                            <td class="d-none d-md-table-cell">${row.view}</td>
+                                        </tr>
+                                    `;
+                });
+                document.querySelector(".freeBoard-list").innerHTML = boardHtml;
+
+
+                let pageHtml = "";
+                pageHtml += `
+                                    <li class="page-item ${(res.first) ? "disabled" : ""}">
+                                        <a class="page-link" onclick="getBoardList('${keyword}', ${res.number - 1}, '${option}')"><</a>
+                                    </li>
+                                    `;
+
+                let startPage = (Math.floor((res.number) / 5)) * 5;
+                let endPage = Math.min(startPage + 5, res.totalPages);
+                for(let page = startPage; page < endPage ; page++){
+                    pageHtml += `
+                                        <li class="page-item ${(page == res.number) ? 'active' : ''}">
+                                            <a class="page-link" onclick="getBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
+                                        </li>
+                                    `;
+                }
+
+                pageHtml += `
+                                    <li class="page-item ${(res.last) ? "disabled" : ""}">
+                                        <a class="page-link" onclick="getBoardList('${keyword}', ${res.number + 1}, '${option}')">></a>
+                                    </li>
+                                `;
+
+                document.querySelector(".freeBoard-page").innerHTML = pageHtml;
+                addEventToRows();
+            }
+
+
             // R(Read)
             async function sortSelectEvent(){
                 let keyword = document.querySelector("#keyword").value;
@@ -42,6 +98,7 @@
 
                     const res = await response.json();
                     console.log(res);
+                    displayBoardList(res);
 
                 } catch(error){
                     alert(error);
@@ -109,57 +166,7 @@
 
                     const res = await response.json();
                     console.log(res);
-                    let boardHtml = "";
-                    res.content.forEach(row => {
-                        let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
-
-                        // 이미지 태그를 조건에 따라 동적으로 생성
-                        boardHtml += `
-                                        <tr id="${row.id}">
-                                            <td class="d-none d-md-table-cell">${row.id}</td>
-                                            <td>
-                                                <div class="row px-3">
-                                                    <div class="col p-0 d-flex">
-                                                        <div class="text-dot">${row.title}</div>
-                                                        <div class="ms-1">[${row.commentCount}]</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-md-table-cell">${row.nickname}</td>
-                                            <td>${createDate}</td>
-                                            <td class="d-none d-md-table-cell">${row.likes}</td>
-                                            <td class="d-none d-md-table-cell">${row.view}</td>
-                                        </tr>
-                                    `;
-                    });
-                    document.querySelector(".freeBoard-list").innerHTML = boardHtml;
-
-
-                    let pageHtml = "";
-                    pageHtml += `
-                                    <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                        <a class="page-link" onclick="getBoardList('${keyword}', ${res.number - 1}, '${option}')"><</a>
-                                    </li>
-                                    `;
-
-                    let startPage = (Math.floor((res.number) / 5)) * 5;
-                    let endPage = Math.min(startPage + 5, res.totalPages);
-                    for(let page = startPage; page < endPage ; page++){
-                        pageHtml += `
-                                        <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                            <a class="page-link" onclick="getBoardList('${keyword}', ${page}, '${option}')">${page + 1}</a>
-                                        </li>
-                                    `;
-                    }
-
-                    pageHtml += `
-                                    <li class="page-item ${(res.last) ? "disabled" : ""}">
-                                        <a class="page-link" onclick="getBoardList('${keyword}', ${res.number + 1}, '${option}')">></a>
-                                    </li>
-                                `;
-
-                    document.querySelector(".freeBoard-page").innerHTML = pageHtml;
-                    addEventToRows();
+                    displayBoardList(res);
                 }catch (error){
                     alert(error);
                     window.location.href = "/freeBoard";

@@ -37,6 +37,13 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long> {
      */
     Page<FreeBoard> findByUserId(Long userId, Pageable pageable);
 
-    @Query("SELECT fb FROM FreeBoard fb LEFT JOIN fb.freeBoardComments fbc GROUP BY fb ORDER BY COUNT(fbc) DESC")
+    @Query("SELECT fb FROM FreeBoard fb LEFT JOIN FreeBoardComment fbc on fb.id = fbc.freeBoard.id GROUP BY fb.id ORDER BY COUNT(fbc) DESC, fb.id DESC")
+        //@Query("SELECT fb FROM FreeBoard fb LEFT JOIN fb.freeBoardComments fbc GROUP BY fb ORDER BY COUNT(fbc) DESC")
     Page<FreeBoard> findAllOrderByCommentCountDesc(Pageable pageable);
+
+    @Query("SELECT fb FROM FreeBoard fb LEFT JOIN UserLike ul on fb.id = ul.freeBoard.id GROUP BY fb.id ORDER BY COUNT(ul) DESC, fb.id DESC")
+        //@Query("SELECT fb FROM FreeBoard fb LEFT JOIN fb.freeBoardComments fbc GROUP BY fb ORDER BY COUNT(fbc) DESC")
+    Page<FreeBoard> findAllOrderByLikeCountDesc(Pageable pageable);
+
+
 }
