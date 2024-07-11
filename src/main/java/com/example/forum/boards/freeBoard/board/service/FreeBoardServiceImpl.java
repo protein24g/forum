@@ -100,72 +100,69 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
      * @param dto 검색 조건 DTO
      * @return 게시글 페이지 응답 DTO
      */
-    @Override
-    @Transactional
     public Page<FreeBoardResponse> boardPage(FreeBoardSearch dto) {
         Pageable pageable;
         Sort sort;
         Page<FreeBoard> boards;
-        switch (dto.getSortNum()){
-            case 1:
-                sort = Sort.by(Sort.Direction.DESC, "view").and(Sort.by(Sort.Direction.DESC, "id"));;
-                break;
-            case 2:
-                pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "view"));
-                boards = freeBoardRepository.findAllOrderByCommentCountDesc(pageable);
-                return boards
-                        .map(board -> FreeBoardResponse.builder()
-                                .id(board.getId())
-                                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
-                                .title(board.getTitle())
-                                .createDate(board.getCreateDate())
-                                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
-                                .view(board.getView())
-                                .likes(board.getUserLikes().size())
-                                .build());
-            case 3:
-                pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by(Sort.Direction.DESC, "view"));
-                boards = freeBoardRepository.findAllOrderByLikeCountDesc(pageable);
-                return boards
-                        .map(board -> FreeBoardResponse.builder()
-                                .id(board.getId())
-                                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
-                                .title(board.getTitle())
-                                .createDate(board.getCreateDate())
-                                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
-                                .view(board.getView())
-                                .likes(board.getUserLikes().size())
-                                .build());
-            default:
-                sort = Sort.by(Sort.Direction.DESC, "id");
-        }
-        pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), sort);
 
+        switch (dto.getSortNum()) {
+            case 0: // 날짜순
+                sort = Sort.by(Sort.Direction.DESC, "id");
+                break;
+            case 1: // 조회순
+                sort = Sort.by(Sort.Direction.DESC, "view").and(Sort.by(Sort.Direction.DESC, "id"));
+                break;
+            case 2: // 댓글순
+                pageable = PageRequest.of(dto.getPage(), dto.getPageSize());
+                if (dto.getKeyword().length() != 0) {
+                    if (dto.getOption().equals("1")) {
+                        boards = freeBoardRepository.findAllByTitleOrderByCommentCountDesc(dto.getKeyword(), pageable);
+                    } else {
+                        boards = freeBoardRepository.findAllByContentOrderByCommentCountDesc(dto.getKeyword(), pageable);
+                    }
+                } else {
+                    boards = freeBoardRepository.findAllOrderByCommentCountDesc(pageable);
+                }
+                return mapToFreeBoardResponse(boards);
+            case 3: // 좋아요순
+                pageable = PageRequest.of(dto.getPage(), dto.getPageSize());
+                if (dto.getKeyword().length() != 0) {
+                    if (dto.getOption().equals("1")) {
+                        boards = freeBoardRepository.findAllByTitleOrderByLikeCountDesc(dto.getKeyword(), pageable);
+                    } else {
+                        boards = freeBoardRepository.findAllByContentOrderByLikeCountDesc(dto.getKeyword(), pageable);
+                    }
+                } else {
+                    boards = freeBoardRepository.findAllOrderByLikeCountDesc(pageable);
+                }
+                return mapToFreeBoardResponse(boards);
+            default:
+                throw new IllegalArgumentException("잘못된 정렬 번호: " + dto.getSortNum());
+        }
+
+        pageable = PageRequest.of(dto.getPage(), dto.getPageSize(), sort);
         if (dto.getKeyword().length() != 0) {
-            switch (dto.getOption()) {
-                case "1":
-                    boards = freeBoardRepository.findByTitleContaining(dto.getKeyword(), pageable);
-                    break;
-                case "2":
-                    boards = freeBoardRepository.findByContentContaining(dto.getKeyword(), pageable);
-                    break;
-                default:
-                    boards = freeBoardRepository.findAll(pageable);
+            if (dto.getOption().equals("1")) {
+                boards = freeBoardRepository.findByTitleContaining(dto.getKeyword(), pageable);
+            } else {
+                boards = freeBoardRepository.findByContentContaining(dto.getKeyword(), pageable);
             }
         } else {
             boards = freeBoardRepository.findAll(pageable);
         }
+        return mapToFreeBoardResponse(boards);
+    }
 
-        return boards
-                .map(board -> FreeBoardResponse.builder()
-                        .id(board.getId())
-                        .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
-                        .title(board.getTitle())
-                        .createDate(board.getCreateDate())
-                        .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
-                        .view(board.getView())
-                        .likes(board.getUserLikes().size())
-                        .build());
+    private Page<FreeBoardResponse> mapToFreeBoardResponse(Page<FreeBoard> boards) {
+        return boards.map(board -> FreeBoardResponse.builder()
+                .id(board.getId())
+                .nickname(board.getUser().getActive() ? board.getUser().getNickname() : "탈퇴한 사용자")
+                .title(board.getTitle())
+                .createDate(board.getCreateDate())
+                .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
+                .view(board.getView())
+                .likes(board.getUserLikes().size())
+                .build());
     }
 
     /**
