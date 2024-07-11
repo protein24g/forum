@@ -93,7 +93,7 @@
                         let boardPageHtml = ""; // 유저 검색 창 게시글 페이징
                         boardPageHtml += `
                                                 <li class="page-item ${(res.first) ? "disabled" : ""}">
-                                                    <a class="page-link" onclick="myPageBoards(${res.number - 1})"><</a>
+                                                    <a class="page-link" onclick="userInfoPageBoards(${res.number - 1})"><</a>
                                                 </li>
                                                 `;
 
@@ -102,14 +102,14 @@
                         for(let page = startPage; page < endPage ; page++){
                             boardPageHtml += `
                                                     <li class="page-item ${(page == res.number) ? 'active' : ''}">
-                                                        <a class="page-link" onclick="myPageBoards(${page})">${page + 1}</a>
+                                                        <a class="page-link" onclick="userInfoPageBoards(${page})">${page + 1}</a>
                                                     </li>
                                                 `;
                         }
 
                         boardPageHtml += `
                                                 <li class="page-item ${(res.last) ? "disabled" : ""}">
-                                                    <a class="page-link" onclick="myPageBoards(${res.number + 1})">></a>
+                                                    <a class="page-link" onclick="userInfoPageBoards(${res.number + 1})">></a>
                                                 </li>
                                             `;
                         document.querySelector(".board-page-list").innerHTML = boardPageHtml;
