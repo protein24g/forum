@@ -102,14 +102,8 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     public Page<CommentResponse> getCommentsForBoard(Long boardId, int page) {
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
-        Page<FreeBoardComment> comments = freeBoardCommentRepository.findByFreeBoardId(boardId, pageable);
-        return comments.map(comment -> CommentResponse.builder()
-                .id(comment.getId())
-                .nickname(comment.getUser().getActive() ? comment.getUser().getNickname() : "탈퇴한 사용자")
-                .content(comment.getContent())
-                .createDate(comment.getCreateDate())
-                .isAuthor(comment.getUser().getNickname().equals((customUserDetails != null) ? customUserDetails.getUsername() : ""))
-                .build());
+        Page<CommentResponse> commentResponse = freeBoardCommentRepository.findByFreeBoardId(boardId, (customUserDetails != null ? customUserDetails.getId() : null), pageable);
+        return commentResponse;
     }
 
     /**
