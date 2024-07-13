@@ -249,9 +249,11 @@
 
                                         `;
                         if(row.commentProfileImgUrl == null)
-                            commentHtml += `<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="55px;" class="rounded-circle">`;
+                            commentHtml += `<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="55px;" class="rounded-circle border">`;
                         else
-                            commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="32" height="32" class="rounded-circle me-2">`;
+                        commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="55px;" class="rounded-circle border">`;
+
+
                         commentHtml += `
                                                 </div>
                                                 <div class="col">
