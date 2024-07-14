@@ -97,8 +97,8 @@
                 const res = await response.json();
                 console.log(res);
                 document.querySelector(".profile").innerHTML = `${(res.profileImage != null) ?
-                    `<img src="/profileUpload/${res.profileImage}" width="32" height="32" class="rounded-circle me-2">` :
-                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
+                    `<img src="/profileUpload/${res.profileImage}" width="32" height="32" class="rounded-circle me-2 border">` :
+                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">'}`;
                 document.querySelector(".my-nickname").innerText = `${res.nickname}`;
                 document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;

@@ -63,8 +63,8 @@
                 const res = await response.json();
                 console.log(res);
                 document.querySelector(".profile").innerHTML = `${(res.profileImage != null) ?
-                    `<img src="/profileUpload/${res.profileImage}" width="32" height="32" class="rounded-circle me-2">` :
-                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2">'}`;
+                    `<img src="/profileUpload/${res.profileImage}" width="32" height="32" class="rounded-circle me-2 border">` :
+                    '<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">'}`;
                 document.querySelector(".my-nickname").innerText = `${res.nickname}`;
                 document.querySelector(".boardsSize").innerText = `작성글 ${res.freeBoards_size}개`;
                 document.querySelector(".commentsSize").innerText = `댓글 ${res.comments_size}개`;
@@ -119,22 +119,26 @@
                     let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
                     guestBooksHtml += `
                         <tr id="${res.content[i].id}">
-                            <td class="text-center">${createDate}</td>
-                            <td class="comment">${res.content[i].content}</td>
-                            <td class="user-actions d-flex justify-content-around">
+                            <td>${createDate}</td>
+                            <td class="comment text-start">${res.content[i].content}</td>
+                            <td class="user-actions">
+                                <div class="d-sm-flex justify-content-around">
+
+
                     `;
 
                     if (res.content[i].writer) {
                         guestBooksHtml += `
-                                <button class="px-2 mx-1 btn btn-primary" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">수정</button>
-                                <button class="px-2 mx-1 btn btn-danger" onclick="deleteGuestBook(${res.content[i].id})" style="border-radius: 15px;">삭제</button>
+                                    <button class="px-2 btn btn-primary" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">수정</button>
+                                    <button class="px-2 btn btn-danger" onclick="deleteGuestBook(${res.content[i].id})" style="border-radius: 15px;">삭제</button>
                         `;
                     } else {
                         guestBooksHtml += `
-                                <button class="px-2 mx-1 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
+                                    <button class="px-2 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
                         `;
                     }
                     guestBooksHtml += `
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -175,8 +179,8 @@
             let text = document.getElementById(id).querySelector(".comment").textContent;
             document.getElementById(id).querySelector(".comment").innerHTML = `<input class='form-control' type='text' value='${text}'>`;
             document.getElementById(id).querySelector(".user-actions").innerHTML = `
-                <button class="px-2 mx-1 btn btn-primary" onclick="updateGuestBook(${id}, ${page})" style="border-radius: 15px;">수정</button>
-                <button class="px-2 mx-1 btn btn-danger" onclick="getGuestBooks(${page})" style="border-radius: 15px;">취소</button>
+                <button class="px-2 btn btn-primary" onclick="updateGuestBook(${id}, ${page})" style="border-radius: 15px;">수정</button>
+                <button class="px-2 btn btn-danger" onclick="getGuestBooks(${page})" style="border-radius: 15px;">취소</button>
             `;
         }
 
@@ -389,12 +393,12 @@
             <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
                 <h4>방명록</h4>
 
-                <table class="table" style="table-layout: fixed;">
+                <table class="table text-center" style="table-layout: fixed; word-break: break-word;">
                     <thead>
-                        <tr class="text-center">
+                        <tr>
                             <td class="col-3 col-sm-2">날짜</td>
-                            <td class="col-6 col-sm-7">내용</td>
-                            <td class="col-2">기타</td>
+                            <td class="col-6 col-sm-7" style="display: table-cell;">내용</td>
+                            <td class="col-3 col-sm-2">기타</td>
                         </tr>
                     </thead>
                     <!-- 방명록 리스트 -->
