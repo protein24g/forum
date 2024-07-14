@@ -118,25 +118,25 @@
                 for(let i = 0; i < res.content.length; i++) {
                     let createDate = res.content[i].createDate.replace(/[T,-]/g, "-").slice(0, 10);
                     guestBooksHtml += `
-                        <div class="guest-item row mx-1 my-2 p-1" id="${res.content[i].id}" style="background-color: #eee; border-radius: 15px;">
-                            <div class="col-auto ps-0 d-flex align-items-center">${createDate}</div>
-                            <div class="col guestBook-comment ps-0 d-flex align-items-center">${res.content[i].content}</div>
-                            <div class="user-actions d-flex col-auto ms-auto p-0">
+                        <tr id="${res.content[i].id}">
+                            <td class="text-center">${createDate}</td>
+                            <td class="comment">${res.content[i].content}</td>
+                            <td class="user-actions d-flex justify-content-around">
                     `;
 
                     if (res.content[i].writer) {
                         guestBooksHtml += `
-                                <button class="px-3 ms-3 btn btn-primary" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">수정</button>
-                                <button class="px-3 ms-3 btn btn-danger" onclick="deleteGuestBook(${res.content[i].id})" style="border-radius: 15px;">삭제</button>
+                                <button class="px-2 mx-1 btn btn-primary" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">수정</button>
+                                <button class="px-2 mx-1 btn btn-danger" onclick="deleteGuestBook(${res.content[i].id})" style="border-radius: 15px;">삭제</button>
                         `;
                     } else {
                         guestBooksHtml += `
-                                <button class="px-3 ms-3 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
+                                <button class="px-2 mx-1 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
                         `;
                     }
                     guestBooksHtml += `
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
                     `;
                 }
                 document.querySelector(".guestBook-list").innerHTML = guestBooksHtml;
@@ -172,11 +172,11 @@
         }
 
         async function getUpdateGuestBook(id, page){
-            let text = document.getElementById(id).querySelector(".guestBook-comment").textContent;
-            document.getElementById(id).querySelector(".guestBook-comment").innerHTML = `<input class='form-control' type='text' value='${text}'>`;
+            let text = document.getElementById(id).querySelector(".comment").textContent;
+            document.getElementById(id).querySelector(".comment").innerHTML = `<input class='form-control' type='text' value='${text}'>`;
             document.getElementById(id).querySelector(".user-actions").innerHTML = `
-                <button class="px-3 ms-3 btn btn-primary" onclick="updateGuestBook(${id}, ${page})" style="border-radius: 15px;">수정</button>
-                <button class="px-3 ms-3 btn btn-danger" onclick="getGuestBooks(${page})" style="border-radius: 15px;">취소</button>
+                <button class="px-2 mx-1 btn btn-primary" onclick="updateGuestBook(${id}, ${page})" style="border-radius: 15px;">수정</button>
+                <button class="px-2 mx-1 btn btn-danger" onclick="getGuestBooks(${page})" style="border-radius: 15px;">취소</button>
             `;
         }
 
@@ -388,7 +388,18 @@
             </div>
             <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
                 <h4>방명록</h4>
-                <div class="guestBook-list"></div>
+
+                <table class="table" style="table-layout: fixed;">
+                    <thead>
+                        <tr class="text-center">
+                            <td class="col-3 col-sm-2">날짜</td>
+                            <td class="col-6 col-sm-7">내용</td>
+                            <td class="col-2">기타</td>
+                        </tr>
+                    </thead>
+                    <!-- 방명록 리스트 -->
+                    <tbody class="guestBook-list"></tbody>
+                </table>
                 <ul class="pagination justify-content-center guestBook-page-list"></ul>
                 <div class="newComment px-3">
                     <div class="row p-3" style="background-color: #eee; border-radius: 15px;">
