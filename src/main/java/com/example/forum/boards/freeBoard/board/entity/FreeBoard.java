@@ -2,6 +2,7 @@ package com.example.forum.boards.freeBoard.board.entity;
 
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.boards.freeBoard.image.entity.FreeBoardImage;
+import com.example.forum.main.report.entity.Report;
 import com.example.forum.user.entity.User;
 import com.example.forum.user.entity.UserLike;
 import jakarta.persistence.*;
@@ -31,15 +32,18 @@ public class FreeBoard {
 
     private int view;
 
-    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<UserLike> userLikes = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     // CascadeType.REMOVE : 부모 Entity 삭제시 자식 Entity 들도 삭제
     // orphanRemoval = true : 부모 엔티티와의 관계가 끊어진 자식 엔티티들을 자동으로 삭제
+    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Report> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<UserLike> userLikes = new HashSet<>();
+
     @OneToMany(mappedBy = "freeBoard", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FreeBoardImage> images = new ArrayList<>();
 
@@ -60,6 +64,11 @@ public class FreeBoard {
     }
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
+
+    public void addReports(Report report){
+        this.reports.add(report);
+        report.setFreeBoardReport(this);
+    }
 
     public void setBoard(User user){
         this.user = user;

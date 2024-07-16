@@ -14,6 +14,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserAuthApiController {
     private final UserAuthService userAuthService;
+    @GetMapping("/api/loginStatus")
+    public ResponseEntity<?> getLoginStatus(){
+        boolean loginStatus = userAuthService.getLoginStatus();
+        if(loginStatus){
+            return ResponseEntity.status(HttpStatus.OK).body(loginStatus);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginStatus);
+        }
+    }
 
     /**
      * 회원가입 처리

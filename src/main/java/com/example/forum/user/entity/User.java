@@ -1,6 +1,7 @@
     package com.example.forum.user.entity;
 
     import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
+    import com.example.forum.main.report.entity.Report;
     import com.example.forum.user.profile.guestbook.entity.GuestBook;
     import com.example.forum.user.profile.profileImage.entity.UserImage;
     import jakarta.persistence.*;
@@ -41,6 +42,9 @@
 
         private boolean isActive = true; // 사용자의 활성화 상태
 
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+        private List<Report> reports = new ArrayList<>();
+
         @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
         private UserImage userImage;
 
@@ -67,6 +71,11 @@
             this.createDate = createDate;
             this.role = role;
             this.isActive = isActive;
+        }
+
+        public void addReports(Report report){
+            this.reports.add(report);
+            report.setUserReport(this);
         }
 
         public void addUserLikes(UserLike userLike){

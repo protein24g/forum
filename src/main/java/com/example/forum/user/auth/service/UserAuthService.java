@@ -1,5 +1,7 @@
 package com.example.forum.user.auth.service;
 
+import com.example.forum.base.auth.service.AuthenticationService;
+import com.example.forum.user.auth.dto.requests.CustomUserDetails;
 import com.example.forum.user.auth.dto.requests.JoinRequest;
 import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
@@ -18,6 +20,7 @@ public class UserAuthService {
     private final UserAuthRepository userAuthRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserImageService userImageService;
+    private final AuthenticationService authenticationService;
 
     /**
      * 회원 가입
@@ -78,5 +81,14 @@ public class UserAuthService {
      */
     public boolean existsByNickname(String nickname) {
         return userAuthRepository.existsByNickname(nickname);
+    }
+
+    public boolean getLoginStatus(){
+       CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+       if(customUserDetails != null){
+           return true;
+       } else {
+           return false;
+       }
     }
 }

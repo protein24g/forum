@@ -18,37 +18,68 @@
             document.getElementById("like-btn").addEventListener("click", function (){
                 boardLike();
             })
+
+            document.getElementById("report-btn").addEventListener("click", function (){
+                reports();
+            })
         })
 
-        async function getBoardLike(){
-            const boardId = document.getElementById("boardId").value;
-            const likeBtn = document.getElementById("like-btn");
+        // C(Create)
+        async function reports(){
+            let reportName = document.getElementById("report-name").value;
+            let commentId = document.getElementById("comment-id").value;
+            if (commentId === undefined || commentId === "undefined") commentId = "";
+            if (reportName === "posts"){
+                this.target = "게시글";
+            } else if (reportName === "comments") {
+                this.target = "댓글";
+            } else if (reportName === "users") {
+                this.target = "유저";
+            } else {
+                alert("신고 중 오류 발생");
+                return;
+            }
 
-            try {
-                // 1. GET 요청으로 좋아요 여부 확인
-                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
+            if(confirm(this.target + " 신고를 하시겠습니까?")){
+                const isLogin = await getLoginStatus();
+                if(isLogin === true){
+                    const _csrf = document.querySelector("._csrf").value;
+                    const boardId = document.getElementById("boardId").value;
+                    const reportSelect = document.getElementById("reportSelect").value;
+                    const reportNotes = document.getElementById("reportNotes").value;
+
+                    let myModal = document.getElementById("reports");
+                    let modalInstance = bootstrap.Modal.getInstance(myModal);
+
+                    try {
+                        const response = await fetch(`/api/reports/${reportName}`, {
+                            method : "POST",
+                            headers : {
+                                "Content-Type" : "application/json",
+                                "X-CSRF-TOKEN" : _csrf
+                            },
+                            body : JSON.stringify({
+                                postId : boardId,
+                                commentId : commentId,
+                                reason: reportSelect,
+                                notes : reportNotes
+                            })
+                        });
+                        const res = await response.json();
+                        alert(res.msg);
+                        modalInstance.hide();
+                    } catch (error) {
+                        alert(this.target + " 신고 중 오류 발생");
                     }
-                });
-
-                const isLiked = await response.json();
-                if (!isLiked.res) {
-                    likeBtn.innerHTML = `<button class="btn btn-primary me-3" style="background-color: white; color: #0D6EFD;">좋아요 ${isLiked.likes}</button>`;
-                    return false;
                 } else {
-                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요 ${isLiked.likes}</button>`;
-                    return true;
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
                 }
-            } catch (error){
-                alert(error);
-                window.location.href = `/freeBoard/${boardId}`;
             }
         }
 
         async function boardLike() {
-            let _csrf = document.querySelector("._csrf").value;
+            const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
 
             if (await getBoardLike()) {
@@ -109,11 +140,10 @@
             };
         }
 
-        // C(Create)
         async function createUserComment(){
-            let boardId = document.getElementById("boardId").value;
+            const boardId = document.getElementById("boardId").value;
             let comment_content = document.getElementById("comment_content").value;
-            let _csrf = document.querySelector("._csrf").value;
+            const _csrf = document.querySelector("._csrf").value;
 
             if(comment_content.trim() === ""){
                 alert("내용을 입력하세요");
@@ -147,6 +177,54 @@
         }
 
         // R(Read)
+        function setReportId(reportName, commentId) {
+            document.getElementById("reportNotes").value = "";
+            document.getElementById("report-name").value = reportName;
+            document.getElementById("comment-id").value = commentId;
+        }
+
+        async function getLoginStatus(){
+            try {
+                const response = await fetch("/api/loginStatus", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                const res = await response.json();
+                return res; // 로그인 상태를 반환
+            } catch (error) {
+                return false; // 오류 발생 시 로그인 상태 false 반환
+            }
+        }
+
+        async function getBoardLike(){
+            const boardId = document.getElementById("boardId").value;
+            const likeBtn = document.getElementById("like-btn");
+
+            try {
+                // 1. GET 요청으로 좋아요 여부 확인
+                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const isLiked = await response.json();
+                if (!isLiked.res) {
+                    likeBtn.innerHTML = `<button class="btn btn-primary me-3" style="background-color: white; color: #0D6EFD;">좋아요 ${isLiked.likes}</button>`;
+                    return false;
+                } else {
+                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요 ${isLiked.likes}</button>`;
+                    return true;
+                }
+            } catch (error){
+                alert(error);
+                window.location.href = `/freeBoard/${boardId}`;
+            }
+        }
+
         async function getMyInfo(){
             try{
                 const response = await fetch("/api/myInfo", {
@@ -172,7 +250,7 @@
         }
 
         async function getBoardDetails() { // 게시글 Detail
-            let boardId = document.getElementById("boardId").value;
+            const boardId = document.getElementById("boardId").value;
 
             try {
                 const response = await fetch(`/api/freeBoard/${boardId}`, {
@@ -218,7 +296,7 @@
         }
 
         async function getAllComment(page){
-            let boardId = document.getElementById("boardId").value;
+            const boardId = document.getElementById("boardId").value;
             document.getElementById("currentPage").value = page;
 
             try{
@@ -258,18 +336,18 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col-auto p-0">
+                                                        <div class="col p-0">
                                                             <a href="/userinfo/${row.nickname}">
-                                                                <span>${row.nickname}</span>
+                                                                <span style="white-space: nowrap;">${row.nickname}</span>
                                                             </a>
                                                         </div>
-                                                        <div class="col d-flex justify-content-end">
-                                                            <div class="col-auto px-2">${createDate}</div>
+                                                        <div class="col-auto d-flex">
+                                                            <div class="col-auto px-1">${createDate}</div>
                                             `;
                         // 고유한 모달 ID 생성
                         if(row.author) {
                             commentHtml += `
-                                                            <div class="col-auto px-2">
+                                                            <div class="col-auto px-1">
                                                                 <div class="dropdown">
                                                                   <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                                         <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
@@ -285,6 +363,13 @@
                                                                 </div>
                                                             </div>
                                                 `;
+                        } else {
+                            commentHtml += `
+                                                            <div class="col-auto px-1">
+                                                                <!-- Button trigger modal -->
+                                                                <button class="btn btn-danger" onclick="setReportId('comments', ${row.id});" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+                                                            </div>
+                            `;
                         }
                         commentHtml += `
                                                         </div>
@@ -331,7 +416,7 @@
 
         // U(Update)
         async function updateComment(id) {
-            let boardId = document.getElementById("boardId").value;
+            const boardId = document.getElementById("boardId").value;
             let commentId = id;
             let currentPage = document.getElementById("currentPage").value;
             let content = document.getElementById("edit-content").value;
@@ -339,7 +424,7 @@
                 alert("내용을 입력하세요");
                 return;
             }
-            let _csrf = document.querySelector("._csrf").value;
+            const _csrf = document.querySelector("._csrf").value;
 
             let myModal = document.getElementById("freeBoardComment-modalView");
             let modalInstance = bootstrap.Modal.getInstance(myModal);
@@ -374,8 +459,8 @@
 
         // D(Delete)
         async function deleteBoard(){
-            let boardId = document.getElementById("boardId").value;
-            let _csrf = document.querySelector("._csrf").value;
+            const boardId = document.getElementById("boardId").value;
+            const _csrf = document.querySelector("._csrf").value;
 
             try{
                 if(!confirm("삭제하시겠습니까?")){
@@ -405,8 +490,8 @@
                 return;
             } else {
                 let currentPage = document.getElementById("currentPage").value;
-                let boardId = document.getElementById("boardId").value;
-                let _csrf = document.querySelector("._csrf").value;
+                const boardId = document.getElementById("boardId").value;
+                const _csrf = document.querySelector("._csrf").value;
 
                 try{
                     const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
@@ -606,7 +691,42 @@
                 <br>
                 <div class="my-3 d-flex justify-content-end">
                     <div id="like-btn"></div>
-                    <button class="btn btn-danger" id="report-btn">신고</button>
+                    <!-- Button trigger modal -->
+                    <button class="btn btn-danger" onclick="setReportId('posts');" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="reports" tabindex="-1" aria-hidden="true">
+                        <input type="hidden" id="report-name">
+                        <input type="hidden" id="comment-id">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">신고</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>신고 유형</h5>
+                                    <select id="reportSelect" class="form-select" aria-label="Default select example">
+                                        <option selected value="OTHER">신고 유형을 선택해주세요</option>
+                                        <option value="SPAM_AD">스팸 / 광고 / 도배</option>
+                                        <option value="INSULT">욕설 / 모욕</option>
+                                        <option value="ILLEGAL">불법 활동</option>
+                                        <option value="HATE">혐오 발언</option>
+                                        <option value="PORN">음란물</option>
+                                        <option value="PRIVACY">개인정보 노출</option>
+                                        <option value="OTHER">기타</option>
+                                    </select>
+                                    <br>
+
+                                    <h5>신고 내용</h5>
+                                    <textarea class="form-control" rows="3" id="reportNotes" placeholder="신고 내용을 입력해주세요"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                    <button type="button" id="report-btn" class="btn btn-primary">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <h4 class="mt-5">댓글</h4>
                 <div class="comments">

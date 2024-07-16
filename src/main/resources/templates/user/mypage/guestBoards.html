@@ -19,9 +19,9 @@
         })
 
         function addEventToRows() {
-            document.querySelectorAll(".board-item").forEach(function (div) { // tbody 내에 모든 tr 태그를 찾아서 for
-                div.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
-                    window.location.href = "/userinfo/" + div.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
+            document.querySelectorAll(".myGuestBoard-list tr").forEach(function (row) { // tbody 내에 모든 tr 태그를 찾아서 for
+                row.addEventListener("click", function (){ // tr 태그에 click 이 발생한다면
+                    window.location.href = "/userinfo/" + row.getAttribute("id"); // tr 태그에 있는 id 값을 더해 상세보기 페이지로 이동
                 })
             })
         }
@@ -69,14 +69,10 @@
 
                     // 이미지 태그를 조건에 따라 동적으로 생성
                     boardHtml += `
-                                <div class="board-item d-flex text-start p-1" id=${row.targetNickname}>
-                                    <span class="col me-auto text-dot pe-3">
-                                        ${row.content}
-                                    </span>
-                                    <span class="col-auto">
-                                        ${createDate}
-                                    </span>
-                                </div>
+                                <tr id=${row.targetNickname}>
+                                    <td>${createDate}</td>
+                                    <td class="comment text-start">${row.content}</td>
+                                </tr>
                             `;
                 });
                 document.querySelector(".myGuestBoard-list").innerHTML = boardHtml;
@@ -255,8 +251,16 @@
             <div class="my-3 p-3 text-start" style="background-color: white; border-radius: 15px;">
                 <h4 class="fw-bold" th:text="${title}"></h4>
                 <hr>
-                <!--방명록 Detail-->
-                <div class="myGuestBoard-list"></div>
+                <table class="table text-center" style="table-layout: fixed; word-break: break-word;">
+                    <thead>
+                    <tr class="table-light">
+                        <td class="col-3 col-sm-2">날짜</td>
+                        <td class="col-6 col-sm-7" style="display: table-cell;">내용</td>
+                    </tr>
+                    </thead>
+                    <!--방명록 리스트-->
+                    <tbody class="myGuestBoard-list"></tbody>
+                </table>
                 <!--방명록 페이징-->
                 <nav aria-label="">
                     <ul class="pagination justify-content-center GuestBoard-page-list">
