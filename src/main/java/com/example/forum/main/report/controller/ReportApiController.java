@@ -40,4 +40,15 @@ public class ReportApiController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"" + e.getMessage() + "\"}");
         }
     }
+
+    @PostMapping("/api/reports/guestBooks")
+    public ResponseEntity<?> reportGuestBooks(@RequestBody ReportRequest dto){
+        System.out.println(dto.toString());
+        try{
+            reportService.reportGuestBooks(dto);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"msg\" : \"신고 접수완료\"}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"" + e.getMessage() + "\"}");
+        }
+    }
 }

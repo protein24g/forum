@@ -25,6 +25,12 @@
         })
 
         // C(Create)
+        function setReportId(reportName, commentId) {
+            document.getElementById("reportNotes").value = "";
+            document.getElementById("report-name").value = reportName;
+            document.getElementById("comment-id").value = commentId;
+        }
+
         async function reports(){
             let reportName = document.getElementById("report-name").value;
             let commentId = document.getElementById("comment-id").value;
@@ -177,12 +183,6 @@
         }
 
         // R(Read)
-        function setReportId(reportName, commentId) {
-            document.getElementById("reportNotes").value = "";
-            document.getElementById("report-name").value = reportName;
-            document.getElementById("comment-id").value = commentId;
-        }
-
         async function getLoginStatus(){
             try {
                 const response = await fetch("/api/loginStatus", {

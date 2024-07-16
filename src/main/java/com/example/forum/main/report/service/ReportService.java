@@ -11,6 +11,8 @@ import com.example.forum.main.report.repository.ReportRepository;
 import com.example.forum.user.auth.dto.requests.CustomUserDetails;
 import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.profile.guestbook.entity.GuestBook;
+import com.example.forum.user.profile.guestbook.repository.GuestBookRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class ReportService {
     private final UserAuthRepository userAuthRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardCommentRepository freeBoardCommentRepository;
+    private final GuestBookRepository guestBookRepository;
     private final ReportRepository reportRepository;
 
     public void reportPosts(ReportRequest dto){
@@ -85,6 +88,38 @@ public class ReportService {
                 reportRepository.save(report);
                 user.addReports(report);
                 freeBoardComment.addReports(report);
+            }
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    public void reportGuestBooks(ReportRequest dto){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            GuestBook guestBook = guestBookRepository.findById(dto.getGuestBookId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방명록입니다"));
+
+            // 방명록 신고 여부 확인
+            Long guestBookId = dto.getGuestBookId();
+            boolean alreadyReported = user.getReports().stream()
+                    .anyMatch(report -> report.getGuestBook() != null && report.getGuestBook().getId().equals(guestBookId));
+
+            if(alreadyReported){
+                throw new IllegalArgumentException("이미 신고한 방명록입니다");
+            } else {
+                Report report = Report.builder()
+                        .reason(dto.getReason())
+                        .notes(dto.getNotes())
+                        .reportDate(LocalDateTime.now())
+                        .status(Report.StatusType.PENDING)
+                        .build();
+                reportRepository.save(report);
+                user.addReports(report);
+                guestBook.addReports(report);
             }
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");

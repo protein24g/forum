@@ -11,9 +11,56 @@
         document.addEventListener("DOMContentLoaded", function (){
             getUserInfo();
             getGuestBooks();
+
+            document.getElementById("report-btn").addEventListener("click", function (){
+                reports();
+            })
         })
 
         // C(Create)
+        function setGuestBookId(guestBookId) {
+            document.getElementById("reportNotes").value = "";
+            document.getElementById("guestBook-id").value = guestBookId;
+        }
+
+        async function reports(){
+            if(confirm("방명록 신고를 하시겠습니까?")){
+                const isLogin = await getLoginStatus();
+                if(isLogin === true){
+                    const _csrf = document.querySelector("._csrf").value;
+                    const guestBookId = document.getElementById("guestBook-id").value;
+                    const reportSelect = document.getElementById("reportSelect").value;
+                    const reportNotes = document.getElementById("reportNotes").value;
+
+                    let myModal = document.getElementById("reports");
+                    let modalInstance = bootstrap.Modal.getInstance(myModal);
+
+                    try {
+                        const response = await fetch(`/api/reports/guestBooks`, {
+                            method : "POST",
+                            headers : {
+                                "Content-Type" : "application/json",
+                                "X-CSRF-TOKEN" : _csrf
+                            },
+                            body : JSON.stringify({
+                                guestBookId : guestBookId,
+                                reason: reportSelect,
+                                notes : reportNotes
+                            })
+                        });
+                        const res = await response.json();
+                        alert(res.msg);
+                        modalInstance.hide();
+                    } catch (error) {
+                        alert(this.target + " 신고 중 오류 발생");
+                    }
+                } else {
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
+                }
+            }
+        }
+
         async function createGuestBook(){
             let nickname = document.querySelector("#userinfo-nickname").value;
             let guestBook_comment = document.querySelector("#guestBook-comment").value;
@@ -52,6 +99,21 @@
         }
 
         // R(Read)
+        async function getLoginStatus(){
+            try {
+                const response = await fetch("/api/loginStatus", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                const res = await response.json();
+                return res; // 로그인 상태를 반환
+            } catch (error) {
+                return false; // 오류 발생 시 로그인 상태 false 반환
+            }
+        }
+
         async function getMyInfo(){
             try{
                 const response = await fetch("/api/myInfo", {
@@ -134,7 +196,8 @@
                         `;
                     } else {
                         guestBooksHtml += `
-                                    <button class="px-2 btn btn-danger" onclick="getUpdateGuestBook(${res.content[i].id}, ${res.number})" style="border-radius: 15px;">신고</button>
+                                    <!-- Button trigger modal -->
+                                    <button class="btn btn-danger" onclick="setGuestBookId(${res.content[i].id})" data-bs-toggle="modal" data-bs-target="#reports" style="border-radius: 15px;">신고</button>
                         `;
                     }
                     guestBooksHtml += `
@@ -403,6 +466,39 @@
                     </thead>
                     <!-- 방명록 리스트 -->
                     <tbody class="guestBook-list"></tbody>
+                    <!-- Modal -->
+                    <div class="modal fade" id="reports" tabindex="-1" aria-hidden="true">
+                        <input type="hidden" id="guestBook-id">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">신고</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>신고 유형</h5>
+                                    <select id="reportSelect" class="form-select" aria-label="Default select example">
+                                        <option selected value="OTHER">신고 유형을 선택해주세요</option>
+                                        <option value="SPAM_AD">스팸 / 광고 / 도배</option>
+                                        <option value="INSULT">욕설 / 모욕</option>
+                                        <option value="ILLEGAL">불법 활동</option>
+                                        <option value="HATE">혐오 발언</option>
+                                        <option value="PORN">음란물</option>
+                                        <option value="PRIVACY">개인정보 노출</option>
+                                        <option value="OTHER">기타</option>
+                                    </select>
+                                    <br>
+
+                                    <h5>신고 내용</h5>
+                                    <textarea class="form-control" rows="3" id="reportNotes" placeholder="신고 내용을 입력해주세요"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                    <button type="button" id="report-btn" class="btn btn-primary">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </table>
                 <ul class="pagination justify-content-center guestBook-page-list"></ul>
                 <div class="newComment px-3">

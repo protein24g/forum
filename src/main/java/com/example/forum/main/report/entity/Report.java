@@ -3,6 +3,7 @@ package com.example.forum.main.report.entity;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.profile.guestbook.entity.GuestBook;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,10 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "free_Board_Comment_id")
     private FreeBoardComment freeBoardComment;
+
+    @ManyToOne
+    @JoinColumn(name = "guest_Book")
+    private GuestBook guestBook;
 
     @Enumerated(EnumType.STRING)
     private ReasonType reason;
@@ -98,5 +103,9 @@ public class Report {
 
     public void setFreeBoardCommentReport(FreeBoardComment freeBoardComment) {
         this.freeBoardComment = freeBoardComment;
+    }
+
+    public void setGuestBookReport(GuestBook guestBook) {
+        this.guestBook = guestBook;
     }
 }
