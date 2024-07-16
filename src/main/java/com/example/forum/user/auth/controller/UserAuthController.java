@@ -29,7 +29,7 @@ public class UserAuthController {
      * @return 로그인 페이지 뷰
      */
     @GetMapping("/login")
-    public String login(Model model, @RequestParam(name = "error", defaultValue = "none") String error){
+    public String login(Model model, @RequestParam(name = "error", defaultValue = "false") String error){
         if(error.equals("true")){
             model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다");
             model.addAttribute("url", "/login");

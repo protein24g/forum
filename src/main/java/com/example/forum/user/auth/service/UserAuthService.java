@@ -47,13 +47,8 @@ public class UserAuthService {
                         .build());
                 try{
                     // 이미지 저장
-                    System.out.println("이밎 ㅣ체크");
-                    System.out.println("이미지 들어왔따");
-                    System.out.println(dto.getProfile());
-                    System.out.println(dto.getProfile().getOriginalFilename());
                     if(dto.getProfile() != null && !dto.getProfile().isEmpty()) {
                         UserImage userImage = userImageService.saveImage(dto.getProfile());
-                        System.out.println("userImage 엔티티다" + userImage);
                         user.setUserImage(userImage);
                     }
                 } catch (Exception e){
