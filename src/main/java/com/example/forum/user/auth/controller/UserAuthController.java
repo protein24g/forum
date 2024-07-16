@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class UserAuthController {
     private final UserAuthService userAuthService;
-
     /**
      * 로그인 페이지
      *

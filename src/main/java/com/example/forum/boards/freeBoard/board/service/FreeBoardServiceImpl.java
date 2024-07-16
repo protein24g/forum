@@ -48,6 +48,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     private final AuthenticationService authenticationService;
     private final UserLikeRepository userLikeRepository;
 
+    // C(Create)
     /**
      * 게시글 생성
      *
@@ -94,6 +95,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         }
     }
 
+    // R(Read)
     /**
      * 게시글 목록 조회
      *
@@ -285,6 +287,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         }
     }
 
+    // U(Update)
     /**
      * 게시글 수정
      *
@@ -342,6 +345,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                 .build();
     }
 
+    // D(Delete)
     /**
      * 게시글 삭제
      *

@@ -10,6 +10,8 @@ body {
 }
 
 /* 미디어 쿼리 적용 */
-@media (max-width: 768px) {
-
+@media (max-width: 393px) {
+    body {
+        min-width: 393px;
+    }
 }
