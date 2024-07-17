@@ -25,7 +25,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/freeBoard/create", "/questionBoard/create").authenticated()
                         .requestMatchers("/", "/mobile/font.css", "/logo/**", "/favicon.ico",
-                                "/account/logout.js", "/navbar/active.js",
+                                "/header/header.css", "/header/header.js",
+                                "/account/logout.js",
                                 "/login", "/loginProc", "/join", "/joinProc",
                                 "/users/*", "/api/users/**",
                                 "/checkLoginId", "/checkNickname",
