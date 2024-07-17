@@ -11,6 +11,67 @@
 <body>
 <div th:fragment="headerFragment">
     <input type="hidden" class="_csrf" th:value="${_csrf.token}">
+
+    <div id="overlay"></div>
+    <nav class="container-xl position-relative">
+        <div class="row d-flex  py-3">
+            <div class="col-auto px-5 py-3" style="color: white; background-color: black";>
+                타이틀
+            </div>
+            <div class="col-auto end-0 d-xl-none d-block">
+                <div class="btn btn-primary position-absolute end-0" id="sidebar-toggle">사이드바</div>
+            </div>
+            <div class="col-auto" id="sidebar" style="list-style: none;">
+                <div class="col-auto">
+                    <a class="nav-link p-3 mx-1" href="/freeBoard">자유게시판</a>
+                </div>
+                <div class="col-auto">
+                    <a class="nav-link p-3 mx-1" href="#">질문과 토론</a>
+                </div>
+                <div class="position-absolute bottom-0 d-xl-none" sec:authorize="isAnonymous()">
+                    <a class="d-flex align-items-center text-black text-decoration-none p-3 dropdown-toggle" id="dropdownAnony" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">
+                        <strong>로그인 하세요</strong>
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownAnony">
+                        <li>
+                            <a href="/login" class="dropdown-item">
+                                <span>로그인</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/join" class="dropdown-item">
+                                <span>회원가입</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown col-auto d-flex d-xl-none d-block p-3 m-1" sec:authorize="isAuthenticated()">
+                    <a class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownAuth" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">
+                        <strong th:text="${#authentication.principal.username}"></strong>
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownAuth">
+                        <li>
+                            <a sec:authorize="isAuthenticated()" class="dropdown-item logoutBtn">
+                                <span>로그아웃</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">
+                                <span>마이페이지</span>
+                            </a>
+                        </li>
+                        <li sec:authorize="hasRole('ADMIN')">
+                            <hr class="dropdown-divider">
+                            <a sec:authorize="hasRole('ADMIN')" class="dropdown-item" href="/admin">관리자 페이지</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </nav>
     <nav class="navbar navbar-expand-xl bg-body-tertiary">
         <div class="container-xl">
             <a href="/" class="pe-5">
@@ -40,31 +101,6 @@
                     <a class="btn btn-outline-dark" href="/join">
                         <span>회원가입</span>
                     </a>
-                </div>
-
-                <div class="d-xl-none d-block" sec:authorize="isAuthenticated()">
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">
-                            <strong th:text="${#authentication.principal.username}"></strong>
-                        </a>
-                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-                            <li>
-                                <a sec:authorize="isAuthenticated()" class="dropdown-item logoutBtn">
-                                    <span>로그아웃</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a sec:authorize="isAuthenticated()" class="dropdown-item" href="/mypage">
-                                    <span>마이페이지</span>
-                                </a>
-                            </li>
-                            <li sec:authorize="hasRole('ADMIN')">
-                                <hr class="dropdown-divider">
-                                <a sec:authorize="hasRole('ADMIN')" class="dropdown-item" href="/admin">관리자 페이지</a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
