@@ -25,27 +25,36 @@
                 let keyword = document.querySelector("#keyword").value;
                 let option = document.querySelector("#option").value;
 
-                let boardHtml = "";
+                let boardHtml = `
+                                <div class="row m-0 bg-light fw-bold py-2" style="border-bottom: 3px solid #eee;">
+                                    <div class="col-1 d-md-block d-none">번호</div>
+                                    <div class="col-md-6 col text-dot">제목</div>
+                                    <div class="col-2 d-md-block d-none">작성자</div>
+                                    <div class="col-2 d-md-block d-none">날짜</div>
+                                    <div class="col-1 d-md-block d-none">조회</div>
+                                </div>
+                `;
                 res.content.forEach(row => {
                     let createDate = row.createDate.replace(/[T,-]/g, "-").slice(0,10);
 
                     // 이미지 태그를 조건에 따라 동적으로 생성
                     boardHtml += `
-                                        <tr id="${row.id}">
-                                            <td class="d-none d-md-table-cell">${row.id}</td>
-                                            <td>
-                                                <div class="row px-3">
-                                                    <div class="col p-0 d-flex">
-                                                        <div class="text-dot">${row.title}</div>
-                                                        <div class="ms-1">[${row.commentCount}]</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-md-table-cell">${row.nickname}</td>
-                                            <td>${createDate}</td>
-                                            <td class="d-none d-md-table-cell">${row.likes}</td>
-                                            <td class="d-none d-md-table-cell">${row.view}</td>
-                                        </tr>
+                                <div id="${row.id}" class="board-item row m-0 py-2" style="border-bottom: 1px solid #eee;">
+                                    <div class="col-1 d-md-block d-none">${row.id}</div>
+                                    <div class="col-md-6 col-12 text-dot text-start fw-bold p-md-0 py-1 d-flex">
+                                        <div class="text-dot">${row.title}</div>
+                                        <div class="px-1 mx-1" style="border-radius: 5px; background-color: cornflowerblue; color: white;">+${row.commentCount}</div>
+                                        <div class="px-1" style="border-radius: 5px; background-color: hotpink; color: white;">♥${row.likes}</div>
+                                    </div>
+                                    <div class="col-md-2 col-auto">${row.nickname}</div>
+                                    <div class="col-auto d-md-none p-0">/</div>
+                                    <div class="col-md-2 col-auto">${createDate}</div>
+                                    <div class="col-auto d-md-none p-0">/</div>
+                                    <div class="col-md-1 col-auto">
+                                        <img class="d-md-none" src="https://cdn-icons-png.flaticon.com/128/158/158746.png" width="15px;">
+                                        ${row.view}
+                                    </div>
+                                </div>
                                     `;
                 });
                 document.querySelector(".freeBoard-list").innerHTML = boardHtml;
@@ -174,7 +183,7 @@
             }
 
             function addEventToRows() {
-                document.querySelectorAll(".freeBoard-list tr").forEach(function (row) {
+                document.querySelectorAll(".board-item").forEach(function (row) {
                     row.addEventListener("click", function (){
                         window.location.href = "/freeBoard/" + row.getAttribute("id");
                     });
@@ -311,8 +320,8 @@
                         </div>
                     </div>
                     <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
-                        <div class="row">
-                            <div class="col-auto">
+                        <div class="d-flex ">
+                            <div class="ms-auto">
                                 <select class="p-2 sortSelect" style="border-radius: 5px;">
                                     <option value="0">날짜순</option>
                                     <option value="1">조회순</option>
@@ -321,28 +330,13 @@
                                 </select>
                             </div>
                         </div>
-
                         <!--게시글 Detail-->
-                        <table class="table" style="table-layout: fixed;">
-                            <thead>
-                                <tr class="table-light">
-                                    <th class="d-none col-1 d-md-table-cell">번호</th>
-                                    <th class="col-md-4">제목</th>
-                                    <th class="col-2 d-none d-md-table-cell">작성자</th>
-                                    <th class="col-4 col-md-2">작성일</th>
-                                    <th class="col-1 d-none d-md-table-cell">좋아요</th>
-                                    <th class="col-1 d-none d-md-table-cell">조회수</th>
-                                </tr>
-                            </thead>
-                            <tbody class="freeBoard-list"></tbody>
-                        </table>
-
+                        <div class="freeBoard-list"></div>
                         <!--게시글 페이징-->
                         <nav>
                             <ul class="pagination justify-content-center freeBoard-page">
                             </ul>
                         </nav>
-
                         <!--글쓰기-->
                         <div class="text-start">
                             <a class="m-3 btn btn-primary" href="/freeBoard/create">글쓰기</a>

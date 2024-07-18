@@ -215,13 +215,14 @@
 
                 const isLiked = await response.json();
                 if (!isLiked.res) {
-                    likeBtn.innerHTML = `<button class="btn btn-primary me-3" style="background-color: white; color: #0D6EFD;">좋아요 ${isLiked.likes}</button>`;
+                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥${isLiked.likes}</div>`;
                     return false;
                 } else {
-                    likeBtn.innerHTML = `<button class="btn btn-primary me-3">좋아요 ${isLiked.likes}</button>`;
+
+                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; background-color: hotpink; color: white;">♥${isLiked.likes}</div>`;
                     return true;
                 }
-            } catch (error){
+            } catch (error) {
                 alert(error);
                 window.location.href = `/freeBoard/${boardId}`;
             }
