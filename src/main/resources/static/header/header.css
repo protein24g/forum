@@ -1,12 +1,12 @@
 @media(max-width: 1200px){
     #sidebar {
         position: fixed;
-        z-index: 999;
+        z-index: 500;
         width: 250px;
         height: 100%;
         top: 0;
         right: -250px;
-        background-color: cornflowerblue;
+        background-color: lightslategray;
         transition: all 0.3s;
     }
 
@@ -25,11 +25,44 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.7);
-        z-index: 998;
+        z-index: 499;
     }
 
     #overlay.overlay-active {
         display: block;
+    }
+
+    #board-dropdown:hover #board-btn{
+        font-weight: bold;
+        background-color: #434B57;
+        color: white;
+    }
+
+    #board-dropdown {
+        z-index: 501;
+        border-bottom: 1px solid white;
+    }
+
+    #board-dropdown:hover #board-menu {
+        display: block;
+    }
+
+    #board-btn {
+        padding: 20px 0;
+        width: 100%;
+    }
+
+    #board-menu {
+        display: none;
+        width: 100%;
+        background-color: white;
+    }
+
+    #board-menu a {
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        color: black;
     }
 }
 
@@ -41,12 +74,6 @@
         color: black;
     }
 
-    #board-btn {
-        position: relative;
-        padding: 20px 0;
-        width: 150px;
-    }
-
     #board-dropdown:hover #board-btn{
         font-weight: bold;
         background-color: #434B57;
@@ -55,6 +82,12 @@
 
     #board-dropdown:hover #board-menu {
         display: block;
+    }
+
+    #board-btn {
+        position: relative;
+        padding: 20px 0;
+        width: 120px;
     }
 
     #board-menu {
