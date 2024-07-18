@@ -47,10 +47,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="position-absolute bottom-0 dropup col-auto d-flex d-xl-none d-block p-3 m-1" sec:authorize="isAuthenticated()">
-                            <a class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownAuth" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="position-absolute bottom-0 dropup d-xl-none" sec:authorize="isAuthenticated()"  style="width: 100%">
+                            <hr class="m-0">
+                            <a class="d-flex align-items-center text-black text-decoration-none p-3 dropdown-toggle" id="dropdownAuth" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="32" height="32" class="rounded-circle me-2 border">
-                                <strong th:text="${#authentication.principal.username}"></strong>
+                                <strong class="text-white" th:text="${#authentication.principal.username}"></strong>
                             </a>
                             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownAuth">
                                 <li>
