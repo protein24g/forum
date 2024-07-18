@@ -215,11 +215,11 @@
 
                 const isLiked = await response.json();
                 if (!isLiked.res) {
-                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥${isLiked.likes}</div>`;
+                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</div>`;
                     return false;
                 } else {
 
-                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; background-color: hotpink; color: white;">♥${isLiked.likes}</div>`;
+                    likeBtn.innerHTML = `<div class="p-3 mx-1" style="border-radius: 5px; background-color: hotpink; color: white;">♥ ${isLiked.likes}</div>`;
                     return true;
                 }
             } catch (error) {
@@ -652,12 +652,15 @@
                                 <span id="nickname"></span>
                             </a>
                         </div>
+                        <div class="col-auto p-0">/</div>
                         <div class="col-auto">
                             <span id="createDate"></span>
                         </div>
+                        <div class="col-auto p-0">/</div>
                         <div class="col-auto">
                             <span id="view"></span>
                         </div>
+                        <div class="col-auto p-0">/</div>
                         <div class="col-auto">
                             <span id="commentCount"></span>
                         </div>
