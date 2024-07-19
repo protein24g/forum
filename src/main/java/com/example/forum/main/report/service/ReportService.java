@@ -32,7 +32,7 @@ public class ReportService {
 
     public void reportPosts(ReportRequest dto){
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
-        if(customUserDetails != null){
+        if (customUserDetails != null){
             User user = userAuthRepository.findById(customUserDetails.getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
 
@@ -44,7 +44,12 @@ public class ReportService {
             boolean alreadyReported = user.getReports().stream()
                     .anyMatch(report -> report.getFreeBoard() != null && report.getFreeBoard().getId().equals(boardId));
 
-            if(alreadyReported){
+            // 내가 쓴 글 여부 확인
+            if (freeBoard.getUser().getId().equals(user.getId())) {
+                throw new IllegalArgumentException("내가 쓴 게시글은 신고할 수 없습니다");
+            }
+
+            if (alreadyReported){
                 throw new IllegalArgumentException("이미 신고한 게시글입니다");
             } else {
                 Report report = Report.builder()

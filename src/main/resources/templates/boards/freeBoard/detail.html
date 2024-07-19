@@ -215,10 +215,10 @@
 
                 const isLiked = await response.json();
                 if (!isLiked.res) {
-                    likeBtn.innerHTML = `<div class="px-2 py-1 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</div>`;
+                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</button>`;
                     return false;
                 } else {
-                    likeBtn.innerHTML = `<div class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${isLiked.likes}</div>`;
+                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${isLiked.likes}</button>`;
                     return true;
                 }
             } catch (error) {
@@ -285,6 +285,8 @@
                                 `;
                 });
                 document.querySelector("#freeBoard-images").innerHTML += images_html;
+
+
 
             } catch (error) {
                 if (error instanceof TypeError) {
@@ -663,27 +665,6 @@
                         <div class="col-auto">
                             <span id="commentCount"></span>
                         </div>
-                        <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
-                        <div class="col-auto ms-auto" sec:authorize="isAuthenticated()"  th:if="${writer == #authentication.principal.username}">
-                            <div class="col-auto px-2">
-                                <div class="dropdown">
-                                    <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
-                                    </button>
-                                    <ul class="dropdown-menu text-center">
-                                        <li>
-                                            <form th:action="@{'/freeBoard/' + ${boardId}}" method="post">
-                                                <input type="hidden" name="_method" value="PUT"/>
-                                                <button style="background-color: white; border: none;" class="form-control" type="submit">수정</button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <button style="background-color: white; border: none;" class="form-control" onclick="deleteBoard()">삭제</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <hr class="my-2">
                     <!--내용-->
@@ -697,7 +678,30 @@
                 <div class="my-3 d-flex justify-content-end">
                     <div id="like-btn"></div>
                     <!-- Button trigger modal -->
-                    <button class="px-2" style="background-color: red; color: white; border: none; border-radius: 5px;" onclick="setReportId('posts');" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+                    <div class="actionButtons d-flex">
+                        <button th:if="${#authentication.principal == 'anonymousUser' or #authentication.principal.username != writer}" class="py-1 mx-1" style="background-color: red; color: white; border: 1px solid red; border-radius: 5px;" onclick="setReportId('posts');" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+
+                        <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
+                        <div class="d-flex" sec:authorize="isAuthenticated()" th:if="${writer == #authentication.principal.username}">
+                            <div class="mx-1">
+                                <form th:action="@{'/freeBoard/' + ${boardId}}" method="post">
+                                    <input type="hidden" name="_method" value="PUT"/>
+                                    <button class="form-control p-1" style="background-color: cornflowerblue; border: 1px solid cornflowerblue; color: white;" type="submit">수정</button>
+                                </form>
+                            </div>
+                            <div class="mx-1">
+                                <button class="form-control p-1" style="background-color: red; border: 1px solid red; color: white;" onclick="deleteBoard()">삭제</button>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="reports" tabindex="-1" aria-hidden="true">
                         <input type="hidden" id="report-name">
