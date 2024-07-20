@@ -215,7 +215,7 @@
 
                 const isLiked = await response.json();
                 if (!isLiked.res) {
-                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</button>`;
+                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: white; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</button>`;
                     return false;
                 } else {
                     likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${isLiked.likes}</button>`;
@@ -317,73 +317,68 @@
                     document.querySelector(".comment-page-list").innerHTML = '';
                 } else {
                     // 렌더링 할 HTML을 저장할 변수
-                    let commentHtml = `<br><hr>`;
+                    let commentHtml = ``;
 
                     res.content.forEach(row => {
                         let content = row.content.replace(/\n/g, "<br>");
                         let createDate = row.createDate.replace('T', ' ').slice(2, 16);
 
                         commentHtml += `
-                                        <div class="card p-3" id=${row.boardId}>
+                                        <div class="px-3 py-2" style="border-bottom: 1px solid #eee;" id=${row.boardId}>
                                             <div class="row">
                                                 <div class="col-auto">
-
-
                                         `;
                         if(row.commentProfileImgUrl == null)
-                            commentHtml += `<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="55px;" class="rounded-circle border">`;
+                            commentHtml += `<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="40px;" class="rounded-circle border">`;
                         else
-                        commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="55px;" class="rounded-circle border">`;
+                        commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="40px;" class="rounded-circle border">`;
 
 
                         commentHtml += `
                                                 </div>
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col p-0">
-                                                            <a href="/userinfo/${row.nickname}">
-                                                                <span style="white-space: nowrap;">${row.nickname}</span>
-                                                            </a>
+                                                        <div class="col p-0 d-flex align-items-center">
+                                                            <a href="/userinfo/${row.nickname}">${row.nickname}</a>
                                                         </div>
                                                         <div class="col-auto d-flex">
-                                                            <div class="col-auto px-1">${createDate}</div>
-                                            `;
-                        // 고유한 모달 ID 생성
+                                                            <div class="dropdown">
+                                                                <button class="btn p-0 px-2 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">⁝</button>
+                                                                <ul class="dropdown-menu text-center">
+                                        `;
                         if(row.author) {
                             commentHtml += `
-                                                            <div class="col-auto px-1">
-                                                                <div class="dropdown">
-                                                                  <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                        <img src="https://cdn-icons-png.flaticon.com/128/7151/7151956.png" width="25px;">
-                                                                  </button>
-                                                                  <ul class="dropdown-menu text-center">
                                                                     <li>
-                                                                        <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
+                                                                        <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
                                                                     </li>
                                                                     <li>
-                                                                        <button onclick="deleteComment(${row.id})" type="button" class="dropdown-item">삭제</button>
+                                                                        <button onclick="deleteComment(${row.id})" class="dropdown-item">삭제</button>
                                                                     </li>
-                                                                  </ul>
-                                                                </div>
-                                                            </div>
-                                                `;
+                                            `;
                         } else {
                             commentHtml += `
-                                                            <div class="col-auto px-1">
-                                                                <!-- Button trigger modal -->
-                                                                <button class="px-2" style="background-color: red; color: white; border: none; border-radius: 5px;" onclick="setReportId('comments', ${row.id});" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
-                                                            </div>
-                            `;
+                                                                    <li>
+                                                                        <button onclick="setReportId('comments', ${row.id});" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+                                                                    </li>
+                                            `;
                         }
+
                         commentHtml += `
+
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <span class="p-0">${content}</span>
+                                                        <div class="row">
+                                                            <span class="p-0">${content}</span>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-auto p-0" style="color: gray;">${createDate}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                         `;
                     });
                     document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
@@ -555,7 +550,7 @@
                     </div>
                     <div sec:authorize="hasRole('ADMIN')">
                         <a href="/admin" class="p-2 text-white">
-                            <img src="https://cdn-icons-png.flaticon.com/128/3524/3524752.png" width="25px;" height="25px;">
+                            <img src="https://cdn-icons-png.flaticon.com/128/3524/3524752.png" width="20px;" height="20px;">
                         </a>
                     </div>
                 </div>
@@ -693,14 +688,6 @@
                                 <button class="form-control p-1" style="background-color: red; border: 1px solid red; color: white;" onclick="deleteBoard()">삭제</button>
                             </div>
                         </div>
-
-
-
-
-
-
-
-
                     </div>
                     <!-- Modal -->
                     <div class="modal fade" id="reports" tabindex="-1" aria-hidden="true">
@@ -737,8 +724,19 @@
                         </div>
                     </div>
                 </div>
-                <h4 class="mt-5">댓글</h4>
                 <div class="comments">
+                    <div class="prev-next d-flex" style="border-top: 3px solid #eee; border-bottom: 1px solid #eee;">
+                        <div class="col text-start d-flex align-items-center px-1 py-3">
+                            <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;"><</div>
+                            <span>dasdsad</span>
+                        </div>
+                        <div class="col-auto" style="background-color: #eee;">　</div>
+                        <div class="col text-end d-flex justify-content-end align-items-center px-1 py-3">
+                            <span>dasdsad</span>
+                            <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;">></div>
+                        </div>
+                    </div>
+                    <h5 class="p-3 mt-5 mb-0" style="border-bottom: 1px solid #eee;">댓글</h5>
                     <!-- 댓글 작성-->
                     <div class="newComment p-3 my-3" style="background-color: #eee; border-radius: 10px;">
                         <textarea class="form-control" id="comment_content" rows="3" style="border: none;"></textarea>
@@ -747,7 +745,7 @@
                     <!--댓글 리스트-->
                     <div class="freeBoardComment-list p-0" style="background-color: white"></div>
                     <!--댓글 페이징-->
-                    <ul class="pagination justify-content-center comment-page-list">
+                    <ul class="pagination justify-content-center comment-page-list my-3">
                     </ul>
                 </div>
 
