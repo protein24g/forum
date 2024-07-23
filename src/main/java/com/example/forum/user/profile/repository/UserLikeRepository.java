@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface UserLikeRepository extends JpaRepository<UserLike, Long> {
     @Query("SELECT u FROM UserLike u WHERE u.user = :user and u.freeBoard.id = :boardId")
     Optional<UserLike> findPostsILiked(User user, Long boardId);
+
+    @Query("SELECT u FROM UserLike u WHERE u.user = :user and u.freeBoardComment.id = :commentId")
+    Optional<UserLike> findCommentsILiked(User user, Long commentId);
 }

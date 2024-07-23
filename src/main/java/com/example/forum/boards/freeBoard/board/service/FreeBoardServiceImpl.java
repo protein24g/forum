@@ -95,6 +95,35 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         }
     }
 
+    /**
+     * 특정 게시물 좋아요
+     *
+     * @param boardId
+     */
+    public void insertBoardLike(Long boardId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+            FreeBoardLikeResponse freeBoardLikeResponse = getBoardLikes(boardId);
+            if(freeBoardLikeResponse.isRes()){
+                throw new IllegalArgumentException("이미 좋아요한 게시글입니다.");
+            }
+
+            // 좋아요 추가
+            UserLike userLike = new UserLike();
+            user.addUserLikes(userLike);
+            freeBoard.addUserLikes(userLike);
+            userLikeRepository.save(userLike);
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
     // R(Read)
     /**
      * 게시글 목록 조회
@@ -188,7 +217,6 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                 .title(board.getTitle())
                 .content(board.getContent())
                 .createDate(board.getCreateDate())
-                .commentResponses(freeBoardCommentServiceImpl.getCommentsForBoard(board.getId(), 0))
                 .commentCount(freeBoardCommentRepository.getPostCommentCount(board.getId()))
                 .view(board.incView())
                 .images(imagesName)
@@ -287,6 +315,34 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         }
     }
 
+    /**
+     * 특정 게시글 좋아요 여부
+     *
+     * @param boardId
+     * @return
+     */
+    public FreeBoardLikeResponse getBoardLikes(Long boardId){
+        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            return FreeBoardLikeResponse.builder()
+                    .res(user.getUserLikes().stream()
+                            .anyMatch(userLike -> freeBoard.getUserLikes().contains(userLike)))
+                    .likes(freeBoard.getUserLikes().size())
+                    .build();
+        } else {
+            return FreeBoardLikeResponse.builder()
+                    .res(false)
+                    .likes(freeBoard.getUserLikes().size())
+                    .build();
+        }
+    }
+
     // U(Update)
     /**
      * 게시글 수정
@@ -368,69 +424,11 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
     }
 
     /**
-     * 특정 게시글 좋아요 여부
-     *
-     * @param boardId
-     * @return
-     */
-    public FreeBoardLikeResponse getBoardLikes(Long boardId){
-        FreeBoard freeBoard = freeBoardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
-
-        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
-        if(customUserDetails != null){
-            User user = userAuthRepository.findById(customUserDetails.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
-
-            return FreeBoardLikeResponse.builder()
-                    .res(user.getUserLikes().stream()
-                            .anyMatch(userLike -> freeBoard.getUserLikes().contains(userLike)))
-                    .likes(freeBoard.getUserLikes().size())
-                    .build();
-        } else {
-            return FreeBoardLikeResponse.builder()
-                    .res(false)
-                    .likes(freeBoard.getUserLikes().size())
-                    .build();
-        }
-    }
-
-    /**
-     * 특정 게시물 좋아요
-     *
-     * @param boardId
-     */
-    public void insertBoardLike(Long boardId){
-        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
-        if(customUserDetails != null){
-            User user = userAuthRepository.findById(customUserDetails.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
-
-            FreeBoard freeBoard = freeBoardRepository.findById(boardId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
-
-            FreeBoardLikeResponse freeBoardLikeResponse = getBoardLikes(boardId);
-            if(freeBoardLikeResponse.isRes()){
-                throw new IllegalArgumentException("이미 좋아요한 게시글입니다.");
-            }
-
-            // 좋아요 추가
-            UserLike userLike = new UserLike();
-            user.addUserLikes(userLike);
-            freeBoard.addUserLikes(userLike);
-            userLikeRepository.save(userLike);
-        } else {
-            throw new IllegalArgumentException("로그인 후 이용하세요");
-        }
-    }
-
-    /**
      * 특정 게시물 좋아요 취소
      *
      * @param boardId
      * @return
      */
-    @DeleteMapping("/api/freeBoard/{boardId}/like")
     public void deleteBoardLike(Long boardId){
         CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
         if(customUserDetails != null){

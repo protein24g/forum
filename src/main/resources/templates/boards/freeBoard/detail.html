@@ -15,7 +15,7 @@
         document.addEventListener("DOMContentLoaded", function (){
             getBoardDetails();
             getAllComment(0);
-            getBoardLike();
+            getBoardLikeCheck();
 
             document.getElementById("like-btn").addEventListener("click", function (){
                 boardLike();
@@ -90,7 +90,7 @@
             const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
 
-            if (await getBoardLike()) {
+            if (await getBoardLikeCheck()) {
                 // 이미 좋아요가 되어 있으면 DELETE 요청으로 좋아요 취소
                 try {
                     const response2 = await fetch(`/api/freeBoard/${boardId}/like`, {
@@ -102,7 +102,7 @@
                     });
 
                     if (response2.ok) {
-                        await getBoardLike();
+                        await getBoardLikeCheck();
                         // 취소 성공 시 할 작업
                     } else if (response2.status === 400){
                         alert("로그인 후 이용하세요");
@@ -124,7 +124,7 @@
                     });
 
                     if (response3.ok) {
-                        await getBoardLike();
+                        await getBoardLikeCheck();
                         // 추가 성공 시 할 작업
                     } else if (response3.status === 400){
                         alert("로그인 후 이용하세요");
@@ -134,6 +134,44 @@
                     alert("좋아요 추가 중 오류 발생: " + error);
                     window.location.href = `/freeBoard/${boardId}`;
                 }
+            }
+        }
+
+        async function commentLike(commentId) {
+            const _csrf = document.querySelector("._csrf").value;
+            const boardId = document.getElementById("boardId").value;
+            const commentLikeBtn = document.querySelector(".comment-like-btn");
+
+            let method, msg, tag;
+
+            let result;
+            result = await getCommentLikeCheck(commentId);
+            if (result.res) {
+                method = "DELETE";
+                msg = "취소";
+                tag = `<span style="background: none;" onclick="commentLike(${commentId})">♡ ${result.likes - 1}</span>`;
+            } else {
+                method = "POST";
+                msg = "추가";
+                tag = `<span style="color: hotpink; background: none;" onclick="commentLike(${commentId})">♥ ${result.likes + 1}</span>`;
+            }
+            try {
+                const response = await fetch(`/api/freeBoard/${commentId}/comments/like`, {
+                    method: method,
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : _csrf
+                    }
+                });
+                if (response.ok) {
+                    commentLikeBtn.innerHTML = tag;
+                } else if (response.status === 400){
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
+                }
+            } catch (error) {
+                alert("좋아요 " + msg + " 중 오류 발생: " + error.message);
+                window.location.href = `/freeBoard/${boardId}`;
             }
         }
 
@@ -200,7 +238,7 @@
             }
         }
 
-        async function getBoardLike(){
+        async function getBoardLikeCheck(){
             const boardId = document.getElementById("boardId").value;
             const likeBtn = document.getElementById("like-btn");
 
@@ -213,14 +251,32 @@
                     }
                 });
 
-                const isLiked = await response.json();
-                if (!isLiked.res) {
-                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: white; border: 1px solid hotpink; color: hotpink;">♥ ${isLiked.likes}</button>`;
+                const result = await response.json();
+                if (!result.res) {
+                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: white; border: 1px solid hotpink; color: hotpink;">♥ ${result.likes}</button>`;
                     return false;
                 } else {
-                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${isLiked.likes}</button>`;
+                    likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${result.likes}</button>`;
                     return true;
                 }
+            } catch (error) {
+                alert(error);
+                window.location.href = `/freeBoard/${boardId}`;
+            }
+        }
+
+        async function getCommentLikeCheck(commentId){
+            const boardId = document.getElementById("boardId").value;
+
+            try {
+                // 1. GET 요청으로 좋아요 여부 확인
+                const response = await fetch(`/api/freeBoard/${commentId}/comments/like`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                return await response.json();
             } catch (error) {
                 alert(error);
                 window.location.href = `/freeBoard/${boardId}`;
@@ -253,6 +309,7 @@
 
         async function getBoardDetails() { // 게시글 Detail
             const boardId = document.getElementById("boardId").value;
+            const commentCount = document.querySelector(".comment-count");
 
             try {
                 const response = await fetch(`/api/freeBoard/${boardId}`, {
@@ -261,7 +318,7 @@
 
                 const res = await response.json(); // JSON 형식으로 응답 본문을 파싱
                 console.log(res);
-
+                commentCount.textContent += ` ${res.commentCount}`;
                 // 응답 데이터를 업데이트
                 document.getElementById("createDate").innerText = res.createDate.replace('T', ' ').slice(2, 16);
                 document.getElementById("nickname").innerText = res.nickname;
@@ -285,8 +342,6 @@
                                 `;
                 });
                 document.querySelector("#freeBoard-images").innerHTML += images_html;
-
-
 
             } catch (error) {
                 if (error instanceof TypeError) {
@@ -316,71 +371,95 @@
                     document.querySelector(".freeBoardComment-list").innerHTML = '';
                     document.querySelector(".comment-page-list").innerHTML = '';
                 } else {
+                    console.log(res);
                     // 렌더링 할 HTML을 저장할 변수
                     let commentHtml = ``;
 
-                    res.content.forEach(row => {
+                    for (const row of res.content) {
                         let content = row.content.replace(/\n/g, "<br>");
                         let createDate = row.createDate.replace('T', ' ').slice(2, 16);
 
                         commentHtml += `
-                                        <div class="px-3 py-2" style="border-bottom: 1px solid #eee;" id=${row.boardId}>
-                                            <div class="row">
+                                        <div class="py-2" style="border-bottom: 1px solid #eee;" id=${row.boardId}>
+                                            <div class="d-flex">
                                                 <div class="col-auto">
                                         `;
                         if(row.commentProfileImgUrl == null)
                             commentHtml += `<img src="https://cdn-icons-png.flaticon.com/128/4530/4530959.png" width="40px;" class="rounded-circle border">`;
                         else
-                        commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="40px;" class="rounded-circle border">`;
+                            commentHtml += `<img src="/profileUpload/${row.commentProfileImgUrl}" width="40px;" class="rounded-circle border">`;
 
 
                         commentHtml += `
                                                 </div>
-                                                <div class="col">
+                                                <div class="col px-3">
                                                     <div class="row">
-                                                        <div class="col p-0 d-flex align-items-center">
+                                                        <div class="col d-flex align-items-center">
                                                             <a href="/userinfo/${row.nickname}">${row.nickname}</a>
-                                                        </div>
-                                                        <div class="col-auto d-flex">
-                                                            <div class="dropdown">
-                                                                <button class="btn p-0 px-2 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">⁝</button>
-                                                                <ul class="dropdown-menu text-center">
+                                       `;
+
+                        if (row.author) {
+                            commentHtml +=  `
+                                                            <span style="border: 1px solid blue; border-radius: 15px; color: blue;">내 댓글</span>
                                         `;
-                        if(row.author) {
+                        }
+
+                        commentHtml += `
+                                                        </div>
+                                                        <div class="dropdown col-auto">
+                                                            <button class="btn p-0 px-2 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">⁝</button>
+                                                            <ul class="dropdown-menu text-center">
+                                        `;
+                        if (row.author) {
                             commentHtml += `
-                                                                    <li>
-                                                                        <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
-                                                                    </li>
-                                                                    <li>
-                                                                        <button onclick="deleteComment(${row.id})" class="dropdown-item">삭제</button>
-                                                                    </li>
+                                                                <li>
+                                                                    <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
+                                                                </li>
+                                                                <li>
+                                                                    <button onclick="deleteComment(${row.id})" class="dropdown-item">삭제</button>
+                                                                </li>
                                             `;
                         } else {
                             commentHtml += `
-                                                                    <li>
-                                                                        <button onclick="setReportId('comments', ${row.id});" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
-                                                                    </li>
+                                                                <li>
+                                                                    <button onclick="setReportId('comments', ${row.id});" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reports">신고</button>
+                                                                </li>
                                             `;
                         }
 
                         commentHtml += `
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <span style="word-break: break-all;">${content}</span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col" style="color: gray;">${createDate}</div>
+                                                        <div class="col-auto px-3 comment-like-btn" id="${row.id}">
+                                       `;
 
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <span class="p-0">${content}</span>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-auto p-0" style="color: gray;">${createDate}</div>
+                        let result = await getCommentLikeCheck(row.id);
+                        if (result.res) {
+                            commentHtml += `
+                                            <span style="color: hotpink; background: none;" onclick="commentLike(${row.id})">♥ ${result.likes}</span>
+                            `;
+                        } else {
+                            commentHtml += `
+                                            <span style="background: none;" onclick="commentLike(${row.id})">♡ ${result.likes}</span>
+                            `;
+                        }
+
+                        commentHtml += `
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                         `;
-                    });
+                    }
                     document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
 
                     let pageHtml = "";
@@ -636,40 +715,33 @@
             </div>
         </div>
         <div class="order-xl-2 order-1 col-xl-9 text-start">
-            <br><a class="text-black px-3 py-2 fw-bold" href="/freeBoard" style="text-decoration: none; background-color: white; border-radius: 15px;">< 목록으로</a>
-
-            <div class="board-info px-3" style="background-color: white; border-radius: 15px;">
+            <div class="board-info p-3 my-3" style="background-color: white; border-radius: 15px;">
                 <!-- 게시글 Detail -->
-                <div class="m-0 mt-4">
-                    <h3 class="pt-3 pb-2" id="title" style="word-wrap: break-word;"></h3>
-                    <div class="row">
-                        <div class="col-auto">
-                            <a th:href="'/userinfo/' + ${writer}" style="">
-                                <span id="nickname"></span>
-                            </a>
-                        </div>
-                        <div class="col-auto p-0">/</div>
-                        <div class="col-auto">
-                            <span id="createDate"></span>
-                        </div>
-                        <div class="col-auto p-0">/</div>
-                        <div class="col-auto">
-                            <span id="view"></span>
-                        </div>
-                        <div class="col-auto p-0">/</div>
-                        <div class="col-auto">
-                            <span id="commentCount"></span>
-                        </div>
+                <h3 id="title" style="word-break: break-all;"></h3>
+                <div class="row">
+                    <div class="col-auto">
+                        <a th:href="'/userinfo/' + ${writer}" style="">
+                            <span id="nickname"></span>
+                        </a>
                     </div>
-                    <hr class="my-2">
-                    <!--내용-->
-                    <span id="freeBoard-content"></span>
-                    <!--이미지-->
-                    <div id="freeBoard-images"></div>
+                    <div class="col-auto p-0">/</div>
+                    <div class="col-auto">
+                        <span id="createDate"></span>
+                    </div>
+                    <div class="col-auto p-0">/</div>
+                    <div class="col-auto">
+                        <span id="view"></span>
+                    </div>
+                    <div class="col-auto p-0">/</div>
+                    <div class="col-auto">
+                        <span id="commentCount"></span>
+                    </div>
                 </div>
-                <br>
-                <a class="text-black px-3 py-2 my-3" href="/freeBoard" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
-                <br>
+                <hr class="my-2">
+                <!--내용-->
+                <span id="freeBoard-content"></span>
+                <!--이미지-->
+                <div id="freeBoard-images"></div>
                 <div class="my-3 d-flex justify-content-end">
                     <div id="like-btn"></div>
                     <!-- Button trigger modal -->
@@ -725,22 +797,25 @@
                     </div>
                 </div>
                 <div class="comments">
-                    <div class="prev-next d-flex" style="border-top: 3px solid #eee; border-bottom: 1px solid #eee;">
+                    <div class="prev-next d-flex" style="border-top: 3px solid #eee;">
                         <div class="col text-start d-flex align-items-center px-1 py-3">
                             <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;"><</div>
                             <span>dasdsad</span>
                         </div>
-                        <div class="col-auto" style="background-color: #eee;">　</div>
+                        <div class="col-auto" style="background-color: #eee; width: 3px;">　</div>
                         <div class="col text-end d-flex justify-content-end align-items-center px-1 py-3">
                             <span>dasdsad</span>
                             <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;">></div>
                         </div>
                     </div>
-                    <h5 class="p-3 mt-5 mb-0" style="border-bottom: 1px solid #eee;">댓글</h5>
+                    <div class="col-auto d-flex justify-content-end">
+                        <a class="text-black px-3 py-2 my-3" href="/freeBoard" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
+                    </div>
+                    <h5 class="my-3 comment-count">댓글</h5>
                     <!-- 댓글 작성-->
-                    <div class="newComment p-3 my-3" style="background-color: #eee; border-radius: 10px;">
-                        <textarea class="form-control" id="comment_content" rows="3" style="border: none;"></textarea>
-                        <input class="px-3 py-2 d-flex ms-auto btn btn-primary" type="button" onclick="createUserComment()" value="작성" style="border-radius: 15px;">
+                    <div class="newComment my-3 p-3 d-flex" style="background-color: #eee;">
+                        <textarea class="form-control border" id="comment_content" rows="2" style="border: none;" placeholder="댓글을 입력하세요"></textarea>
+                        <input class="px-3 py-2 d-flex ms-auto btn btn-primary" type="button" onclick="createUserComment()" value="작성">
                     </div>
                     <!--댓글 리스트-->
                     <div class="freeBoardComment-list p-0" style="background-color: white"></div>

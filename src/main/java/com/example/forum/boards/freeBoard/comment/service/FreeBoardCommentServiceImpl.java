@@ -4,6 +4,7 @@ import com.example.forum.base.comment.dto.request.CommentRequest;
 import com.example.forum.base.comment.dto.response.CommentResponse;
 import com.example.forum.base.comment.service.CommentService;
 import com.example.forum.base.auth.service.AuthenticationService;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.comment.entity.FreeBoardComment;
@@ -12,6 +13,8 @@ import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
 import com.example.forum.user.auth.dto.requests.CustomUserDetails;
 import com.example.forum.user.auth.repository.UserAuthRepository;
 import com.example.forum.user.entity.User;
+import com.example.forum.user.entity.UserLike;
+import com.example.forum.user.profile.repository.UserLikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +37,10 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     private final UserAuthRepository userAuthRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final AuthenticationService authenticationService;
+    private final UserLikeRepository userLikeRepository;
 
+
+    // C(Create)
     /**
      * 게시글에 댓글 작성
      *
@@ -65,6 +72,36 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         }
     }
 
+    /**
+     * 특정 댓글 좋아요
+     *
+     * @param commentId
+     */
+    public void insertCommentLike(Long commentId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+
+            FreeBoardLikeResponse freeBoardLikeResponse = getCommentLikes(commentId);
+            if(freeBoardLikeResponse.isRes()){
+                throw new IllegalArgumentException("이미 좋아요한 게시글입니다.");
+            }
+
+            // 좋아요 추가
+            UserLike userLike = new UserLike();
+            user.addUserLikes(userLike);
+            freeBoardComment.addUserLikes(userLike);
+            userLikeRepository.save(userLike);
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    // R(Read)
     /**
      * 특정 사용자의 댓글 목록 조회
      *
@@ -133,6 +170,35 @@ public class FreeBoardCommentServiceImpl implements CommentService {
     }
 
     /**
+     * 특정 댓글 좋아요 여부
+     *
+     * @param commentId
+     * @return
+     */
+    public FreeBoardLikeResponse getCommentLikes(Long commentId){
+        FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+            return FreeBoardLikeResponse.builder()
+                    .res(user.getUserLikes().stream()
+                            .anyMatch(userLike -> freeBoardComment.getUserLikes().contains(userLike)))
+                    .likes(freeBoardComment.getUserLikes().size())
+                    .build();
+        } else {
+            return FreeBoardLikeResponse.builder()
+                    .res(false)
+                    .likes(freeBoardComment.getUserLikes().size())
+                    .build();
+        }
+    }
+
+    // U(Update)
+    /**
      * 댓글 수정
      *
      * @param commentId 댓글 ID
@@ -161,6 +227,7 @@ public class FreeBoardCommentServiceImpl implements CommentService {
         }
     }
 
+    // D(Delete)
     /**
      * 댓글 삭제
      *
@@ -183,6 +250,32 @@ public class FreeBoardCommentServiceImpl implements CommentService {
             } else {
                 throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
             }
+        } else {
+            throw new IllegalArgumentException("로그인 후 이용하세요");
+        }
+    }
+
+    /**
+     * 특정 댓글 좋아요 취소
+     *
+     * @param commentId
+     * @return
+     */
+    public void deleteCommentLike(Long commentId){
+        CustomUserDetails customUserDetails = authenticationService.getCurrentUser();
+        if(customUserDetails != null){
+            User user = userAuthRepository.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+
+            FreeBoardLikeResponse freeBoardLikeResponse = getCommentLikes(commentId);
+            if(!freeBoardLikeResponse.isRes()){
+                throw new IllegalArgumentException("이미 좋아요를 취소한 댓글입니다.");
+            }
+
+            // 좋아요 삭제
+            UserLike userLike = userLikeRepository.findCommentsILiked(user, commentId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+            userLikeRepository.delete(userLike);
         } else {
             throw new IllegalArgumentException("로그인 후 이용하세요");
         }
