@@ -90,50 +90,35 @@
             const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
 
+            let method, msg;
+
             if (await getBoardLikeCheck()) {
-                // 이미 좋아요가 되어 있으면 DELETE 요청으로 좋아요 취소
-                try {
-                    const response2 = await fetch(`/api/freeBoard/${boardId}/like`, {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type" : "application/json",
-                            "X-CSRF-TOKEN" : _csrf
-                        }
-                    });
-
-                    if (response2.ok) {
-                        await getBoardLikeCheck();
-                        // 취소 성공 시 할 작업
-                    } else if (response2.status === 400){
-                        alert("로그인 후 이용하세요");
-                        window.location.href = "/login";
-                    }
-                } catch (error) {
-                    alert("좋아요 취소 중 오류 발생: " + error.message);
-                    window.location.href = `/freeBoard/${boardId}`;
-                }
+                method = "DELETE";
+                msg = "취소";
             } else {
-                // 좋아요가 되어 있지 않으면 POST 요청으로 좋아요 추가
-                try {
-                    const response3 = await fetch(`/api/freeBoard/${boardId}/like`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN" : _csrf
-                        }
-                    });
+                method = "POST";
+                msg = "추가";
+            }
 
-                    if (response3.ok) {
-                        await getBoardLikeCheck();
-                        // 추가 성공 시 할 작업
-                    } else if (response3.status === 400){
-                        alert("로그인 후 이용하세요");
-                        window.location.href = "/login";
+            try {
+                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
+                    method: method,
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : _csrf
                     }
-                } catch (error) {
-                    alert("좋아요 추가 중 오류 발생: " + error);
-                    window.location.href = `/freeBoard/${boardId}`;
+                });
+
+                if (response.ok) {
+                    await getBoardLikeCheck();
+                    // 취소 성공 시 할 작업
+                } else if (response.status === 400){
+                    alert("로그인 후 이용하세요");
+                    window.location.href = "/login";
                 }
+            } catch (error) {
+                alert("좋아요 " + msg + "중 오류 발생: " + error.message);
+                window.location.href = `/freeBoard/${boardId}`;
             }
         }
 
@@ -170,7 +155,7 @@
                     window.location.href = "/login";
                 }
             } catch (error) {
-                alert("좋아요 " + msg + " 중 오류 발생: " + error.message);
+                alert("좋아요 " + msg + "중 오류 발생: " + error.message);
                 window.location.href = `/freeBoard/${boardId}`;
             }
         }
