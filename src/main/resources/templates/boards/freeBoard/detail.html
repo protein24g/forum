@@ -16,6 +16,7 @@
             getBoardDetails();
             getAllComment(0);
             getBoardLikeCheck();
+            getPrevNext();
 
             document.getElementById("like-btn").addEventListener("click", function (){
                 boardLike();
@@ -391,7 +392,7 @@
 
                         commentHtml += `
                                                         </div>
-                                                        <div class="dropdown col-auto">
+                                                        <div class="dropdown col-auto p-0">
                                                             <button class="btn p-0 px-2 fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">⁝</button>
                                                             <ul class="dropdown-menu text-center">
                                         `;
@@ -472,6 +473,38 @@
                     document.querySelector(".comment-page-list").innerHTML = pageHtml;
                 }
             }catch (error){
+                alert(error);
+                window.location.href = "/";
+            }
+        }
+
+        async function getPrevNext() {
+            console.log("asdasdasdsa");
+            const boardId = document.getElementById("boardId").value;
+            let tag = document.getElementById("prev-next");
+            try {
+                const response = await fetch(`/api/freeBoard/${boardId}/prev-next`, {
+                    method : "GET",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    }
+                });
+
+                const res = await response.json();
+                console.log(res);
+
+                tag.innerHTML = `
+                                <div class="col-6 text-start d-flex align-items-center px-1 py-3">
+                                    <div class="col-auto" style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;"><</div>
+                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.prevId == null) ? "#" : '/freeBoard/' + res.prevId}">${(res.prevTitle == null) ? "이전글이 존재하지 않습니다" : res.prevTitle}</a>
+                                </div>
+                                <div class="col-auto" style="background-color: #eee; width: 3px;">　</div>
+                                <div class="col-6 text-end d-flex justify-content-end align-items-center px-1 py-3">
+                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.nextId == null) ? "#" : '/freeBoard/' + res.nextId}">${(res.nextTitle == null) ? "다음글이 존재하지 않습니다" : res.nextTitle}</a>
+                                    <div class="col-auto" style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;">></div>
+                                </div>
+                `;
+            } catch (error) {
                 alert(error);
                 window.location.href = "/";
             }
@@ -782,17 +815,8 @@
                     </div>
                 </div>
                 <div class="comments">
-                    <div class="prev-next d-flex" style="border-top: 3px solid #eee;">
-                        <div class="col text-start d-flex align-items-center px-1 py-3">
-                            <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;"><</div>
-                            <span>dasdsad</span>
-                        </div>
-                        <div class="col-auto" style="background-color: #eee; width: 3px;">　</div>
-                        <div class="col text-end d-flex justify-content-end align-items-center px-1 py-3">
-                            <span>dasdsad</span>
-                            <div style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;">></div>
-                        </div>
-                    </div>
+                    <!--이전, 다음 글-->
+                    <div class="d-flex" id="prev-next" style="border-top: 3px solid #eee;"></div>
                     <div class="col-auto d-flex justify-content-end">
                         <a class="text-black px-3 py-2 my-3" href="/freeBoard" style="background-color: #eee; border-radius: 10px; text-decoration: none;">목록으로</a>
                     </div>

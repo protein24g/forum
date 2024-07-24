@@ -3,6 +3,7 @@ package com.example.forum.boards.freeBoard.board.controller;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeResponse;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardPrevNextResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
@@ -24,6 +25,26 @@ import java.util.Map;
 public class FreeBoardApiController {
     private final FreeBoardServiceImpl freeBoardServiceImpl;
 
+    // C(Create)
+    /**
+     * 특정 게시물 좋아요
+     *
+     * @param boardId
+     * @return
+     */
+    @PostMapping("/api/freeBoard/{boardId}/like")
+    public ResponseEntity<?> insertBoardLike(@PathVariable(name = "boardId") Long boardId){
+        try{
+            freeBoardServiceImpl.insertBoardLike(boardId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (IllegalArgumentException e){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+    // R(Read)
     /**
      * 게시글 목록을 검색하여 반환
      *
@@ -60,7 +81,7 @@ public class FreeBoardApiController {
      * @return 게시글 수정을 위한 데이터
      */
     @GetMapping("/api/freeBoard/{boardId}/update")
-    public ResponseEntity<?> getBoardUpdateData(@PathVariable(name = "boardId") Long boardId){
+    public ResponseEntity<?> getBoardUpdateData(@PathVariable(name = "boardId") Long boardId) {
         try{
             FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.getBoardUpdateData(boardId);
             return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponse);
@@ -69,6 +90,38 @@ public class FreeBoardApiController {
         }
     }
 
+    /**
+     * 특정 게시글 좋아요 여부
+     *
+     * @param boardId
+     * @return
+     */
+    @GetMapping("/api/freeBoard/{boardId}/like")
+    public ResponseEntity<?> getBoardLikes(@PathVariable(name = "boardId") Long boardId) {
+        try{
+            FreeBoardLikeResponse freeBoardLikeResponse = freeBoardServiceImpl.getBoardLikes(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(freeBoardLikeResponse);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    /**
+     * 이전, 다음 글의 id, 제목 반환
+     * @param boardId
+     * @return
+     */
+    @GetMapping("/api/freeBoard/{boardId}/prev-next")
+    public ResponseEntity<?> getPrevNext(@PathVariable(name = "boardId") Long boardId) {
+        try {
+            FreeBoardPrevNextResponse freeBoardPrevNextResponse = freeBoardServiceImpl.getPrevNext(boardId);
+            return ResponseEntity.status(HttpStatus.OK).body(freeBoardPrevNextResponse);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // U(Update)
     /**
      * 게시글 수정
      *
@@ -86,6 +139,7 @@ public class FreeBoardApiController {
         }
     }
 
+    // D(Delete)
     /**
      * 게시글 삭제
      *
@@ -98,40 +152,6 @@ public class FreeBoardApiController {
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    /**
-     * 특정 게시글 좋아요 여부
-     *
-     * @param boardId
-     * @return
-     */
-    @GetMapping("/api/freeBoard/{boardId}/like")
-    public ResponseEntity<?> getBoardLikes(@PathVariable(name = "boardId") Long boardId){
-        try{
-            FreeBoardLikeResponse freeBoardLikeResponse = freeBoardServiceImpl.getBoardLikes(boardId);
-            return ResponseEntity.status(HttpStatus.OK).body(freeBoardLikeResponse);
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    /**
-     * 특정 게시물 좋아요
-     *
-     * @param boardId
-     * @return
-     */
-    @PostMapping("/api/freeBoard/{boardId}/like")
-    public ResponseEntity<?> insertBoardLike(@PathVariable(name = "boardId") Long boardId){
-        try{
-            freeBoardServiceImpl.insertBoardLike(boardId);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (IllegalArgumentException e){
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 

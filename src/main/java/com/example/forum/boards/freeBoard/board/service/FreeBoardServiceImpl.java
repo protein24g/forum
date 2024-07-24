@@ -5,6 +5,7 @@ import com.example.forum.base.auth.service.AuthenticationService;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardRequest;
 import com.example.forum.boards.freeBoard.board.dto.request.FreeBoardSearch;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeResponse;
+import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardPrevNextResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.entity.FreeBoard;
 import com.example.forum.boards.freeBoard.board.repository.FreeBoardRepository;
@@ -39,7 +40,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRequest, FreeBoardResponse, FreeBoardSearch> {
-    private final FreeBoardCommentServiceImpl freeBoardCommentServiceImpl;
     private final FreeBoardCommentRepository freeBoardCommentRepository;
     private final UserAuthRepository userAuthRepository;
     private final FreeBoardRepository freeBoardRepository;
@@ -341,6 +341,23 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
                     .likes(freeBoard.getUserLikes().size())
                     .build();
         }
+    }
+
+    /**
+     * 이전, 다음 글의 id, 제목 반환
+     * @param boardId
+     * @return
+     */
+    public FreeBoardPrevNextResponse getPrevNext(Long boardId) {
+        FreeBoard prevBoard = freeBoardRepository.findById(boardId - 1).orElse(null);
+        FreeBoard nextBoard = freeBoardRepository.findById(boardId + 1).orElse(null);
+
+        return FreeBoardPrevNextResponse.builder()
+                .prevId((prevBoard != null) ? prevBoard.getId() : null)
+                .prevTitle((prevBoard != null) ? prevBoard.getTitle() : null)
+                .nextId((nextBoard != null) ? nextBoard.getId() : null)
+                .nextTitle((nextBoard != null) ? nextBoard.getTitle() : null)
+                .build();
     }
 
     // U(Update)
