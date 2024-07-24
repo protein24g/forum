@@ -126,7 +126,13 @@
         async function commentLike(commentId) {
             const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
-            const commentLikeBtn = document.querySelector(".comment-like-btn");
+            let commentLikeBtn;
+            for (const row of document.querySelectorAll(".comment-like-btn")) {
+                if (row.id === commentId.toString()) {
+                    commentLikeBtn = row;
+                    break;
+                }
+            }
 
             let method, msg, tag;
 
@@ -295,7 +301,6 @@
 
         async function getBoardDetails() { // 게시글 Detail
             const boardId = document.getElementById("boardId").value;
-            const commentCount = document.querySelector(".comment-count");
 
             try {
                 const response = await fetch(`/api/freeBoard/${boardId}`, {
@@ -304,7 +309,6 @@
 
                 const res = await response.json(); // JSON 형식으로 응답 본문을 파싱
                 console.log(res);
-                commentCount.textContent += ` ${res.commentCount}`;
                 // 응답 데이터를 업데이트
                 document.getElementById("createDate").innerText = res.createDate.replace('T', ' ').slice(2, 16);
                 document.getElementById("nickname").innerText = res.nickname;
@@ -314,10 +318,6 @@
                         `;
                 document.getElementById("title").innerText = res.title;
                 document.getElementById("freeBoard-content").innerText = res.content;
-                document.getElementById("commentCount").innerHTML = `
-                        <img src="https://cdn-icons-png.flaticon.com/128/6386/6386838.png" width="15px;">
-                        ${res.commentCount}
-                        `;
 
                 let images_html = "";
                 res.images.forEach(image => {
@@ -342,6 +342,7 @@
 
         async function getAllComment(page){
             const boardId = document.getElementById("boardId").value;
+            const commentCount = document.querySelector(".comment-count");
             document.getElementById("currentPage").value = page;
 
             try{
@@ -358,6 +359,8 @@
                     document.querySelector(".comment-page-list").innerHTML = '';
                 } else {
                     console.log(res);
+                    commentCount.textContent = `댓글 ${res.totalElements}`;
+
                     // 렌더링 할 HTML을 저장할 변수
                     let commentHtml = ``;
 
@@ -749,10 +752,6 @@
                     <div class="col-auto p-0">/</div>
                     <div class="col-auto">
                         <span id="view"></span>
-                    </div>
-                    <div class="col-auto p-0">/</div>
-                    <div class="col-auto">
-                        <span id="commentCount"></span>
                     </div>
                 </div>
                 <hr class="my-2">
