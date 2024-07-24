@@ -41,6 +41,9 @@ public class SecurityConfig {
                                 "/questionBoard/**", "/api/questionBoard/**", "/api/questionBoard/*/comments",
                                 "/questionBoardUpload/**"
                         ).permitAll()
+                        .requestMatchers( // 게시판
+                                "/boards/**"
+                        ).permitAll()
                         .anyRequest().authenticated());
 
         http
