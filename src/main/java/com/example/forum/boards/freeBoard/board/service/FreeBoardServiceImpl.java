@@ -184,6 +184,12 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
         return mapToFreeBoardResponse(boards);
     }
 
+    /**
+     * Page<FreeBoard>를 Page<FreeBoardResponse> 형식으로 바꾸는 기능
+     *
+     * @param boards
+     * @return
+     */
     private Page<FreeBoardResponse> mapToFreeBoardResponse(Page<FreeBoard> boards) {
         return boards.map(board -> FreeBoardResponse.builder()
                 .id(board.getId())
