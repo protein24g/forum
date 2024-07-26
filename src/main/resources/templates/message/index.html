@@ -4,10 +4,11 @@
     <script th:inline="javascript">
         let msg = [[${msg}]];
         let url = [[${url}]];
+        let category = [[${category}]];
 
         document.addEventListener("DOMContentLoaded", function (){
             if(msg) alert(msg);
-            if(url) window.location.href = url;
+            if(url) window.location.href = url + `?category=${encodeURIComponent(category)}`;
         });
     </script>
 </head>

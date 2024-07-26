@@ -19,8 +19,7 @@
                 });
             })
 
-
-            // C(Create)
+            // R(Read)
             function displayBoardList(res){
                 let keyword = document.querySelector("#keyword").value;
                 let option = document.querySelector("#option").value;
@@ -57,7 +56,7 @@
                                 </div>
                                     `;
                 });
-                document.querySelector(".freeBoard-list").innerHTML = boardHtml;
+                document.querySelector(".board-list").innerHTML = boardHtml;
 
 
                 let pageHtml = "";
@@ -82,12 +81,10 @@
                                         <a class="page-link" onclick="getBoardList('${keyword}', ${res.number + 1}, '${option}')">></a>
                                     </li>
                                 `;
-                document.querySelector(".freeBoard-page").innerHTML = pageHtml;
+                document.querySelector(".board-page").innerHTML = pageHtml;
                 addEventToRows();
             }
 
-
-            // R(Read)
             async function sortSelectEvent(){
                 let keyword = document.querySelector("#keyword").value;
                 let page = document.querySelector("#page").value;
@@ -156,9 +153,10 @@
             }
 
             async function getBoardList(keyword, page, option){ // 게시글 리스트
+                const category = document.getElementById("category").value;
                 let _csrf = document.querySelector("._csrf").value;
                 try{
-                    const response = await fetch("/api/freeBoard", {
+                    const response = await fetch(`/api/boards?category=${category}`, {
                         method : "POST",
                         headers : {
                             "Content-Type" : "application/json",
@@ -178,14 +176,15 @@
                     displayBoardList(res);
                 }catch (error){
                     alert(error);
-                    window.location.href = "/freeBoard";
+                    window.location.href = `/boards?category=${category}`;
                 }
             }
 
             function addEventToRows() {
+                const category = document.getElementById("category").value;
                 document.querySelectorAll(".board-item").forEach(function (row) {
                     row.addEventListener("click", function (){
-                        window.location.href = "/freeBoard/" + row.getAttribute("id");
+                        window.location.href = "/boards/" + row.getAttribute("id") + `?category=${category}`;
                     });
                 });
             }
@@ -250,7 +249,7 @@
                                     <h5 class="fw-bold">인기게시글</h5>
                                 </div>
                                 <div class="ms-auto">
-                                    <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
+                                    <a th:href="'/boards?category=' + ${category}" class="text-black" style="text-decoration: none;">더보기</a>
                                 </div>
                             </div>
                             <hr class="m-1">
@@ -302,7 +301,7 @@
                 <div class="order-xl-2 order-1 col-xl-9">
                     <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">자유게시판</h4>
                     <!--검색-->
-                    <div class="freeBoard-search mb-1">
+                    <div class="board-search mb-1">
                         <div class="d-flex justify-content-center justify-content-sm-end">
                             <form class="d-flex" role="search">
                                 <div class="col-auto">
@@ -320,7 +319,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="freeBoard-wrap" style="background-color: white; border-radius: 15px;">
+                    <div class="board-wrap" style="background-color: white; border-radius: 15px;">
                         <div class="d-flex ">
                             <div class="ms-auto">
                                 <select class="p-2 sortSelect" style="border-radius: 5px;">
@@ -332,15 +331,15 @@
                             </div>
                         </div>
                         <!--게시글 Detail-->
-                        <div class="freeBoard-list"></div>
+                        <div class="board-list"></div>
                         <!--게시글 페이징-->
                         <nav>
-                            <ul class="pagination justify-content-center freeBoard-page">
+                            <ul class="pagination justify-content-center board-page">
                             </ul>
                         </nav>
                         <!--글쓰기-->
                         <div class="text-start d-flex">
-                            <a class="m-3 btn btn-primary ms-auto" href="/freeBoard/create">글쓰기</a>
+                            <a class="m-3 btn btn-primary ms-auto" th:href="'/boards/create?category=' + ${category}">글쓰기</a>
                         </div>
                     </div>
                 </div>

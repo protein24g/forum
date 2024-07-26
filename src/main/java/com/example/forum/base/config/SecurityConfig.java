@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/freeBoard/create", "/questionBoard/create").authenticated()
+                        .requestMatchers("/boards/create").authenticated()
                         .requestMatchers("/", "/mobile/font.css", "/logo/**", "/favicon.ico",
                                 "/header/header.css", "/header/header.js",
                                 "/account/logout.js",
@@ -42,7 +43,7 @@ public class SecurityConfig {
                                 "/questionBoardUpload/**"
                         ).permitAll()
                         .requestMatchers( // 게시판
-                                "/boards/**"
+                                "/boards/**", "/api/boards/**"
                         ).permitAll()
                         .anyRequest().authenticated());
 
