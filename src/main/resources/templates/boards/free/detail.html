@@ -347,10 +347,10 @@
         }
 
         async function getAllComment(page){
-            console.log("호출됐다" + page);
             const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             const commentCount = document.querySelector(".comment-count");
+            commentCount.textContent = "댓글";
             document.getElementById("currentPage").value = page;
 
             try{
@@ -362,12 +362,10 @@
                 });
 
                 const res = await response.json();
-                console.log("ㅋㅋㅋ" + res);
                 if(res.content.length === 0) {
                     document.querySelector(".boardComment-list").innerHTML = '';
                     document.querySelector(".comment-page-list").innerHTML = '';
                 } else {
-                    console.log("dlrj" + res);
                     commentCount.textContent = `댓글 ${res.totalElements}`;
 
                     // 렌더링 할 HTML을 저장할 변수
