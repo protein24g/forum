@@ -161,7 +161,7 @@
             }
 
             try {
-                const response = await fetch(`/api/freeBoard/${boardId}`, {
+                const response = await fetch(`/api/boards/${boardId}?category=${category}`, {
                     method: "PUT",
                     headers: {
                         "X-CSRF-TOKEN": _csrf

@@ -113,7 +113,7 @@ public class BoardApiController {
      * @param boardId 게시글 ID
      * @return 게시글 수정을 위한 데이터
      */
-    @GetMapping("/api/boards?/{boardId}/update")
+    @GetMapping("/api/boards/{boardId}/update")
     public ResponseEntity<?> getBoardUpdateData(@PathVariable(name = "boardId") Long boardId,
                                                 @RequestParam(name = "category") String category) {
         if (category.equals("free")) {
@@ -182,6 +182,11 @@ public class BoardApiController {
                                          @RequestParam(name = "category") String category) {
         if (category.equals("free")) {
             try {
+                System.out.println("게시글 수정 요청 dto");
+                System.out.println(dto.getTitle());
+                System.out.println(dto.getContent());
+                System.out.println(dto.getOriginalImages());
+                System.out.println(dto.getImages());
                 freeBoardServiceImpl.update(boardId, dto);
                 return ResponseEntity.status(HttpStatus.OK).body("글 수정완료");
             } catch (IllegalArgumentException e) {

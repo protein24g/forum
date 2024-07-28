@@ -394,9 +394,14 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
 
         // 기존 이미지 처리
         List<String> originalImageNames = dto.getOriginalImages();
+        for (String images : originalImageNames) {
+            System.out.println("기존 이미지 : " + images);
+        }
         List<FreeBoardImage> dbImages = freeBoardImageRepository.findByFreeBoardId(boardId);
         for (FreeBoardImage dbImage : dbImages) {
+            System.out.println("이미지 명 : " + dbImage.getOriginalName());
             if (originalImageNames == null || !originalImageNames.contains(dbImage.getOriginalName())) {
+                System.out.println("수정할 떄 없는 이미지 이므로 삭제 : " + dbImage.getFileName());
                 freeBoardImageRepository.delete(dbImage);
             }
         }
@@ -406,6 +411,7 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
             if (dto.getImages() != null && !dto.getImages().isEmpty()) {
                 List<FreeBoardImage> newImages = freeBoardImageService.saveImages(dto.getImages());
                 for (FreeBoardImage image : newImages) {
+                    System.out.println("없는 이미지 이므로 새로운 이미지 저장 : " + image);
                     freeBoard.addImage(image);
                 }
             }
