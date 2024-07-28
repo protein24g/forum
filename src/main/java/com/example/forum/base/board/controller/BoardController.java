@@ -14,30 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
     private final FreeBoardServiceImpl freeBoardServiceImpl;
 
-    // C(Create)
-    /**
-     * 게시글 작성
-     *
-     * @param dto   게시글 작성 정보를 담은 DTO
-     * @param model
-     * @return 메시지 페이지 URL
-     */
-
-    @PostMapping("/boards/create")
-    public String createProc(@Valid FreeBoardRequest dto, @RequestParam(name = "category") String category, Model model) {
-        try {
-            FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.create(dto);
-            model.addAttribute("msg", "글 작성이 완료되었습니다.");
-            model.addAttribute("url", "/boards/" + freeBoardResponse.getId());
-            model.addAttribute("category", category);
-            return "message/index";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("msg", e.getMessage());
-            model.addAttribute("url", "/login");
-            return "message/index";
-        }
-    }
-
     // R(Read)
     /**
      * 게시글 작성 페이지로 이동

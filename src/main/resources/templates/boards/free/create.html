@@ -11,12 +11,30 @@
     <script src="/header/header.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("write").addEventListener("click", function (event) {
+            document.getElementById("write").addEventListener("click", async function (event) {
+                const category = document.getElementById("category").value;
                 let images = document.querySelector("input[name='images']");
                 let isConfirmed = confirm("저장하시겠습니까?");
                 if(isConfirmed){
                     if(extensionCheck(images)){
-                        document.getElementById("createForm").submit();
+                        const form = document.getElementById("createForm");
+                        const formData = new FormData(form);
+
+                        try {
+                            const response = await fetch(form.action, {
+                                method : "POST",
+                                body : formData
+                            });
+
+                            const res = await response;
+                            if (res.ok) {
+                                alert("게시글 작성 완료");
+                                window.location.href = `/boards?category=${category}`;
+                            }
+                        } catch (error) {
+                            alert(error);
+                            window.location.href = "/";
+                        }
                     }
                 }else{
                     event.preventDefault(); // 폼 제출 방지
@@ -68,6 +86,7 @@
 </head>
 <div th:insert="~{layouts/header.html :: headerFragment}"></div>
 <body style="background-color: #eee">
+<input type="hidden" id="category" th:value="${category}">
 <div class="container-xl">
     <div class="row text-center">
         <div class="order-xl-1 order-2 col-xl-3 mt-xl-3">
@@ -150,7 +169,7 @@
         </div>
         <div class="order-xl-2 order-1 col-xl-9">
             <h4 class="my-3 p-3 fw-bold" style="background-color: white; border-radius: 15px;">글 작성</h4>
-            <form class="p-3 text-start" action="/boards/create" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
+            <form class="p-3 text-start" th:action="'/api/boards/create?category=' + ${category}" method="post" id="createForm" enctype="multipart/form-data" style="background-color: white; border-radius: 15px;">
                 <p><input class="form-control" type="text" name="title" placeholder="제목"></p>
                 <p><textarea class="form-control" name="content" rows="10" placeholder="내용"></textarea></p>
                 <div class="image-list col-md-6 my-3">
@@ -158,7 +177,6 @@
                     <input type="file" class="form-control" name="images" accept="image/*" multiple>
                 </div>
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-                <input type="hidden" name="category" value="free">
                 <button class="btn btn-primary" type="button" id="write">작성</button>
             </form>
         </div>

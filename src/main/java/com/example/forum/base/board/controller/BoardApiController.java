@@ -6,10 +6,12 @@ import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardLikeRespon
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardPrevNextResponse;
 import com.example.forum.boards.freeBoard.board.dto.response.FreeBoardResponse;
 import com.example.forum.boards.freeBoard.board.service.FreeBoardServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +25,28 @@ public class BoardApiController {
 
     // C(Create)
     /**
-     * 특정 게시물 좋아요
+     * 게시글 작성
+     *
+     * @param dto   게시글 작성 정보를 담은 DTO
+     * @return 메시지 페이지 URL
+     */
+
+    @PostMapping("/api/boards/create")
+    public ResponseEntity<?> createProc(@Valid FreeBoardRequest dto, @RequestParam(name = "category") String category) {
+        if (category.equals("free")) {
+            try {
+                FreeBoardResponse freeBoardResponse = freeBoardServiceImpl.create(dto);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 특정 게시글 좋아요
      *
      * @param boardId
      * @return
