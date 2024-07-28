@@ -355,8 +355,8 @@ public class FreeBoardServiceImpl implements BoardService<FreeBoard, FreeBoardRe
      * @return
      */
     public FreeBoardPrevNextResponse getPrevNext(Long boardId) {
-        FreeBoard prevBoard = freeBoardRepository.findById(boardId - 1).orElse(null);
-        FreeBoard nextBoard = freeBoardRepository.findById(boardId + 1).orElse(null);
+        FreeBoard prevBoard = freeBoardRepository.findPrevPost(boardId - 1).orElse(null);
+        FreeBoard nextBoard = freeBoardRepository.findNextPost(boardId + 1).orElse(null);
 
         return FreeBoardPrevNextResponse.builder()
                 .prevId((prevBoard != null) ? prevBoard.getId() : null)

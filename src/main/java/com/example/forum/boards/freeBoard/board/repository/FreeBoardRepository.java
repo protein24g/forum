@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 /**
  * 자유 게시판 인터페이스
  */
@@ -102,4 +104,10 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long> {
      */
     @Query("SELECT fb FROM FreeBoard fb LEFT JOIN UserLike ul on fb.id = ul.freeBoard.id WHERE fb.content LIKE %:keyword% GROUP BY fb.id ORDER BY COUNT(ul) DESC, fb.id DESC")
     Page<FreeBoard> findAllByContentOrderByLikeCountDesc(String keyword, Pageable pageable);
+
+    @Query("SELECT fb FROM FreeBoard fb WHERE fb.id < :boardId ORDER BY fb.id DESC LIMIT 1")
+    Optional<FreeBoard> findPrevPost(Long boardId);
+
+    @Query("SELECT fb FROM FreeBoard fb WHERE fb.id > :boardId ORDER BY fb.id ASC LIMIT 1")
+    Optional<FreeBoard> findNextPost(Long boardId);
 }

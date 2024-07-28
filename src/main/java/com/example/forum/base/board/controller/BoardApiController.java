@@ -159,7 +159,11 @@ public class BoardApiController {
                                          @RequestParam(name = "category") String category) {
         if (category.equals("free")) {
             try {
+                System.out.println("aaaaaaaaaaaaaaaaaaaa");
+                System.out.println(boardId);
+                System.out.println(category);
                 FreeBoardPrevNextResponse freeBoardPrevNextResponse = freeBoardServiceImpl.getPrevNext(boardId);
+                System.out.println(freeBoardPrevNextResponse.toString());
                 return ResponseEntity.status(HttpStatus.OK).body(freeBoardPrevNextResponse);
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
