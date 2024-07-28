@@ -112,9 +112,10 @@
         }
 
         async function getBoardUpdateData(){
+            const category = document.getElementById("category").value;
             try{
                 const boardId = document.querySelector("#boardId").value;
-                const response = await fetch(`/api/freeBoard/${boardId}/update`, {
+                const response = await fetch(`/api/boards/${boardId}/update?category=${category}`, {
                     method : "GET",
                     headers : {
                         "ContentType" : "application/json"

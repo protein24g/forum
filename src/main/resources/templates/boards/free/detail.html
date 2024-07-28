@@ -88,6 +88,7 @@
         }
 
         async function boardLike() {
+            const category = document.getElementById("category").value;
             const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
 
@@ -102,7 +103,7 @@
             }
 
             try {
-                const response = await fetch(`/api/freeBoard/${boardId}/like`, {
+                const response = await fetch(`/api/boards/${boardId}/like?category=${category}`, {
                     method: method,
                     headers: {
                         "Content-Type" : "application/json",
@@ -119,11 +120,12 @@
                 }
             } catch (error) {
                 alert("좋아요 " + msg + "중 오류 발생: " + error.message);
-                window.location.href = `/freeBoard/${boardId}`;
+                window.location.href = `/boards/${boardId}?category=${category}`;
             }
         }
 
         async function commentLike(commentId) {
+            const category = document.getElementById("category").value;
             const _csrf = document.querySelector("._csrf").value;
             const boardId = document.getElementById("boardId").value;
             let commentLikeBtn;
@@ -148,7 +150,7 @@
                 tag = `<span style="color: hotpink; background: none;" onclick="commentLike(${commentId})">♥ ${result.likes + 1}</span>`;
             }
             try {
-                const response = await fetch(`/api/freeBoard/${commentId}/comments/like`, {
+                const response = await fetch(`/api/boards/${commentId}/comments/like?category=${category}`, {
                     method: method,
                     headers: {
                         "Content-Type" : "application/json",
@@ -163,7 +165,7 @@
                 }
             } catch (error) {
                 alert("좋아요 " + msg + "중 오류 발생: " + error.message);
-                window.location.href = `/freeBoard/${boardId}`;
+                window.location.href = `/boards/${boardId}?category=${category}`;
             }
         }
 
@@ -179,6 +181,7 @@
         }
 
         async function createUserComment(){
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             let comment_content = document.getElementById("comment_content").value;
             const _csrf = document.querySelector("._csrf").value;
@@ -188,7 +191,7 @@
                 return;
             }
             try{
-                const response = await fetch(`/api/freeBoard/${boardId}/comments`, {
+                const response = await fetch(`/api/boards/${boardId}/comments?category=${category}`, {
                     method : "POST",
                     headers : {
                         "Content-Type" : "application/json",
@@ -210,7 +213,7 @@
                 }
             }catch (error){
                 alert(error);
-                window.location.href = "/freeBoard/" + boardId;
+                window.location.href = `/boards/${boardId}?category=${category}`;
             }
         }
 
@@ -254,43 +257,17 @@
                 }
             } catch (error) {
                 alert(error);
-                window.location.href = `/freeBoard/${boardId}`;
+                window.location.href = `/boards/${boardId}?category=${category}`;
             }
         }
 
-        // async function getBoardLikeCheck(){
-        //     const boardId = document.getElementById("boardId").value;
-        //     const likeBtn = document.getElementById("like-btn");
-        //
-        //     try {
-        //         // 1. GET 요청으로 좋아요 여부 확인
-        //         const response = await fetch(`/api/freeBoard/${boardId}/like`, {
-        //             method: "GET",
-        //             headers: {
-        //                 "Content-Type": "application/json"
-        //             }
-        //         });
-        //
-        //         const result = await response.json();
-        //         if (!result.res) {
-        //             likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: white; border: 1px solid hotpink; color: hotpink;">♥ ${result.likes}</button>`;
-        //             return false;
-        //         } else {
-        //             likeBtn.innerHTML = `<button class="px-2 py-1 mx-1" style="border-radius: 5px; background-color: hotpink; border: 1px solid hotpink; color: white;">♥ ${result.likes}</button>`;
-        //             return true;
-        //         }
-        //     } catch (error) {
-        //         alert(error);
-        //         window.location.href = `/freeBoard/${boardId}`;
-        //     }
-        // }
-
         async function getCommentLikeCheck(commentId){
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
 
             try {
                 // 1. GET 요청으로 좋아요 여부 확인
-                const response = await fetch(`/api/freeBoard/${commentId}/comments/like`, {
+                const response = await fetch(`/api/boards/${commentId}/comments/like?category=${category}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -299,7 +276,7 @@
                 return await response.json();
             } catch (error) {
                 alert(error);
-                window.location.href = `/freeBoard/${boardId}`;
+                window.location.href = `/boards/${boardId}?category=${category}`;
             }
         }
 
@@ -328,10 +305,11 @@
         }
 
         async function getBoardDetails() { // 게시글 Detail
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
 
             try {
-                const response = await fetch(`/api/freeBoard/${boardId}`, {
+                const response = await fetch(`/api/boards/${boardId}?category=${category}`, {
                     method: "GET"
                 });
 
@@ -345,7 +323,7 @@
                         ${res.view}
                         `;
                 document.getElementById("title").innerText = res.title;
-                document.getElementById("freeBoard-content").innerText = res.content;
+                document.getElementById("board-content").innerText = res.content;
 
                 let images_html = "";
                 res.images.forEach(image => {
@@ -355,7 +333,7 @@
                                 </a>
                                 `;
                 });
-                document.querySelector("#freeBoard-images").innerHTML += images_html;
+                document.querySelector("#board-images").innerHTML += images_html;
 
             } catch (error) {
                 if (error instanceof TypeError) {
@@ -364,17 +342,18 @@
                 } else {
                     alert(error);
                 }
-                window.location.href = "/freeBoard/" + boardId;
+                window.location.href = `/boards/${boardId}?category=${category};`
             }
         }
 
         async function getAllComment(page){
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             const commentCount = document.querySelector(".comment-count");
             document.getElementById("currentPage").value = page;
 
             try{
-                const response = await fetch(`/api/freeBoard/${boardId}/comments?page=${page}`, {
+                const response = await fetch(`/api/boards/${boardId}/comments?page=${page}&category=${category}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json"
@@ -383,7 +362,7 @@
 
                 const res = await response.json();
                 if(res.content.length === 0) {
-                    document.querySelector(".freeBoardComment-list").innerHTML = '';
+                    document.querySelector(".boardComment-list").innerHTML = '';
                     document.querySelector(".comment-page-list").innerHTML = '';
                 } else {
                     console.log(res);
@@ -421,7 +400,7 @@
                         if (row.author) {
                             commentHtml += `
                                                                 <li>
-                                                                    <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#freeBoardComment-modalView">수정</button>
+                                                                    <button onclick="editComment(${row.id}, '${content}')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardComment-modalView">수정</button>
                                                                 </li>
                                                                 <li>
                                                                     <button onclick="deleteComment(${row.id})" class="dropdown-item">삭제</button>
@@ -468,7 +447,7 @@
                                 </div>
                                         `;
                     }
-                    document.querySelector(".freeBoardComment-list").innerHTML = commentHtml;
+                    document.querySelector(".boardComment-list").innerHTML = commentHtml;
 
                     let pageHtml = "";
                     pageHtml += `
@@ -501,11 +480,11 @@
         }
 
         async function getPrevNext() {
-            console.log("asdasdasdsa");
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             let tag = document.getElementById("prev-next");
             try {
-                const response = await fetch(`/api/freeBoard/${boardId}/prev-next`, {
+                const response = await fetch(`/api/boards/${boardId}/prev-next?category=${category}`, {
                     method : "GET",
                     headers : {
                         "Content-Type" : "application/json"
@@ -518,11 +497,11 @@
                 tag.innerHTML = `
                                 <div class="col-6 text-start d-flex align-items-center px-1 py-3">
                                     <div class="col-auto" style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;"><</div>
-                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.prevId == null) ? "#" : '/freeBoard/' + res.prevId}">${(res.prevTitle == null) ? "이전글이 존재하지 않습니다" : res.prevTitle}</a>
+                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.prevId == null) ? "#" : `/boards/${res.prevId}?category=${category}`}">${(res.prevTitle == null) ? "이전글이 존재하지 않습니다" : res.prevTitle}</a>
                                 </div>
                                 <div class="col-auto" style="background-color: #eee; width: 3px;">　</div>
                                 <div class="col-6 text-end d-flex justify-content-end align-items-center px-1 py-3">
-                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.nextId == null) ? "#" : '/freeBoard/' + res.nextId}">${(res.nextTitle == null) ? "다음글이 존재하지 않습니다" : res.nextTitle}</a>
+                                    <a class="col text-dot" style="color:black; text-decoration: none;" href="${(res.nextId == null) ? "#" : `/boards/${res.nextId}?category=${category}`}">${(res.nextTitle == null) ? "다음글이 존재하지 않습니다" : res.nextTitle}</a>
                                     <div class="col-auto" style="width: 30px; height: 30px; align-content: center; text-align: center; font-weight: bold;">></div>
                                 </div>
                 `;
@@ -534,6 +513,7 @@
 
         // U(Update)
         async function updateComment(id) {
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             let commentId = id;
             let currentPage = document.getElementById("currentPage").value;
@@ -544,12 +524,12 @@
             }
             const _csrf = document.querySelector("._csrf").value;
 
-            let myModal = document.getElementById("freeBoardComment-modalView");
+            let myModal = document.getElementById("boardComment-modalView");
             let modalInstance = bootstrap.Modal.getInstance(myModal);
 
 
             try {
-                const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
+                const response = await fetch(`/api/boards/${commentId}/comments?category=${category}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -570,13 +550,14 @@
                     window.location.href = "/login";
                 } else {
                     alert(error);
-                    window.location.href = "/freeBoard/" + boardId;
+                    window.location.href = "/boards/" + boardId + `?category=${category}`;
                 }
             }
         }
 
         // D(Delete)
         async function deleteBoard(){
+            const category = document.getElementById("category").value;
             const boardId = document.getElementById("boardId").value;
             const _csrf = document.querySelector("._csrf").value;
 
@@ -584,7 +565,7 @@
                 if(!confirm("삭제하시겠습니까?")){
                     return;
                 } else {
-                    const response = await fetch(`/api/freeBoard/${boardId}`, {
+                    const response = await fetch(`/api/boards/${boardId}?category=${category}`, {
                         method : "DELETE",
                         headers : {
                             "Content-Type" : "application/json",
@@ -594,7 +575,7 @@
 
                     if (response.status === 200){
                         alert("삭제 완료");
-                        window.location.href = "/freeBoard";
+                        window.location.href = `/boards?category=${category}`;
                     }
                 }
             }catch (error){
@@ -607,12 +588,13 @@
             if (!confirm("삭제하시겠습니까?")){
                 return;
             } else {
+                const category = document.getElementById("category").value;
                 let currentPage = document.getElementById("currentPage").value;
                 const boardId = document.getElementById("boardId").value;
                 const _csrf = document.querySelector("._csrf").value;
 
                 try{
-                    const response = await fetch(`/api/freeBoard/${commentId}/comments`, {
+                    const response = await fetch(`/api/boards/${commentId}/comments?category=${category}`, {
                         method : "DELETE",
                         headers : {
                             "Content-Type" : "application/json",
@@ -629,7 +611,7 @@
                         window.location.href = "/login";
                     }else{
                         alert(error);
-                        window.location.href = "/freeBoard/" + boardId;
+                        window.location.href = "/boards/" + boardId + `?category=${category}`;
                     }
                 }
             }
@@ -698,7 +680,7 @@
                             <h5 class="fw-bold">인기게시글</h5>
                         </div>
                         <div class="ms-auto">
-                            <a href="/freeBoard" class="text-black" style="text-decoration: none;">더보기</a>
+                            <a th:href="'/boards?category=' + ${category}" class="text-black" style="text-decoration: none;">더보기</a>
                         </div>
                     </div>
                     <hr class="m-1">
@@ -776,9 +758,9 @@
                 </div>
                 <hr class="my-2">
                 <!--내용-->
-                <span id="freeBoard-content"></span>
+                <span id="board-content"></span>
                 <!--이미지-->
-                <div id="freeBoard-images"></div>
+                <div id="board-images"></div>
                 <div class="my-3 d-flex justify-content-end">
                     <div id="like-btn"></div>
                     <!-- Button trigger modal -->
@@ -788,7 +770,7 @@
                         <!--게시글 작성자면 수정, 삭제 버튼 활성화-->
                         <div class="d-flex" sec:authorize="isAuthenticated()" th:if="${writer == #authentication.principal.username}">
                             <div class="mx-1">
-                                <form th:action="@{'/freeBoard/' + ${boardId}}" method="post">
+                                <form th:action="@{'/boards/' + ${boardId} + '?category=' + ${category}}" method="post">
                                     <input type="hidden" name="_method" value="PUT"/>
                                     <button class="form-control p-1" style="background-color: cornflowerblue; border: 1px solid cornflowerblue; color: white;" type="submit">수정</button>
                                 </form>
@@ -846,7 +828,7 @@
                         <input class="px-3 py-2 d-flex ms-auto btn btn-primary" type="button" onclick="createUserComment()" value="작성">
                     </div>
                     <!--댓글 리스트-->
-                    <div class="freeBoardComment-list p-0" style="background-color: white"></div>
+                    <div class="boardComment-list p-0" style="background-color: white"></div>
                     <!--댓글 페이징-->
                     <ul class="pagination justify-content-center comment-page-list my-3">
                     </ul>
@@ -854,11 +836,11 @@
 
                 <!-- 댓글 수정 Modal -->
                 <div>
-                    <div class="modal fade" id="freeBoardComment-modalView" tabindex="-1" aria-labelledby="freeBoardComment-modal" aria-hidden="true">
+                    <div class="modal fade" id="boardComment-modalView" tabindex="-1" aria-labelledby="boardComment-modal" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="freeBoardComment-modal">수정</h2>
+                                    <h2 class="modal-title fs-5" id="boardComment-modal">수정</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">

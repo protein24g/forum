@@ -86,12 +86,13 @@
             }
 
             async function sortSelectEvent(){
+                const category = document.getElementById("category").value;
                 let keyword = document.querySelector("#keyword").value;
                 let page = document.querySelector("#page").value;
                 let option = document.querySelector("#option").value;
                 let _csrf = document.querySelector("._csrf").value;
                 try{
-                    const response = await fetch("/api/freeBoard", {
+                    const response = await fetch(`/api/boards?category=${category}`, {
                         method : "POST",
                         headers : {
                             "Content-Type" : "application/json",

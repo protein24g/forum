@@ -80,9 +80,6 @@ public class FreeBoardCommentApiController {
     public ResponseEntity<?> getCommentLikes(@PathVariable(name = "commentId") Long commentId){
         try{
             FreeBoardLikeResponse freeBoardLikeResponse = freeBoardCommentServiceImpl.getCommentLikes(commentId);
-            System.out.println("들어왔다");
-            System.out.println(commentId);
-            System.out.println(freeBoardLikeResponse.toString());
             return ResponseEntity.status(HttpStatus.OK).body(freeBoardLikeResponse);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

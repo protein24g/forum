@@ -21,7 +21,7 @@ public class UserLike {
     private FreeBoard freeBoard;
 
     @ManyToOne
-    @JoinColumn(name = "free_bard_comment_id")
+    @JoinColumn(name = "free_board_comment_id")
     private FreeBoardComment freeBoardComment;
 
     public void setUser(User user){

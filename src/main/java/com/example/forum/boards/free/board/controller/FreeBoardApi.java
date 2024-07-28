@@ -32,24 +32,24 @@ public class FreeBoardApi {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 //        }
 //    }
-
-    // R(Read)
-    /**
-     * 게시글 목록을 검색하여 반환
-     *
-     * @param dto 검색 조건을 포함한 DTO
-     * @return 검색된 게시글 목록 페이지
-     */
-    @PostMapping("/api/boards")
-    public ResponseEntity<?> boardPage(@RequestBody FreeBoardSearch dto,
-                                       @RequestParam (name = "category") String category) {
-        if (category.equals("free")) {
-            Page<FreeBoardResponse> freeBoardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
-            return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
-        } else {
-            return null;
-        }
-    }
+//
+//    // R(Read)
+//    /**
+//     * 게시글 목록을 검색하여 반환
+//     *
+//     * @param dto 검색 조건을 포함한 DTO
+//     * @return 검색된 게시글 목록 페이지
+//     */
+//    @PostMapping("/api/boards")
+//    public ResponseEntity<?> boardPage(@RequestBody FreeBoardSearch dto,
+//                                       @RequestParam (name = "category") String category) {
+//        if (category.equals("free")) {
+//            Page<FreeBoardResponse> freeBoardResponses = freeBoardServiceImpl.boardPage(dto); // 검색 페이징
+//            return ResponseEntity.status(HttpStatus.OK).body(freeBoardResponses);
+//        } else {
+//            return null;
+//        }
+//    }
 //
 //    /**
 //     * 특정 게시글의 상세 정보 반환
